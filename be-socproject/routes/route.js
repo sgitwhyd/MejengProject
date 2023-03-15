@@ -39,6 +39,19 @@ const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
 // router.post('/product/postProduct', restrict, upload, con.pd.postProduct);
 // router.post('/product/:productId/toggle-like', restrict, con.pd.toggle_like);
 
+// project require login
+
+router.post(
+	'/api/project/create-project',
+	restrict,
+	con.projectController.createProject
+);
+router.post(
+	'/api/project/like-project',
+	restrict,
+	con.projectController.likeProject
+);
+
 router.get('/profile/getProfile', restrict, con.us.getProfile);
 
 // Category
