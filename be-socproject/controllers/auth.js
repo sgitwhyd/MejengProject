@@ -37,7 +37,8 @@ module.exports = {
                 email,
                 password: encryptPassword,
                 name,
-                isVerify: false                                
+                role: 'User',
+                is_verify: false                                
             });
             console.log(user)
             const payload = {
@@ -53,7 +54,8 @@ module.exports = {
                 message: 'Succes Register',
                 data: {
                     email: user.email,
-                    name: user.name
+                    name: user.name,
+                    role: user.role
                 }
             });
         } catch (err) {
@@ -81,14 +83,17 @@ module.exports = {
             payload = {
                 id: user.id,
                 email: user.email,
-                name: user.name
+                name: user.name,
+                role: user.role,
+                is_verify: user.is_verify
 
             }
             const token = jwt.sign(payload, JWT_SECRET_KEY)
 
             return res.status(201).json({
                 status: true,
-                token
+                token,
+                role: user.role
             })
         } catch (error) {
         next(error)
