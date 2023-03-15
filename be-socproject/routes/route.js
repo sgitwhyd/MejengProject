@@ -34,11 +34,23 @@ const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
 );
 // const upload2 =multer({storage: fileStorage1, fileFilter: fileFilter1}).single('thumbnail_product_image')
 
-router.post('/product/postProduct', restrict, upload, con.pd.postProduct);
-router.post('/product/:productId/toggle-like', restrict, con.pd.toggle_like);
-router.get('/product/total-like', restrict, con.pd.total_like);
+// router.post('/product/postProduct', restrict, upload, con.pd.postProduct);
+// router.post('/product/:productId/toggle-like', restrict, con.pd.toggle_like);
 
-router.get('/profile/getProfile', restrict, con.pro.getProfile);
+// router.get('/profile/getProfile', restrict, con.pro.getProfile);
+
+// project
+// require user login
+router.post(
+	'/api/project/create-project',
+	restrict,
+	con.projectController.createProject
+);
+router.post(
+	'/api/project/like-project',
+	restrict,
+	con.projectController.likeProject
+);
 
 // Category
 // user akses
