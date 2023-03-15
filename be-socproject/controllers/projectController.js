@@ -96,8 +96,7 @@ module.exports = {
 									});
 								});
 						} else {
-							await productLikes
-								.destroy({
+							await productLikes.destroy({
 									where: {
 										id: product_like.id,
 									},
