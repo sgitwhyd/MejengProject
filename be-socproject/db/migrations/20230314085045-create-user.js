@@ -38,6 +38,10 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      role: {
+        allowNull: true,
+        type: Sequelize.ENUM(['Admin', 'User'])
+      },
       is_verify: {
         allowNull: true,
         type: Sequelize.BOOLEAN

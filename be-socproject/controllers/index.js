@@ -1,6 +1,6 @@
 const pd = require('./product');
 const au = require('./auth');
-const pro = require('./profile');
+const us = require('./user');
 const categoriesController = require('./categoriesController');
 
-module.exports = { pd, au, pro, categoriesController };
+module.exports = { pd, au, us, categoriesController };

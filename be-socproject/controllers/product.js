@@ -1,4 +1,4 @@
-const {Product, productLike, User } = require("../db/models");
+const {Product, productLikes, User } = require("../db/models");
 const cloudinary = require('cloudinary');
 const { validationResult } = require('express-validator');
 const e = require("express");
@@ -59,12 +59,12 @@ module.exports = {
             }else{
                 let current_user=req.user;
                 // console.log('bbababababababababab', current_user.id)
-                productLike.findOne({
+                productLikes.findOne({
                         where: {ProductId: productId,
                         UserId: current_user.id}
                 }).then(async(product_like) =>{
                     if (!product_like){
-                        let productLikeDoc = new productLike({
+                        let productLikeDoc = new productLikes({
                             ProductId: productId,
                             UserId: current_user.id
                         })  
@@ -75,13 +75,13 @@ module.exports = {
                             message: 'Succesfully Liked'
                         })
                     }else{
-                        await productLike.destroy({ where: {id: product_like.id}})
+                        await productLikes.destroy({ where: {id: product_like.id}})
                         res.status(200).json({
                             status: true,
                             message: 'Successfully removed like'
                         })
                     }
-                    const total = await productLike.count({where:{ProductId: productId}})
+                    const total = await productLikes.count({where:{ProductId: productId}})
                     
                     await Product.update({
                         total_likes: total
@@ -102,7 +102,7 @@ module.exports = {
 
     },
     total_like: async(req,res,next) =>{
-        const total = await productLike.count({where:{ProductId: 1}})
+        const total = await productLikes.count({where:{ProductId: 1}})
 
         productUpdate = await Product.update({
 
