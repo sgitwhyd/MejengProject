@@ -3,97 +3,103 @@ var bcrypt = require('bcrypt');
 var { MODUL } = require('../../utils/module');
 var { Module, User, RoleAccess } = require('../models');
 var dummyAdmin = {
-  name: 'admin',
-  email: 'admin',
-  passowrd: 'admin',
-  isVerified: true
+	name: 'admin',
+	email: 'admin',
+	password: 'admin',
+	isVerified: true,
 };
 var dummyUser = {
-  name: 'user',
-  email: 'user',
-  passowrd: '123',
-  isVerified: true
+	name: 'user',
+	email: 'user',
+	password: '123',
+	isVerified: true,
 };
 
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    for (var property in MODUL) {
-      var modul = await Module.findOne({ where: { name: property } });
-      if (!modul) {
-        await Module.create({ name: property });
-      }
-    }
+	async up(queryInterface, Sequelize) {
+		for (var property in MODUL) {
+			var modul = await Module.findOne({ where: { name: property } });
+			if (!modul) {
+				await Module.create({ name: property });
+			}
+		}
 
-    var admin = await User.findOne({ where: { email: dummyAdmin.email } });
-    if (!admin) {
-      var password = await bcrypt.hash(dummyAdmin.passowrd, 10);
-      admin = await User.create({
-        name: dummyAdmin.name,
-        email: dummyAdmin.email,
-        password: password,
-        isVerified: dummyAdmin.isVerified,
-        role: 'Admin',
-      });
-    }
+		var admin = await User.findOne({ where: { email: dummyAdmin.email } });
+		if (!admin) {
+			var password = await bcrypt.hash(dummyAdmin.password, 10);
+			await User.create({
+				name: dummyAdmin.name,
+				email: dummyAdmin.email,
+				password: password,
+				is_verify: dummyAdmin.isVerified,
+				role: 'Admin',
+			});
+		}
 
-    var user = await User.findOne({ where: { email: dummyUser.email } });
-    if (!user) {
-      var password = await bcrypt.hash(dummyUser.passowrd, 10);
-      user = await User.create({
-        name: dummyUser.name,
-        email: dummyUser.email,
-        password: password,
-        isVerified: dummyUser.isVerified,
-        role: 'User'
-      });
-    }
-    
-    for (var property in MODUL) {
-      var modul = await Module.findOne({ where: { name: property } });
-      var roleAdmin = await User.findOne({ where: { role : 'Admin'  } });
-      var roleUser = await User.findOne({ where: { role : 'User' } });
+		var user = await User.findOne({ where: { email: dummyUser.email } });
+		if (!user) {
+			var password = await bcrypt.hash(dummyUser.password, 10);
+			user = await User.create({
+				name: dummyUser.name,
+				email: dummyUser.email,
+				password: password,
+				is_verify: dummyUser.isVerified,
+				role: 'User',
+			});
+		}
 
-      // admin Acces Admin & User Dahboard
-      var ra = await RoleAccess.findOne({ where: { user_id: roleAdmin.id, module_id: modul.id } });
-      if (!ra) {
-        await RoleAccess.create({
-          user_id: roleAdmin.id,
-          module_id: modul.id,
-          read: true,
-          write: true,
-        });
-      }
+		for (var property in MODUL) {
+			var modul = await Module.findOne({ where: { name: property } });
+			var roleAdmin = await User.findOne({ where: { role: 'Admin' } });
+			var roleUser = await User.findOne({ where: { role: 'User' } });
 
-      // user Acces userDashboard
-      var ura = await RoleAccess.findOne({ where: { user_id: roleUser.id, module_id: modul.id } });
-      if (!ura) {
-        await RoleAccess.create({
-          user_id: roleUser.id,
-          module_id: 1,
-          read: true,
-          write: true,
-        });
-      }
+			// admin Acces Admin & User Dahboard
+			var ra = await RoleAccess.findOne({
+				where: { user_id: roleAdmin.id, module_id: modul.id },
+			});
+			if (!ra) {
+				await RoleAccess.create({
+					user_id: roleAdmin.id,
+					module_id: modul.id,
+					read: true,
+					write: true,
+				});
+			}
 
-      //user accces AdminDashboard
-      var ura1 = await RoleAccess.findOne({ where: { user_id: roleUser.id, module_id: modul.id } });
-      if (!ura1) {
-        await RoleAccess.create({
-          user_id: roleUser.id,
-          module_id: 2,
-          read: false,
-          write: false,
-        });
-      }
-    }
-  },
+			// user Acces userDashboard
+			var ura = await RoleAccess.findOne({
+				where: { user_id: roleUser.id, module_id: modul.id },
+			});
+			if (!ura) {
+				await RoleAccess.create({
+					user_id: roleUser.id,
+					module_id: 1,
+					read: true,
+					write: true,
+				});
+			}
 
-  async down (queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-  }
+			//user accces AdminDashboard
+			var ura1 = await RoleAccess.findOne({
+				where: { user_id: roleUser.id, module_id: modul.id },
+			});
+			if (!ura1) {
+				await RoleAccess.create({
+					user_id: roleUser.id,
+					module_id: 2,
+					read: false,
+					write: false,
+				});
+			}
+		}
+	},
+
+	async down(queryInterface, Sequelize) {
+		/**
+		 * Add commands to revert seed here.
+		 *
+		 * Example:
+		 * await queryInterface.bulkDelete('People', null, {});
+		 */
+	},
 };

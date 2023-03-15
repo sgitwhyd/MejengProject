@@ -7,7 +7,6 @@ const projectController = require('./projectController');
 module.exports = {
 	us,
 	au,
-	pro,
 	categoriesController,
 	adminController,
 	projectController,
