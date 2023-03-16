@@ -3,6 +3,7 @@ const us = require('./user');
 const categoriesController = require('./categoriesController');
 const adminController = require('./adminController');
 const projectController = require('./projectController');
+const toolsController = require('./toolsController');
 
 module.exports = {
 	us,
@@ -10,4 +11,5 @@ module.exports = {
 	categoriesController,
 	adminController,
 	projectController,
+	toolsController,
 };

@@ -40,7 +40,6 @@ const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
 // router.post('/product/:productId/toggle-like', restrict, con.pd.toggle_like);
 
 // project require login
-
 router.post(
 	'/api/project/create-project',
 	restrict,
@@ -80,5 +79,11 @@ router.get(
 	rbac(MODUL.AdminDashboard, true, true),
 	con.us.getAllUsers
 );
+
+// tools require admin
+router.get('/api/tools', con.toolsController.getTools);
+router.post('/api/tools/create-tools', con.toolsController.createTool);
+router.post('/api/tools/update-tools', con.toolsController.updateTool);
+router.post('/api/tools/delete-tools', con.toolsController.deleteTool);
 
 module.exports = router;
