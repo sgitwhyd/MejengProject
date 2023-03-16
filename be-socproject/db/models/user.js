@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // this.hasMany(models.Product, {as: 'product'})
+      this.hasMany(models.Project, {as: 'project'})
+
     }
   }
   User.init({
@@ -23,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     region: DataTypes.STRING,
     total_views: DataTypes.STRING,
     apreciation: DataTypes.STRING,
-    role: DataTypes.ENUM(['Admin','User']),
+    role: DataTypes.ENUM(['Admin', 'User']),
     is_verify: DataTypes.BOOLEAN
   }, {
     sequelize,

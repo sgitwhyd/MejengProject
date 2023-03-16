@@ -3,16 +3,16 @@ var bcrypt = require('bcrypt');
 var { MODUL } = require('../../utils/module');
 var { Module, User, RoleAccess } = require('../models');
 var dummyAdmin = {
-	name: 'admin',
-	email: 'admin',
-	password: 'admin',
-	isVerified: true,
+  name: 'admin',
+  email: 'admin',
+  password: 'admin',
+  is_verify: true
 };
 var dummyUser = {
-	name: 'user',
-	email: 'user',
-	password: '123',
-	isVerified: true,
+  name: 'user',
+  email: 'user',
+  password: '123',
+  is_verify: true
 };
 
 module.exports = {
@@ -24,29 +24,34 @@ module.exports = {
 			}
 		}
 
-		var admin = await User.findOne({ where: { email: dummyAdmin.email } });
-		if (!admin) {
-			var password = await bcrypt.hash(dummyAdmin.password, 10);
-			await User.create({
-				name: dummyAdmin.name,
-				email: dummyAdmin.email,
-				password: password,
-				is_verify: dummyAdmin.isVerified,
-				role: 'Admin',
-			});
-		}
+    var admin = await User.findOne({ where: { email: dummyAdmin.email } });
+    if (!admin) {
+      var password = await bcrypt.hash(dummyAdmin.password, 10);
+      admin = await User.create({
+        name: dummyAdmin.name,
+        email: dummyAdmin.email,
+        password: password,
+        is_verify: dummyAdmin.is_verify,
+        role: 'Admin',
+      });
+    }
 
-		var user = await User.findOne({ where: { email: dummyUser.email } });
-		if (!user) {
-			var password = await bcrypt.hash(dummyUser.password, 10);
-			user = await User.create({
-				name: dummyUser.name,
-				email: dummyUser.email,
-				password: password,
-				is_verify: dummyUser.isVerified,
-				role: 'User',
-			});
-		}
+    var user = await User.findOne({ where: { email: dummyUser.email } });
+    if (!user) {
+      var password = await bcrypt.hash(dummyUser.password, 10);
+      user = await User.create({
+        name: dummyUser.name,
+        email: dummyUser.email,
+        password: password,
+        is_verify: dummyUser.is_verify,
+        role: 'User'
+      });
+    }
+    
+    for (var property in MODUL) {
+      var modul = await Module.findOne({ where: { name: property } });
+      var roleAdmin = await User.findOne({ where: { role : 'Admin'  } });
+      var roleUser = await User.findOne({ where: { role : 'User' } });
 
 		for (var property in MODUL) {
 			var modul = await Module.findOne({ where: { name: property } });

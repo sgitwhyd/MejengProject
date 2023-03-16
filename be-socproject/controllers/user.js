@@ -1,4 +1,4 @@
-const {User} = require('../db/models')
+const {User, Project} = require('../db/models')
 
 module.exports = {
     getAllUsers: async(req, res, next) =>{
@@ -31,5 +31,21 @@ module.exports = {
         } catch (error) {
             next(error)
         }
+    },getUserProject: async(req, res, next) =>{
+        try {
+            const UserId = req.user.id
+            const userProject = await User.findByPk(UserId, { include: ["project"]})
+
+        console.log(userProject)
+
+        return res.status(200).json({
+            status: true,
+            message: 'Display User has Project Data',
+            data: userProject
+        });
+        } catch (error) {
+            
+        }
     }
+
 }

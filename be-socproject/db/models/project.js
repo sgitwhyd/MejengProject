@@ -10,11 +10,11 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
 			// define association here
 			this.belongsTo(models.User, { foreignKey: 'UserId', as: 'user' }),
-				this.belongsTo(models.Categories, {
-					foreignKey: 'CategoryId',
-					as: 'categories',
-				}),
-				this.belongsTo(models.Tools, { foreignKey: 'ToolId', as: 'tools' });
+			this.belongsTo(models.Categories, {
+				foreignKey: 'CategoryId',
+				as: 'categories',
+			}),
+			this.belongsTo(models.Tools, { foreignKey: 'ToolId', as: 'tools' });
 		}
 	}
 	Project.init(

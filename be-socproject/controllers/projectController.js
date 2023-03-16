@@ -1,4 +1,4 @@
-const { Project, productLikes } = require('../db/models');
+const { Project, productLikes, Categories } = require('../db/models');
 const { validationResult } = require('express-validator');
 
 module.exports = {
@@ -96,8 +96,7 @@ module.exports = {
 									});
 								});
 						} else {
-							await productLikes
-								.destroy({
+							await productLikes.destroy({
 									where: {
 										id: product_like.id,
 									},
@@ -136,4 +135,23 @@ module.exports = {
 			}
 		}
 	},
+	getAllProject: async(req, res,next) => {
+		try {
+			const all = await Project.findAll({
+				include:[{
+					model: Categories,
+					as: "categories",
+					attributes: {exclude: ["id","createdAt","updatedAt"]}
+				}]
+			})
+			return res.status(200).json({
+				status: true,
+				message: 'Display all project',
+				data: all
+			});
+	
+		} catch (error) {
+			next(error)
+		}
+	}    	
 };

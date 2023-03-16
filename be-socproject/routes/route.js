@@ -51,6 +51,8 @@ router.post(
 	con.projectController.likeProject
 );
 
+router.get('/api/project/get-all-project', con.projectController.getAllProject);
+
 router.get('/profile/getProfile', restrict, con.us.getProfile);
 
 // Category
@@ -85,5 +87,6 @@ router.get('/api/tools', con.toolsController.getTools);
 router.post('/api/tools/create-tools', con.toolsController.createTool);
 router.post('/api/tools/update-tools', con.toolsController.updateTool);
 router.post('/api/tools/delete-tools', con.toolsController.deleteTool);
+router.get('/api/admin/getUserProject', restrict, con.us.getUserProject);
 
 module.exports = router;
