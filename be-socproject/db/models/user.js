@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     region: DataTypes.STRING,
     total_views: DataTypes.STRING,
     apreciation: DataTypes.STRING,
-    role: DataTypes.ENUM(['Admin','User']),
+    role: DataTypes.ENUM(['Admin', 'User']),
     is_verify: DataTypes.BOOLEAN
   }, {
     sequelize,

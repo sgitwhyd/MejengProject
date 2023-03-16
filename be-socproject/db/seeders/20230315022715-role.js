@@ -5,14 +5,14 @@ var { Module, User, RoleAccess } = require('../models');
 var dummyAdmin = {
   name: 'admin',
   email: 'admin',
-  passowrd: 'admin',
-  isVerified: true
+  password: 'admin',
+  is_verify: true
 };
 var dummyUser = {
   name: 'user',
   email: 'user',
-  passowrd: '123',
-  isVerified: true
+  password: '123',
+  is_verify: true
 };
 
 module.exports = {
@@ -26,24 +26,24 @@ module.exports = {
 
     var admin = await User.findOne({ where: { email: dummyAdmin.email } });
     if (!admin) {
-      var password = await bcrypt.hash(dummyAdmin.passowrd, 10);
+      var password = await bcrypt.hash(dummyAdmin.password, 10);
       admin = await User.create({
         name: dummyAdmin.name,
         email: dummyAdmin.email,
         password: password,
-        isVerified: dummyAdmin.isVerified,
+        is_verify: dummyAdmin.is_verify,
         role: 'Admin',
       });
     }
 
     var user = await User.findOne({ where: { email: dummyUser.email } });
     if (!user) {
-      var password = await bcrypt.hash(dummyUser.passowrd, 10);
+      var password = await bcrypt.hash(dummyUser.password, 10);
       user = await User.create({
         name: dummyUser.name,
         email: dummyUser.email,
         password: password,
-        isVerified: dummyUser.isVerified,
+        is_verify: dummyUser.is_verify,
         role: 'User'
       });
     }

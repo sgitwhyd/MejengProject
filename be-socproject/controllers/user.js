@@ -33,13 +33,10 @@ module.exports = {
         }
     },getUserProject: async(req, res, next) =>{
         try {
-            const userProject = await User.findAll({where: {id: req.user.id},
-            include: [{
-                module: Project,
-                as: "project",
-                attributes: {exclude: ["createdAt","updatedAt"]}
-            }]
-        })
+            const UserId = req.user.id
+            const userProject = await User.findByPk(UserId, { include: ["project"]})
+
+        console.log(userProject)
 
         return res.status(200).json({
             status: true,
