@@ -1,4 +1,4 @@
-const { Project, productLikes, Categories } = require('../db/models');
+const { Project, productLikes, Categories, Tools } = require('../db/models');
 const { validationResult } = require('express-validator');
 
 module.exports = {
@@ -6,12 +6,20 @@ module.exports = {
 		try {
 			const { CategoryId, ToolId, title, desc, url } = req.body;
 			const userId = req.user.id;
+			const img = req.file.path
 			if (!title || !desc) {
 				return res.status(401).json({
 					status: false,
 					msg: 'Invalid payload',
 				});
-			} else {
+			}
+			else if (!req.file) {
+				return res.status(401).json({
+					status: false,
+					msg: 'File undifined',
+				});
+			}
+			 else {
 				await Project.create({
 					UserId: userId,
 					CategoryId: CategoryId,
@@ -19,7 +27,7 @@ module.exports = {
 					title,
 					desc,
 					url,
-					// thumbnail_product_image,
+					thumbnail_project_image:  img
 					// product_image,
 					// total_likes,
 					// total_views
@@ -28,6 +36,7 @@ module.exports = {
 						return res.status(200).json({
 							status: true,
 							msg: 'Project Upload Succesfully',
+							data: result
 						});
 					})
 					.catch((err) => {
@@ -137,17 +146,31 @@ module.exports = {
 	},
 	getAllProject: async(req, res,next) => {
 		try {
-			const all = await Project.findAll({
-				include:[{
-					model: Categories,
-					as: "categories",
-					attributes: {exclude: ["id","createdAt","updatedAt"]}
-				}]
+			// const all = await Project.findAll({
+			// 	include:[
+			// 	// 	{
+			// 	// 	model: Categories,
+			// 	// 	as: "categories",
+			// 	// 	attributes: {exclude: ["id","createdAt","updatedAt"]}
+			// 	// },
+			// 	{
+			// 		model: Tools,
+			// 		as: 'tools',
+			// 		attributes: {exclude: ["id","createdAt","updatedAt"]}
+			// 	}
+			// 	]
+			// })
+
+			await Project.findOne({where: {id: 1}}).then((project) => {
+				project.getCourses().then((tool) => {
+					console.log(tool)
+				})
 			})
+			// const allTools = all.map(project => project.tools);
 			return res.status(200).json({
 				status: true,
 				message: 'Display all project',
-				data: all
+				data: tool
 			});
 	
 		} catch (error) {

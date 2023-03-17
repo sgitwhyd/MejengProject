@@ -32,7 +32,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
-	'thumbnail_product_image'
+	'thumbnail_project_image'
 );
 // const upload2 =multer({storage: fileStorage1, fileFilter: fileFilter1}).single('thumbnail_product_image')
 
@@ -43,6 +43,7 @@ const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
 router.post(
 	'/api/project/create-project',
 	restrict,
+	upload,
 	con.projectController.createProject
 );
 router.post(
@@ -63,8 +64,8 @@ router.get('/api/categories', con.categoriesController.getAllCategories);
 router.post(
 	'/api/categories/create-category',
 	restrict,
-	rbac(MODUL.AdminDashboard, true, true),
-	con.categoriesController.createCategory
+	// rbac(MODUL.AdminDashboard, true, true),
+	con.categoriesController.createCategory, upload
 );
 router.put(
 	'/api/categories/update-category',
@@ -88,5 +89,8 @@ router.post('/api/tools/create-tools', con.toolsController.createTool);
 router.post('/api/tools/update-tools', con.toolsController.updateTool);
 router.post('/api/tools/delete-tools', con.toolsController.deleteTool);
 router.get('/api/admin/getUserProject', restrict, con.us.getUserProject);
+
+
+router.post('/api/comment/post-comment', restrict, con.commentController.postComment)
 
 module.exports = router;

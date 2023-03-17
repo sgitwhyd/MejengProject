@@ -13,8 +13,9 @@ module.exports = (sequelize, DataTypes) => {
 			this.belongsTo(models.Categories, {
 				foreignKey: 'CategoryId',
 				as: 'categories',
-			}),
-			this.belongsTo(models.Tools, { foreignKey: 'ToolId', as: 'tools' });
+			})
+			// this.hasMany(models.Tool, {})
+			// this.belongsToMany(models.Tools, {through:'ProjectTools'})
 		}
 	}
 	Project.init(
