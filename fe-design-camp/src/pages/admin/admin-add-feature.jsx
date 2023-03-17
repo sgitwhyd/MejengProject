@@ -23,7 +23,10 @@ export default function AdminAddFeature() {
         <div className="grid grid-cols-4 gap-5">
           {Categories.map((category) => {
             return (
-              <div className="flex items-center justify-center rounded-lg bg-white px-8 py-4 text-xl font-semibold">
+              <div
+                key={category.name}
+                className="flex items-center justify-center rounded-lg bg-white px-8 py-4 text-xl font-semibold"
+              >
                 {category.name}
               </div>
             );
@@ -33,7 +36,10 @@ export default function AdminAddFeature() {
         <div className="grid grid-cols-4 gap-5">
           {Tools.map((tool) => {
             return (
-              <div className="flex items-center justify-center rounded-lg bg-white px-8 py-4 text-xl font-semibold">
+              <div
+                key={tool.name}
+                className="flex items-center justify-center rounded-lg bg-white px-8 py-4 text-xl font-semibold"
+              >
                 {tool.name}
               </div>
             );
