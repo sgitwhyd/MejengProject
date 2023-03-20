@@ -7,9 +7,11 @@ import { BiSearch } from "react-icons/bi";
 export default function Navbar() {
   return (
     <nav className=" absolute w-full shadow-md">
-      <div className="container flex h-20 items-center justify-between">
+      <div className="mx-auto flex h-20 max-w-screen-2xl items-center justify-between px-[47px]">
         <div className="flex items-center justify-center gap-12 font-medium">
-          <Image src={logo} alt="logo" height={30} />
+          <Link href="/">
+            <Image src={logo} alt="logo" height={30} />
+          </Link>
           <Link href="/inspiration" className="hover:text-primary">
             Inspiration
           </Link>
