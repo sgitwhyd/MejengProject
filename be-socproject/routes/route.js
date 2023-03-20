@@ -10,6 +10,13 @@ const { MODUL } = require('../utils/module');
 router.post('/auth/register', con.au.register);
 router.post('/auth/login', con.au.login);
 
+router.post(
+	'/api/creators/request',
+	restrict,
+	con.au.requestCreatorsVerifications
+);
+router.get('/api/creators/activate/:token', con.au.creatorsVerificationHandler);
+
 const fileStorage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, 'images');
@@ -76,7 +83,7 @@ router.delete(
 );
 
 router.get(
-	'/api/admin/getAllUsers',
+	'/api/admin/get-all-user',
 	restrict,
 	rbac(MODUL.AdminDashboard, true, true),
 	con.us.getAllUsers
@@ -88,5 +95,7 @@ router.post('/api/tools/create-tools', con.toolsController.createTool);
 router.post('/api/tools/update-tools', con.toolsController.updateTool);
 router.post('/api/tools/delete-tools', con.toolsController.deleteTool);
 router.get('/api/admin/getUserProject', restrict, con.us.getUserProject);
+router.post('/api/admin/user/ban-user', con.us.banUser);
+router.post('/api/admin/user/unban-user', con.us.unBanUser);
 
 module.exports = router;
