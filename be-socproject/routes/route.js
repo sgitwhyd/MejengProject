@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const con = require('../controllers');
-const multer = require('multer');
 const restrict = require('../middleware/restrict.js');
 const rbac = require('../middleware/rbac');
 const { MODUL } = require('../utils/module');
@@ -9,6 +8,10 @@ const {
 	uploadHandler,
 	fileFilter,
 } = require('../middleware/imageFileValidation');
+const {
+	requestCreatorsLimiter,
+	reportProjectLimiter,
+} = require('../middleware/rateLimiter');
 
 //auth
 router.post('/auth/register', con.au.register);
@@ -17,6 +20,7 @@ router.post('/auth/login', con.au.login);
 router.post(
 	'/api/creators/request',
 	restrict,
+	requestCreatorsLimiter,
 	con.au.requestCreatorsVerifications
 );
 router.get('/api/creators/activate/:token', con.au.creatorsVerificationHandler);
@@ -30,7 +34,7 @@ router.post(
 	con.projectController.createProject
 );
 router.post(
-	'/api/project/:projectId/toggle-like',
+	'/api/project/like-project',
 	restrict,
 	con.projectController.likeProject
 );
@@ -38,6 +42,12 @@ router.post(
 router.post('/api/project/delete-project', con.projectController.deleteProject);
 
 router.get('/api/project/get-all-project', con.projectController.getAllProject);
+router.post(
+	'/api/project/report-project',
+	restrict,
+	reportProjectLimiter,
+	con.projectController.reportProject
+);
 
 // user profile route
 router.get('/api/user/profile', restrict, con.us.getProfile);
@@ -50,7 +60,7 @@ router.get('/api/categories', con.categoriesController.getAllCategories);
 router.post(
 	'/api/categories/create-category',
 	restrict,
-	// rbac(MODUL.AdminDashboard, true, true),
+	rbac(MODUL.AdminDashboard, true, true),
 	con.categoriesController.createCategory
 );
 router.put(
