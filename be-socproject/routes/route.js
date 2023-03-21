@@ -6,8 +6,8 @@ const restrict = require('../middleware/restrict.js');
 const rbac = require('../middleware/rbac');
 const { MODUL } = require('../utils/module');
 const {
-	fileFilter,
 	uploadHandler,
+	fileFilter,
 } = require('../middleware/imageFileValidation');
 
 //auth
@@ -37,21 +37,9 @@ router.post(
 
 router.post('/api/project/delete-project', con.projectController.deleteProject);
 
-// project require login
-router.post(
-	'/api/project/create-project',
-	restrict,
-	upload,
-	con.projectController.createProject
-);
-router.post(
-	'/api/project/like-project',
-	restrict,
-	con.projectController.likeProject
-);
-
 router.get('/api/project/get-all-project', con.projectController.getAllProject);
 
+// user profile route
 router.get('/api/user/profile', restrict, con.us.getProfile);
 
 // Category
@@ -63,8 +51,7 @@ router.post(
 	'/api/categories/create-category',
 	restrict,
 	// rbac(MODUL.AdminDashboard, true, true),
-	con.categoriesController.createCategory,
-	upload
+	con.categoriesController.createCategory
 );
 router.put(
 	'/api/categories/update-category',

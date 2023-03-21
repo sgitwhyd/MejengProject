@@ -24,7 +24,7 @@ module.exports = {
 					status: false,
 					msg: 'Invalid payload',
 				});
-			} else if (!req.file) {
+			} else if (!req.files) {
 				return res.status(401).json({
 					status: false,
 					msg: 'File undifined',
@@ -40,18 +40,22 @@ module.exports = {
 					project_image: pathProjectImage,
 				})
 					.then(async (result) => {
-						// await ProjectTools.create({
-						// 	ProjectId: result.id,
-						// 	ToolId
-						// })
-						await Promise.all(
-							ToolId.map((toolId) =>
-								ProjectTools.create({
-									ProjectId: result.id,
-									ToolId: toolId,
-								})
-							)
-						);
+						if (ToolId >= 1) {
+							ProjectTools.create({
+								ProjectId: result.id,
+								ToolId,
+							});
+						} else {
+							await Promise.all(
+								ToolId.map((toolId) =>
+									ProjectTools.create({
+										ProjectId: result.id,
+										ToolId: toolId,
+									})
+								)
+							);
+						}
+
 						return res.status(200).json({
 							status: true,
 							msg: 'Project Upload Succesfully',
