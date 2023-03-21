@@ -175,13 +175,18 @@ module.exports = {
 					{
 						model: Tools,
 						as: 'tools',
-						attributes: ['id', 'name'],
+						attributes: ['slug', 'name'],
 						through: {
 							model: ProjectTools,
 							as: 'projcetTools',
 							attributes: { exclude: ['createdAt', 'updatedAt'] },
 						},
 					},
+					{
+						model: Categories,
+						as: 'categories',
+						attributes: {exclude: ['id','createdAt', 'updatedAt']}
+					}
 				],
 			});
 
