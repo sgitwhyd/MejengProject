@@ -4,8 +4,6 @@ const {
 	Categories,
 	Tools,
 	ProjectTools,
-	ProjectReport,
-	ReportCategories,
 } = require('../db/models');
 const { validationResult } = require('express-validator');
 const fs = require('fs');
@@ -187,18 +185,8 @@ module.exports = {
 					{
 						model: Categories,
 						as: 'categories',
-						attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
-					},
-					{
-						model: ReportCategories,
-						as: 'projectReportCategories',
-						attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
-						through: {
-							model: ProjectReport,
-							as: 'projectReport',
-							attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
-						},
-					},
+						attributes: {exclude: ['id','createdAt', 'updatedAt']}
+					}
 				],
 			});
 
@@ -218,7 +206,7 @@ module.exports = {
 				where: {
 					id,
 				},
-			}).then((result) => {
+			}).then(async(result) => {
 				if (result) {
 					try {
 						fs.unlinkSync(path.normalize(result.thumbnail_project_image));
@@ -232,36 +220,33 @@ module.exports = {
 							error: error.message,
 						});
 					}
-					Project.destroy({
+					await Project.destroy({
 						where: {
 							id,
-						},
-					}).then(async () => {
-						await ProjectTools.findOne({
+						}
+					}).then(async(result) => {
+						const tes = await ProjectTools.findOne({where: {ProjectId : id}})
+						console.log(tes)
+						await ProjectTools.destroy({
+							where: { 
+								ProjectId: id
+							}
+						})
+						const like = await productLikes.findOne({
 							where: {
-								ProjectId: id,
-							},
-						}).then(async (result) => {
-							await ProjectTools.destroy({
-								where: {
-									ProjectId: result.ProjectId,
-								},
-							});
-						});
+								ProductId: result.id
+							}
+						})
 
-						await productLikes
-							.findOne({
+						if (like) {
+							await productLikes.destroy({
 								where: {
-									ProductId: id,
-								},
+									ProductId: result.id
+								}	
 							})
-							.then(async (productLike) => {
-								await productLikes.destroy({
-									where: {
-										ProductId: productLike.ProductId,
-									},
-								});
-							});
+						}
+						
+						
 						return res.status(200).json({
 							status: true,
 							message: 'Delete project success',
@@ -280,46 +265,6 @@ module.exports = {
 				message: 'Delete project failed',
 				error: error.message,
 			});
-		}
-	},
-	reportProject: async (req, res, next) => {
-		const { projectId, reportCategoryId } = req.body;
-
-		if (!projectId || !reportCategoryId) {
-			return res.status(401).json({
-				status: false,
-				msg: 'Invalid payload',
-			});
-		} else {
-			const isProjectExist = await Project.findOne({
-				where: {
-					id: projectId,
-				},
-			});
-
-			if (!isProjectExist) {
-				return res.status(401).json({
-					status: false,
-					message: 'Project Not Found',
-				});
-			} else {
-				await ProjectReport.create({
-					ProjectId: projectId,
-					ReportCategoryId: reportCategoryId,
-				})
-					.then(() => {
-						return res.status(200).json({
-							status: true,
-							msg: 'Report Succesfully',
-						});
-					})
-					.catch((err) => {
-						return res.status(401).json({
-							status: false,
-							msg: 'Report Failed',
-						});
-					});
-			}
 		}
 	},
 };
