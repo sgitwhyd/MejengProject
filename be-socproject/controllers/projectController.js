@@ -4,6 +4,8 @@ const {
 	Categories,
 	Tools,
 	ProjectTools,
+	ProjectReport,
+	ReportCategories,
 } = require('../db/models');
 const { validationResult } = require('express-validator');
 const fs = require('fs');
@@ -185,8 +187,18 @@ module.exports = {
 					{
 						model: Categories,
 						as: 'categories',
-						attributes: {exclude: ['id','createdAt', 'updatedAt']}
-					}
+						attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+					},
+					{
+						model: ReportCategories,
+						as: 'projectReportCategories',
+						attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+						through: {
+							model: ProjectReport,
+							as: 'projectReport',
+							attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+						},
+					},
 				],
 			});
 
@@ -224,7 +236,32 @@ module.exports = {
 						where: {
 							id,
 						},
-					}).then(() => {
+					}).then(async () => {
+						await ProjectTools.findOne({
+							where: {
+								ProjectId: id,
+							},
+						}).then(async (result) => {
+							await ProjectTools.destroy({
+								where: {
+									ProjectId: result.ProjectId,
+								},
+							});
+						});
+
+						await productLikes
+							.findOne({
+								where: {
+									ProductId: id,
+								},
+							})
+							.then(async (productLike) => {
+								await productLikes.destroy({
+									where: {
+										ProductId: productLike.ProductId,
+									},
+								});
+							});
 						return res.status(200).json({
 							status: true,
 							message: 'Delete project success',
@@ -243,6 +280,46 @@ module.exports = {
 				message: 'Delete project failed',
 				error: error.message,
 			});
+		}
+	},
+	reportProject: async (req, res, next) => {
+		const { projectId, reportCategoryId } = req.body;
+
+		if (!projectId || !reportCategoryId) {
+			return res.status(401).json({
+				status: false,
+				msg: 'Invalid payload',
+			});
+		} else {
+			const isProjectExist = await Project.findOne({
+				where: {
+					id: projectId,
+				},
+			});
+
+			if (!isProjectExist) {
+				return res.status(401).json({
+					status: false,
+					message: 'Project Not Found',
+				});
+			} else {
+				await ProjectReport.create({
+					ProjectId: projectId,
+					ReportCategoryId: reportCategoryId,
+				})
+					.then(() => {
+						return res.status(200).json({
+							status: true,
+							msg: 'Report Succesfully',
+						});
+					})
+					.catch((err) => {
+						return res.status(401).json({
+							status: false,
+							msg: 'Report Failed',
+						});
+					});
+			}
 		}
 	},
 };

@@ -21,6 +21,12 @@ module.exports = (sequelize, DataTypes) => {
 				otherId: 'ToolId',
 			});
 			// this.belongsToMany(models.Tools, {through:ProjectTools})
+			this.belongsToMany(models.ReportCategories, {
+				through: 'ProjectReport',
+				as: 'projectReportCategories',
+				foreignKey: 'ProjectId',
+				otherId: 'ReportCategoryId',
+			});
 		}
 	}
 	Project.init(
