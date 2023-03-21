@@ -25,7 +25,7 @@ module.exports = {
 				type: Sequelize.STRING,
 			},
 			project_image: {
-				type: Sequelize.STRING,
+				type: Sequelize.ARRAY(Sequelize.STRING),
 			},
 			desc: {
 				type: Sequelize.STRING,

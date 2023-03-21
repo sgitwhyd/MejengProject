@@ -5,6 +5,10 @@ const multer = require('multer');
 const restrict = require('../middleware/restrict.js');
 const rbac = require('../middleware/rbac');
 const { MODUL } = require('../utils/module');
+const {
+	fileFilter,
+	uploadHandler,
+} = require('../middleware/imageFileValidation');
 
 //auth
 router.post('/auth/register', con.au.register);
@@ -17,34 +21,21 @@ router.post(
 );
 router.get('/api/creators/activate/:token', con.au.creatorsVerificationHandler);
 
-const fileStorage = multer.diskStorage({
-	destination: (req, file, cb) => {
-		cb(null, 'images');
-	},
-	filename: (req, file, cb) => {
-		cb(null, new Date().getTime() + '-' + file.originalname);
-	},
-});
-
-const fileFilter = (req, file, cb) => {
-	if (
-		file.mimetype === 'image/png' ||
-		file.mimetype === 'image/jpg' ||
-		file.mimetype === 'image/jpeg'
-	) {
-		cb(null, true);
-	} else {
-		cb(null, false);
-	}
-};
-
-const upload = multer({ storage: fileStorage, fileFilter: fileFilter }).single(
-	'thumbnail_product_image'
+// project route
+router.post(
+	'/api/project/create-project',
+	uploadHandler,
+	fileFilter,
+	restrict,
+	con.projectController.createProject
 );
-// const upload2 =multer({storage: fileStorage1, fileFilter: fileFilter1}).single('thumbnail_product_image')
+router.post(
+	'/api/project/:projectId/toggle-like',
+	restrict,
+	con.projectController.likeProject
+);
 
-// router.post('/product/postProduct', restrict, upload, con.pd.postProduct);
-// router.post('/product/:productId/toggle-like', restrict, con.pd.toggle_like);
+router.post('/api/project/delete-project', con.projectController.deleteProject);
 
 // project require login
 router.post(
@@ -60,7 +51,7 @@ router.post(
 
 router.get('/api/project/get-all-project', con.projectController.getAllProject);
 
-router.get('/profile/getProfile', restrict, con.us.getProfile);
+router.get('/api/user/profile', restrict, con.us.getProfile);
 
 // Category
 // user akses
@@ -75,27 +66,56 @@ router.post(
 );
 router.put(
 	'/api/categories/update-category',
+	restrict,
+	rbac(MODUL.AdminDashboard, true, true),
 	con.categoriesController.updateCategory
 );
 router.delete(
 	'/api/categories/delete-category',
-	con.categoriesController.deleteCategory
-);
-
-router.get(
-	'/api/admin/get-all-user',
 	restrict,
 	rbac(MODUL.AdminDashboard, true, true),
-	con.us.getAllUsers
+	con.categoriesController.deleteCategory
 );
 
 // tools require admin
 router.get('/api/tools', con.toolsController.getTools);
-router.post('/api/tools/create-tools', con.toolsController.createTool);
-router.post('/api/tools/update-tools', con.toolsController.updateTool);
-router.post('/api/tools/delete-tools', con.toolsController.deleteTool);
-router.get('/api/admin/getUserProject', restrict, con.us.getUserProject);
-router.post('/api/admin/user/ban-user', con.us.banUser);
-router.post('/api/admin/user/unban-user', con.us.unBanUser);
+router.post(
+	'/api/tools/create-tools',
+	restrict,
+	rbac(MODUL.AdminDashboard, true, true),
+	con.toolsController.createTool
+);
+router.post(
+	'/api/tools/update-tools',
+	restrict,
+	rbac(MODUL.AdminDashboard, true, true),
+	con.toolsController.updateTool
+);
+router.post(
+	'/api/tools/delete-tools',
+	restrict,
+	rbac(MODUL.AdminDashboard, true, true),
+	con.toolsController.deleteTool
+);
+
+// admin route
+router.get(
+	'/api/admin/get-all-user',
+	restrict,
+	rbac(MODUL.AdminDashboard, true, true),
+	con.adminController.getAllUsers
+);
+router.post(
+	'/api/admin/user/ban-user',
+	restrict,
+	rbac(MODUL.AdminDashboard, true, true),
+	con.adminController.banUser
+);
+router.post(
+	'/api/admin/user/unban-user',
+	restrict,
+	rbac(MODUL.AdminDashboard, true, true),
+	con.adminController.unBanUser
+);
 
 module.exports = router;

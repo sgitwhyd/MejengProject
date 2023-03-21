@@ -1,12 +1,19 @@
 const { Project, productLikes, Categories } = require('../db/models');
 const { validationResult } = require('express-validator');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = {
 	createProject: async (req, res, next) => {
 		try {
 			const { CategoryId, ToolId, title, desc, url } = req.body;
 			const userId = req.user.id;
-			if (!title || !desc) {
+			const pathProjectImage = [];
+			const { project_image } = req.files;
+			for (let image in project_image) {
+				pathProjectImage.push(project_image[image].path);
+			}
+			if (!req.body) {
 				return res.status(401).json({
 					status: false,
 					msg: 'Invalid payload',
@@ -19,15 +26,14 @@ module.exports = {
 					title,
 					desc,
 					url,
-					// thumbnail_product_image,
-					// product_image,
-					// total_likes,
-					// total_views
+					thumbnail_project_image: req.files.thumbnail_project_image[0].path,
+					project_image: pathProjectImage,
 				})
 					.then((result) => {
 						return res.status(200).json({
 							status: true,
 							msg: 'Project Upload Succesfully',
+							data: result,
 						});
 					})
 					.catch((err) => {
@@ -96,7 +102,8 @@ module.exports = {
 									});
 								});
 						} else {
-							await productLikes.destroy({
+							await productLikes
+								.destroy({
 									where: {
 										id: product_like.id,
 									},
@@ -135,23 +142,70 @@ module.exports = {
 			}
 		}
 	},
-	getAllProject: async(req, res,next) => {
+	getAllProject: async (req, res, next) => {
 		try {
 			const all = await Project.findAll({
-				include:[{
-					model: Categories,
-					as: "categories",
-					attributes: {exclude: ["id","createdAt","updatedAt"]}
-				}]
-			})
+				include: [
+					{
+						model: Categories,
+						as: 'categories',
+						attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+					},
+				],
+			});
 			return res.status(200).json({
 				status: true,
 				message: 'Display all project',
-				data: all
+				data: all,
 			});
-	
 		} catch (error) {
-			next(error)
+			next(error);
 		}
-	}    	
+	},
+	deleteProject: async (req, res, next) => {
+		const { id } = req.body;
+		try {
+			await Project.findOne({
+				where: {
+					id,
+				},
+			}).then((result) => {
+				if (result) {
+					try {
+						fs.unlinkSync(path.normalize(result.thumbnail_project_image));
+						result.project_image.forEach((image) => {
+							fs.unlinkSync(path.normalize(`${image}`));
+						});
+					} catch (error) {
+						return res.status(401).json({
+							status: false,
+							message: 'Delete project failed',
+							error: error.message,
+						});
+					}
+					Project.destroy({
+						where: {
+							id,
+						},
+					}).then(() => {
+						return res.status(200).json({
+							status: true,
+							message: 'Delete project success',
+						});
+					});
+				} else {
+					return res.status(401).json({
+						status: false,
+						message: 'Project not found',
+					});
+				}
+			});
+		} catch (error) {
+			return res.status(401).json({
+				status: false,
+				message: 'Delete project failed',
+				error: error.message,
+			});
+		}
+	},
 };
