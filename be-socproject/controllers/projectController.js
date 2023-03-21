@@ -1,4 +1,10 @@
-const { Project, productLikes, Categories } = require('../db/models');
+const {
+	Project,
+	productLikes,
+	Categories,
+	Tools,
+	ProjectTools,
+} = require('../db/models');
 const { validationResult } = require('express-validator');
 const fs = require('fs');
 const path = require('path');
@@ -18,18 +24,34 @@ module.exports = {
 					status: false,
 					msg: 'Invalid payload',
 				});
+			} else if (!req.file) {
+				return res.status(401).json({
+					status: false,
+					msg: 'File undifined',
+				});
 			} else {
 				await Project.create({
 					UserId: userId,
-					CategoryId: CategoryId,
-					ToolId: [ToolId],
+					CategoryId,
 					title,
 					desc,
 					url,
 					thumbnail_project_image: req.files.thumbnail_project_image[0].path,
 					project_image: pathProjectImage,
 				})
-					.then((result) => {
+					.then(async (result) => {
+						// await ProjectTools.create({
+						// 	ProjectId: result.id,
+						// 	ToolId
+						// })
+						await Promise.all(
+							ToolId.map((toolId) =>
+								ProjectTools.create({
+									ProjectId: result.id,
+									ToolId: toolId,
+								})
+							)
+						);
 						return res.status(200).json({
 							status: true,
 							msg: 'Project Upload Succesfully',
@@ -144,19 +166,25 @@ module.exports = {
 	},
 	getAllProject: async (req, res, next) => {
 		try {
-			const all = await Project.findAll({
+			const tes = await Project.findAll({
 				include: [
 					{
-						model: Categories,
-						as: 'categories',
-						attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+						model: Tools,
+						as: 'tools',
+						attributes: ['id', 'name'],
+						through: {
+							model: ProjectTools,
+							as: 'projcetTools',
+							attributes: { exclude: ['createdAt', 'updatedAt'] },
+						},
 					},
 				],
 			});
+
 			return res.status(200).json({
 				status: true,
 				message: 'Display all project',
-				data: all,
+				data: tes,
 			});
 		} catch (error) {
 			next(error);

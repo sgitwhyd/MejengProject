@@ -13,15 +13,20 @@ module.exports = (sequelize, DataTypes) => {
 				this.belongsTo(models.Categories, {
 					foreignKey: 'CategoryId',
 					as: 'categories',
-				}),
-				this.belongsTo(models.Tools, { foreignKey: 'ToolId', as: 'tools' });
+				});
+			this.belongsToMany(models.Tools, {
+				through: 'ProjectTools',
+				as: 'tools',
+				foreignKey: 'ProjectId',
+				otherId: 'ToolId',
+			});
+			// this.belongsToMany(models.Tools, {through:ProjectTools})
 		}
 	}
 	Project.init(
 		{
 			UserId: DataTypes.INTEGER,
 			CategoryId: DataTypes.INTEGER,
-			ToolId: DataTypes.ARRAY(DataTypes.INTEGER),
 			title: DataTypes.STRING,
 			desc: DataTypes.STRING,
 			thumbnail_project_image: DataTypes.STRING,

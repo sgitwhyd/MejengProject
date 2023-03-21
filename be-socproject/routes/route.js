@@ -41,6 +41,7 @@ router.post('/api/project/delete-project', con.projectController.deleteProject);
 router.post(
 	'/api/project/create-project',
 	restrict,
+	upload,
 	con.projectController.createProject
 );
 router.post(
@@ -61,8 +62,9 @@ router.get('/api/categories', con.categoriesController.getAllCategories);
 router.post(
 	'/api/categories/create-category',
 	restrict,
-	rbac(MODUL.AdminDashboard, true, true),
-	con.categoriesController.createCategory
+	// rbac(MODUL.AdminDashboard, true, true),
+	con.categoriesController.createCategory,
+	upload
 );
 router.put(
 	'/api/categories/update-category',
@@ -116,6 +118,12 @@ router.post(
 	restrict,
 	rbac(MODUL.AdminDashboard, true, true),
 	con.adminController.unBanUser
+);
+
+router.post(
+	'/api/comment/post-comment',
+	restrict,
+	con.commentController.postComment
 );
 
 module.exports = router;

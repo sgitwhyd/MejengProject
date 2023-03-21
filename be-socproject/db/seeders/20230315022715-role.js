@@ -31,7 +31,7 @@ module.exports = {
 				email: dummyAdmin.email,
 				password: password,
 				is_verify: dummyAdmin.is_verify,
-				role: 'admin',
+				role: 'Admin',
 			});
 		}
 
@@ -42,19 +42,19 @@ module.exports = {
 				name: dummyUser.name,
 				email: dummyUser.email,
 				password: password,
-				role: 'user',
+				role: 'User',
 			});
 		}
 
 		for (var property in MODUL) {
 			var modul = await Module.findOne({ where: { name: property } });
-			var roleAdmin = await User.findOne({ where: { role: 'admin' } });
-			var roleUser = await User.findOne({ where: { role: 'user' } });
+			var roleAdmin = await User.findOne({ where: { role: 'Admin' } });
+			var roleUser = await User.findOne({ where: { role: 'User' } });
 
 			for (var property in MODUL) {
 				var modul = await Module.findOne({ where: { name: property } });
-				var roleAdmin = await User.findOne({ where: { role: 'admin' } });
-				var roleUser = await User.findOne({ where: { role: 'user' } });
+				var roleAdmin = await User.findOne({ where: { role: 'Admin' } });
+				var roleUser = await User.findOne({ where: { role: 'User' } });
 
 				// admin Acces Admin & User Dahboard
 				var ra = await RoleAccess.findOne({
