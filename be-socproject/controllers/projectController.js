@@ -1,4 +1,4 @@
-const { Project, productLikes, Categories, Tools } = require('../db/models');
+const { Project, productLikes, Categories, Tools, ProjectTools } = require('../db/models');
 const { validationResult } = require('express-validator');
 
 module.exports = {
@@ -22,8 +22,7 @@ module.exports = {
 			 else {
 				await Project.create({
 					UserId: userId,
-					CategoryId: CategoryId,
-					ToolId: [ToolId],
+					CategoryId,
 					title,
 					desc,
 					url,
@@ -32,7 +31,17 @@ module.exports = {
 					// total_likes,
 					// total_views
 				})
-					.then((result) => {
+					.then(async(result) => {
+						// await ProjectTools.create({
+						// 	ProjectId: result.id,
+						// 	ToolId
+						// })
+						await Promise.all(ToolId.map(toolId => 
+							ProjectTools.create({
+								ProjectId: result.id, 
+								ToolId: toolId
+							})
+						))
 						return res.status(200).json({
 							status: true,
 							msg: 'Project Upload Succesfully',
@@ -46,6 +55,7 @@ module.exports = {
 							error: err.message,
 						});
 					});
+					
 			}
 		} catch (error) {
 			return res.status(401).json({
@@ -146,35 +156,34 @@ module.exports = {
 	},
 	getAllProject: async(req, res,next) => {
 		try {
-			// const all = await Project.findAll({
-			// 	include:[
-			// 	// 	{
-			// 	// 	model: Categories,
-			// 	// 	as: "categories",
-			// 	// 	attributes: {exclude: ["id","createdAt","updatedAt"]}
-			// 	// },
-			// 	{
-			// 		model: Tools,
-			// 		as: 'tools',
-			// 		attributes: {exclude: ["id","createdAt","updatedAt"]}
-			// 	}
-			// 	]
-			// })
+			const tes = await Project.findAll({include: [{
+				model: Tools,
+				as: 'tools',
+				attributes: ['id', 'name'],
+				through: {
+					model: ProjectTools,
+					as: 'projcetTools',
+					attributes: {exclude: ['createdAt', 'updatedAt']}
+				}
+			}]})
 
-			await Project.findOne({where: {id: 1}}).then((project) => {
-				project.getCourses().then((tool) => {
-					console.log(tool)
-				})
-			})
-			// const allTools = all.map(project => project.tools);
 			return res.status(200).json({
 				status: true,
 				message: 'Display all project',
-				data: tool
+				data: tes
 			});
 	
 		} catch (error) {
 			next(error)
 		}
-	}    	
+	},
+	// postProjectTool: async(req, res, next) => {
+	// 	try {
+	// 		const {ProjectId, ToolId} = req.body
+
+	// 		await ProjectTools.create
+	// 	} catch (error) {
+	// 		next(error)
+	// 	}
+	// }    	
 };

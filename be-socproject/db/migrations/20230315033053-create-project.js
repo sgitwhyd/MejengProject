@@ -15,9 +15,6 @@ module.exports = {
 			CategoryId: {
 				type: Sequelize.INTEGER,
 			},
-			ToolId: {
-				type: Sequelize.ARRAY(Sequelize.INTEGER),
-			},
 			title: {
 				type: Sequelize.STRING,
 			},
