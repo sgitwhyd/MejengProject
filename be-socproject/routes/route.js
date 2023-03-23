@@ -43,7 +43,7 @@ router.post('/api/project/delete-project', con.projectController.deleteProject);
 
 router.get('/api/project/get-all-project', con.projectController.getAllProject);
 
-router.get('/api/project/get-project-by-category', con.projectController.getProductByCategory)
+router.get('/api/project/get-project-by-category/:slug', con.projectController.getProjectByCategory)
 
 router.post(
 	'/api/project/report-project',

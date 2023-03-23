@@ -407,17 +407,17 @@ module.exports = {
 			});
 		}
 	},
-	getProductByCategory: async (req, res, next) => {
+	getProjectByCategory: async (req, res, next) => {
 		try {
-			const { name } = req.body;
+			const { slug } = req.params;
 
-			if (!name) {
+			if (!slug) {
 				res.status(400).json({
 					message: 'Name not found',
 				});
 			}
 			const projectCategory = await Categories.findOne({
-				where: { name: name },
+				where: { slug },
 				include: [
 					{
 						model: Project,
