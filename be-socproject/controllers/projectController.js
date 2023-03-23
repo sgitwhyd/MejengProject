@@ -206,7 +206,7 @@ module.exports = {
 				where: {
 					id,
 				},
-			}).then(async(result) => {
+			}).then((result) => {
 				if (result) {
 					try {
 						fs.unlinkSync(path.normalize(result.thumbnail_project_image));
@@ -220,33 +220,37 @@ module.exports = {
 							error: error.message,
 						});
 					}
-					await Project.destroy({
+					Project.destroy({
 						where: {
 							id,
-						}
-					}).then(async(result) => {
-						const tes = await ProjectTools.findOne({where: {ProjectId : id}})
-						console.log(tes)
-						await ProjectTools.destroy({
-							where: { 
-								ProjectId: id
-							}
-						})
-						const like = await productLikes.findOne({
+						},
+					}).then(async () => {
+						await ProjectTools.findOne({
 							where: {
-								ProductId: result.id
-							}
-						})
-
-						if (like) {
-							await productLikes.destroy({
+								ProjectId: id,
+							},
+						}).then(async (result) => {
+							await ProjectTools.destroy({
 								where: {
-									ProductId: result.id
-								}	
+									ProjectId: result.ProjectId,
+								},
+							});
+						});
+
+						await productLikes
+							.findOne({
+								where: {
+									ProductId: id,
+								},
 							})
-						}
-						
-						
+							.then(async (productLike) => {
+								await productLikes.destroy({
+									where: {
+										ProductId: productLike.ProductId,
+									},
+								});
+							});
+						// jan lup buat hapus project report juga brow
 						return res.status(200).json({
 							status: true,
 							message: 'Delete project success',
@@ -267,4 +271,85 @@ module.exports = {
 			});
 		}
 	},
+	reportProject: async (req, res, next) => {
+		const { projectId, reportCategoryId } = req.body;
+
+		if (!projectId || !reportCategoryId) {
+			return res.status(401).json({
+				status: false,
+				msg: 'Invalid payload',
+			});
+		} else {
+			const isProjectExist = await Project.findOne({
+				where: {
+					id: projectId,
+				},
+			});
+
+			if (!isProjectExist) {
+				return res.status(401).json({
+					status: false,
+					message: 'Project Not Found',
+				});
+			} else {
+				await ProjectReport.create({
+					ProjectId: projectId,
+					ReportCategoryId: reportCategoryId,
+				})
+					.then(() => {
+						return res.status(200).json({
+							status: true,
+							msg: 'Report Succesfully',
+						});
+					})
+					.catch((err) => {
+						return res.status(401).json({
+							status: false,
+							msg: 'Report Failed',
+						});
+					});
+			}
+		}
+	},
+	getProductByCategory: async(req, res, next) =>{
+		try {
+			const { name } = req.body
+
+			if(!name){
+				res.status(400).json({
+					message: 'Name not found'
+				})
+			}
+			const projectCategory = await Categories.findOne({where: {name: name},
+			include: [
+					{
+						model: Project,
+						as: 'project',
+						include:[ 
+							{
+								model: Tools,
+								as: 'tools',
+								attributes: ['slug', 'name'],
+								through: {
+									model: ProjectTools,
+									as: 'projcetTools',
+									attributes: { exclude: ['createdAt', 'updatedAt'] },
+								},
+							}
+						]
+					}
+				]			
+			})
+
+			return res.status(201).json({
+				status: true,
+				message: 'Succes get project by categories',
+				data: projectCategory
+			})
+
+		} catch (error) {
+			next(error)
+		}
+	}
+
 };
