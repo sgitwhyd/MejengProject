@@ -52,6 +52,9 @@ router.post(
 	con.projectController.reportProject
 );
 
+router.get('/api/project/detail/:slug', con.projectController.getDetailProject);
+router.put('/api/project/ban-project', con.projectController.banProject);
+
 // user profile route
 router.get('/api/user/profile', restrict, con.us.getProfile);
 
