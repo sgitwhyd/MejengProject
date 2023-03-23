@@ -11,3 +11,51 @@
 .breadcrumbs > ol > li > a:hover {
   @apply no-underline;
 }
+
+.underline-animation {
+  display: inline-block;
+  position: relative;
+  color: #213ccc;
+}
+
+.underline-animation::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  background-color: #213ccc;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.underline-animation:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.underline-animation-footer {
+  display: inline-block;
+  position: relative;
+  color: #9F9F9F;
+}
+
+.underline-animation-footer::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  transform-origin: bottom right;
+  transition: transform 0.35s ease-out;
+}
+
+.underline-animation-footer:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
