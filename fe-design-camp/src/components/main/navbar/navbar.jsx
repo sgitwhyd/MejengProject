@@ -30,16 +30,16 @@ export default function Navbar() {
           </div>
           <div className="flex items-center justify-center gap-3 ">
             <Link
-              href={"/login"}
+              href={"/auth/login"}
               className="rounded-[15px] py-[14px] px-8 font-bold text-primary transition-all hover:bg-primary hover:text-white hover:shadow-primary/40 hover:drop-shadow-lg"
             >
-              Log In
+              Login
             </Link>
             <Link
-              href={"/register"}
+              href={"/auth/register"}
               className="rounded-[15px] bg-primary py-[14px] px-8 font-bold text-white"
             >
-              Sign Up
+              Register
             </Link>
           </div>
         </div>
