@@ -111,6 +111,8 @@ export default function Home() {
         },
         {
           id: 3,
+          srcPostImage: "https://picsum.photos/seed/piuma/300/325",
+          altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
           altAvatarPost: "Avatar",
           authorPost: "Gito Leslar",
@@ -168,8 +170,6 @@ export default function Home() {
           name="description"
           content="Mejeng adalah platform untuk para desain creator berbagi karya dan pamer karya!"
         />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/mejeng-icon.ico" />
       </Head>
 
       <section className="flex flex-col items-center justify-center pb-20">
@@ -191,7 +191,14 @@ export default function Home() {
                 seeMoreRoute={projectData.seeMoreRoute}
               >
                 {projectData.post.map((post) => {
-                  return <ProjectCard key={post.id} {...post} />;
+                  return (
+                    <ProjectCard
+                      key={post.id}
+                      srcPostImage={post.srcPostImage}
+                      srcAvatarPost={post.srcAvatarPost}
+                      {...post}
+                    />
+                  );
                 })}
               </LayoutHomeSectionReverse>
             );
@@ -204,7 +211,14 @@ export default function Home() {
                 seeMoreRoute={projectData.seeMoreRoute}
               >
                 {projectData.post.map((post) => {
-                  return <ProjectCard key={post.id} {...post} />;
+                  return (
+                    <ProjectCard
+                      key={post.id}
+                      srcPostImage={post.srcPostImage}
+                      srcAvatarPost={post.srcAvatarPost}
+                      {...post}
+                    />
+                  );
                 })}
               </LayoutHomeSection>
             );
