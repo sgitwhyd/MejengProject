@@ -193,16 +193,6 @@ module.exports = {
 						as: 'categories',
 						attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
 					},
-					{
-						model: ReportCategories,
-						as: 'projectReportCategories',
-						attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
-						through: {
-							model: ProjectReport,
-							as: 'projectReport',
-							attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
-						},
-					},
 				],
 			});
 
@@ -415,6 +405,46 @@ module.exports = {
 				message: 'Ban project failed',
 				error: error.message,
 			});
+		}
+	},
+	getProductByCategory: async (req, res, next) => {
+		try {
+			const { name } = req.body;
+
+			if (!name) {
+				res.status(400).json({
+					message: 'Name not found',
+				});
+			}
+			const projectCategory = await Categories.findOne({
+				where: { name: name },
+				include: [
+					{
+						model: Project,
+						as: 'project',
+						include: [
+							{
+								model: Tools,
+								as: 'tools',
+								attributes: ['slug', 'name'],
+								through: {
+									model: ProjectTools,
+									as: 'projcetTools',
+									attributes: { exclude: ['createdAt', 'updatedAt'] },
+								},
+							},
+						],
+					},
+				],
+			});
+
+			return res.status(201).json({
+				status: true,
+				message: 'Succes get project by categories',
+				data: projectCategory,
+			});
+		} catch (error) {
+			next(error);
 		}
 	},
 };
