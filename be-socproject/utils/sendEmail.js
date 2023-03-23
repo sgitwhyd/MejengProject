@@ -39,6 +39,34 @@ const sendCreatorsVerification = async (res, email, token, client_url) => {
 		});
 };
 
+const sendBannedProjectNotification = async (res, client_url, { project }) => {
+	const mailOptions = {
+		from: '"Mejeng 👻" <no-reply.gmail.com>',
+		to: project.user.email,
+		subject: 'Project Banned',
+		html: `<p>Project anda telah di banned oleh admin</p><a href="${client_url}/api/project/detail/${project.slug}">
+link to your project
+						</a>`,
+	};
+
+	await transporter
+		.sendMail(mailOptions)
+		.then(() => {
+			return res.status(200).json({
+				status: true,
+				message: 'Project Banned & Send Notif Successfully ',
+			});
+		})
+		.catch((err) => {
+			return res.status(401).json({
+				status: false,
+				message: 'Project Banned & Send Notif Successfully ',
+				error: err.message,
+			});
+		});
+};
+
 module.exports = {
 	sendCreatorsVerification,
+	sendBannedProjectNotification,
 };

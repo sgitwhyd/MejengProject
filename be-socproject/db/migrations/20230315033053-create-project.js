@@ -18,6 +18,9 @@ module.exports = {
 			title: {
 				type: Sequelize.STRING,
 			},
+			slug: {
+				type: Sequelize.STRING,
+			},
 			thumbnail_project_image: {
 				type: Sequelize.STRING,
 			},
@@ -32,9 +35,15 @@ module.exports = {
 			},
 			total_views: {
 				type: Sequelize.INTEGER,
+				defaultValue: 0,
 			},
 			total_likes: {
 				type: Sequelize.INTEGER,
+				defaultValue: 0,
+			},
+			is_active: {
+				type: Sequelize.BOOLEAN,
+				defaultValue: true,
 			},
 			createdAt: {
 				allowNull: false,

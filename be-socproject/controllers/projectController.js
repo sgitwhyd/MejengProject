@@ -6,10 +6,12 @@ const {
 	ProjectTools,
 	ProjectReport,
 	ReportCategories,
+	User,
 } = require('../db/models');
 const { validationResult } = require('express-validator');
 const fs = require('fs');
 const path = require('path');
+const { sendBannedProjectNotification } = require('../utils/sendEmail');
 
 module.exports = {
 	createProject: async (req, res, next) => {
@@ -32,10 +34,12 @@ module.exports = {
 					msg: 'File undifined',
 				});
 			} else {
+				const slug = title.split(' ').join('-').toLowerCase();
 				await Project.create({
 					UserId: userId,
 					CategoryId,
 					title,
+					slug,
 					desc,
 					url,
 					thumbnail_project_image: req.files.thumbnail_project_image[0].path,
@@ -205,6 +209,7 @@ module.exports = {
 			return res.status(200).json({
 				status: true,
 				message: 'Display all project',
+				ammount: tes.length,
 				data: tes,
 			});
 		} catch (error) {
@@ -321,6 +326,95 @@ module.exports = {
 						});
 					});
 			}
+		}
+	},
+	getDetailProject: async (req, res, next) => {
+		const { slug } = req.params;
+		try {
+			const tes = await Project.findOne({
+				where: {
+					slug,
+				},
+				include: [
+					{
+						model: Tools,
+						as: 'tools',
+						attributes: ['slug', 'name'],
+						through: {
+							model: ProjectTools,
+							as: 'projcetTools',
+							attributes: { exclude: ['createdAt', 'updatedAt'] },
+						},
+					},
+					{
+						model: Categories,
+						as: 'categories',
+						attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+					},
+					{
+						model: ReportCategories,
+						as: 'projectReportCategories',
+						attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+						through: {
+							model: ProjectReport,
+							as: 'projectReport',
+							attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+						},
+					},
+				],
+			});
+
+			return res.status(200).json({
+				status: true,
+				message: 'Display all project',
+				data: tes,
+			});
+		} catch (error) {
+			next(error);
+		}
+	},
+	banProject: async (req, res, next) => {
+		const CLIENT_URL = 'http://' + req.headers.host;
+		const { id } = req.body;
+		try {
+			await Project.findOne({
+				where: {
+					id,
+				},
+				include: [
+					{
+						model: User,
+						as: 'user',
+						attributes: ['email'],
+					},
+				],
+			}).then((project) => {
+				if (project) {
+					Project.update(
+						{
+							is_active: false,
+						},
+						{
+							where: {
+								id,
+							},
+						}
+					).then(async () => {
+						await sendBannedProjectNotification(res, CLIENT_URL, { project });
+					});
+				} else {
+					return res.status(401).json({
+						status: false,
+						message: 'Project not found',
+					});
+				}
+			});
+		} catch (error) {
+			return res.status(401).json({
+				status: false,
+				message: 'Ban project failed',
+				error: error.message,
+			});
 		}
 	},
 };
