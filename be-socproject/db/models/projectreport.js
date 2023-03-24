@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	ProjectReport.init(
 		{
+			UserId: DataTypes.INTEGER,
 			ProjectId: DataTypes.INTEGER,
 			ReportCategoryId: DataTypes.INTEGER,
 		},

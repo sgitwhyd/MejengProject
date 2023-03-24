@@ -12,6 +12,7 @@ const {
 	requestCreatorsLimiter,
 	reportProjectLimiter,
 } = require('../middleware/rateLimiter');
+const { creatorRequired } = require('../middleware/creatorRequired');
 
 //auth
 router.post('/auth/register', con.au.register);
@@ -28,9 +29,10 @@ router.get('/api/creators/activate/:token', con.au.creatorsVerificationHandler);
 // project route
 router.post(
 	'/api/project/create-project',
+	restrict,
+	creatorRequired,
 	uploadHandler,
 	fileFilter,
-	restrict,
 	con.projectController.createProject
 );
 router.post(
@@ -43,7 +45,10 @@ router.post('/api/project/delete-project', con.projectController.deleteProject);
 
 router.get('/api/project/get-all-project', con.projectController.getAllProject);
 
-router.get('/api/project/get-project-by-category/:slug', con.projectController.getProjectByCategory)
+router.get(
+	'/api/project/category/:slug',
+	con.projectController.getProjectByCategory
+);
 
 router.post(
 	'/api/project/report-project',

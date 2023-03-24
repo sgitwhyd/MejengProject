@@ -299,22 +299,37 @@ module.exports = {
 					message: 'Project Not Found',
 				});
 			} else {
-				await ProjectReport.create({
-					ProjectId: projectId,
-					ReportCategoryId: reportCategoryId,
-				})
-					.then(() => {
-						return res.status(200).json({
-							status: true,
-							msg: 'Report Succesfully',
-						});
+				const alreadyReportProject = await ProjectReport.findOne({
+					where: {
+						UserId: req.user.id,
+						ProjectId: projectId,
+					},
+				});
+
+				if (!alreadyReportProject) {
+					await ProjectReport.create({
+						UserId: req.user.id,
+						ProjectId: projectId,
+						ReportCategoryId: reportCategoryId,
 					})
-					.catch((err) => {
-						return res.status(401).json({
-							status: false,
-							msg: 'Report Failed',
+						.then(() => {
+							return res.status(200).json({
+								status: true,
+								msg: 'Report Succesfully',
+							});
+						})
+						.catch((err) => {
+							return res.status(401).json({
+								status: false,
+								msg: 'Report Failed',
+							});
 						});
+				} else {
+					return res.status(401).json({
+						status: false,
+						msg: 'You already report this project',
 					});
+				}
 			}
 		}
 	},
@@ -375,7 +390,17 @@ module.exports = {
 					{
 						model: User,
 						as: 'user',
-						attributes: ['email'],
+						attributes: ['email', 'name'],
+					},
+					{
+						model: ReportCategories,
+						as: 'projectReportCategories',
+						attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+						through: {
+							model: ProjectReport,
+							as: 'projectReport',
+							attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+						},
 					},
 				],
 			}).then((project) => {
@@ -432,11 +457,11 @@ module.exports = {
 									as: 'projcetTools',
 									attributes: { exclude: ['createdAt', 'updatedAt'] },
 								},
-							}
-						]
-					}
-				]			
-			})
+							},
+						],
+					},
+				],
+			});
 			return res.status(201).json({
 				status: true,
 				message: 'Succes get project by categories',

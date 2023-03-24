@@ -1,13 +1,16 @@
 const multer = require('multer');
 const fs = require('fs');
-const path = require('path')
+const path = require('path');
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
 		cb(null, 'images');
 	},
 	filename: (req, file, cb) => {
-		cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname));
+		cb(
+			null,
+			file.fieldname + '-' + Date.now() + path.extname(file.originalname)
+		);
 	},
 });
 
@@ -59,7 +62,6 @@ const fileFilter = async (req, res, next) => {
 
 		next();
 	} catch (error) {
-		console.log(error);
 		fs.unlinkSync(thumbnail_project_image[0].path);
 		for (let image in project_image) {
 			fs.unlinkSync(project_image[image].path);
