@@ -6,11 +6,37 @@ import {
   AiFillFacebook,
   AiFillTwitterSquare,
 } from "react-icons/ai";
+import Link from "next/link";
 
 export default function Footer() {
+  const footerData = [
+    {
+      title: "MEET MEJENG",
+      links: [
+        { title: "About Us", route: "/about-us" },
+        { title: "Terms & Conditions", route: "/term-conditions" },
+        { title: "Privacy Policy", route: "/privacy-policy" },
+      ],
+    },
+    {
+      title: "HELP",
+      links: [
+        { title: "FAQ", route: "/faq" },
+        { title: "Help Center", route: "/help" },
+      ],
+    },
+    {
+      title: "CREATOR",
+      links: [
+        { title: "Become an Creator", route: "/become-an-creator" },
+        { title: "Creator's Guide", route: "/creators-guides" },
+      ],
+    },
+  ];
+
   return (
     <footer className="absolute w-full bg-[#282828]">
-      <div className="mx-auto flex max-w-screen-2xl flex-col items-start px-[47px] pb-[20px] pt-[83px]">
+      <div className="mx-auto flex max-w-screen-2xl flex-col items-start px-[47px] pb-[20px] pt-[70px]">
         <div className="flex w-full items-start justify-between ">
           <div className="flex flex-col text-white">
             <Image
@@ -18,7 +44,7 @@ export default function Footer() {
               alt="mejeng-logo-white"
               className="mb-10 h-14"
             />
-            <h4 className="pb-7 text-xl font-semibold">
+            <h4 className="pb-7 text-lg font-medium text-[#9F9F9F]">
               Send tips, trends, updates & offers
               <br />
               And connect with us
@@ -29,23 +55,27 @@ export default function Footer() {
               <AiFillFacebook className="h-[30px] w-[30px]" />
             </div>
           </div>
-          <div className="flex gap-48">
-            <div className="mt-2 flex flex-col gap-[15px] text-xl font-semibold text-[#9F9F9F]">
-              <h1 className="text-2xl text-white">MEET MEJENG</h1>
-              <p>About Us</p>
-              <p>Term of Services</p>
-              <p>Privacy Policy</p>
-            </div>
-            <div className="mt-2 flex flex-col gap-[15px] text-xl font-semibold text-[#9F9F9F]">
-              <h1 className="text-2xl text-white">Help</h1>
-              <p>Help Center</p>
-              <h1 className="text-2xl text-white">Creator</h1>
-              <p>Become an Creator</p>
-              <p>Creator Sign in</p>
-            </div>
+          <div className="flex gap-20">
+            {footerData.map((item) => (
+              <div
+                key={item.title}
+                className="mt-2 flex flex-col gap-[15px] text-base font-semibold text-[#9F9F9F]"
+              >
+                <h1 className="text-xl text-white">{item.title}</h1>
+                {item.links.map((link) => (
+                  <Link
+                    href={link.route}
+                    key={link.title}
+                    className="underline-animation-footer transition-all  hover:text-white"
+                  >
+                    <p>{link.title}</p>
+                  </Link>
+                ))}
+              </div>
+            ))}
           </div>
         </div>
-        <div className="my-10 h-[1px] w-full bg-white"></div>
+        <div className="my-8 h-[1px] w-full bg-white"></div>
         <p className="text-sm font-semibold text-white ">
           &#169; 2023 Mejeng Elements Pty Ltd. Trademarks and brands aret the
           property of their respective owners.

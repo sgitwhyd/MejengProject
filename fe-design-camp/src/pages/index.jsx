@@ -14,6 +14,7 @@ export default function Home() {
       post: [
         {
           id: 1,
+          title: "Mobile Design 01 Booking Application",
           srcPostImage: "https://picsum.photos/seed/picsuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -24,6 +25,7 @@ export default function Home() {
         },
         {
           id: 2,
+          title: "Mobile Design 02",
           srcPostImage: "https://picsum.photos/seed/icsuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -34,6 +36,7 @@ export default function Home() {
         },
         {
           id: 3,
+          title: "Mobile Design 03",
           srcPostImage: "https://picsum.photos/seed/paicsuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -52,6 +55,7 @@ export default function Home() {
       post: [
         {
           id: 1,
+          title: "Web Design 01",
           srcPostImage: "https://picsum.photos/seed/picsuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -62,6 +66,7 @@ export default function Home() {
         },
         {
           id: 2,
+          title: "Web Design 02",
           srcPostImage: "https://picsum.photos/seed/picsuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -72,6 +77,7 @@ export default function Home() {
         },
         {
           id: 3,
+          title: "Web Design 03",
           srcPostImage: "https://picsum.photos/seed/picsura/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -91,6 +97,7 @@ export default function Home() {
       post: [
         {
           id: 1,
+          title: "UI Components 01",
           srcPostImage: "https://picsum.photos/seed/piuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -101,6 +108,7 @@ export default function Home() {
         },
         {
           id: 2,
+          title: "UI Components 02",
           srcPostImage: "https://picsum.photos/seed/piuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -111,6 +119,9 @@ export default function Home() {
         },
         {
           id: 3,
+          title: "UI Components 03",
+          srcPostImage: "https://picsum.photos/seed/piuma/300/325",
+          altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
           altAvatarPost: "Avatar",
           authorPost: "Gito Leslar",
@@ -128,6 +139,7 @@ export default function Home() {
       post: [
         {
           id: 1,
+          title: "Branding 01",
           srcPostImage: "https://picsum.photos/seed/puma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -138,6 +150,7 @@ export default function Home() {
         },
         {
           id: 2,
+          title: "Branding 02",
           srcPostImage: "https://picsum.photos/seed/puma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -148,6 +161,7 @@ export default function Home() {
         },
         {
           id: 3,
+          title: "Branding 03",
           srcPostImage: "https://picsum.photos/seed/puma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -168,8 +182,6 @@ export default function Home() {
           name="description"
           content="Mejeng adalah platform untuk para desain creator berbagi karya dan pamer karya!"
         />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/mejeng-icon.ico" />
       </Head>
 
       <section className="flex flex-col items-center justify-center pb-20">
@@ -191,7 +203,14 @@ export default function Home() {
                 seeMoreRoute={projectData.seeMoreRoute}
               >
                 {projectData.post.map((post) => {
-                  return <ProjectCard key={post.id} {...post} />;
+                  return (
+                    <ProjectCard
+                      key={post.id}
+                      srcPostImage={post.srcPostImage}
+                      srcAvatarPost={post.srcAvatarPost}
+                      {...post}
+                    />
+                  );
                 })}
               </LayoutHomeSectionReverse>
             );
@@ -204,7 +223,14 @@ export default function Home() {
                 seeMoreRoute={projectData.seeMoreRoute}
               >
                 {projectData.post.map((post) => {
-                  return <ProjectCard key={post.id} {...post} />;
+                  return (
+                    <ProjectCard
+                      key={post.id}
+                      srcPostImage={post.srcPostImage}
+                      srcAvatarPost={post.srcAvatarPost}
+                      {...post}
+                    />
+                  );
                 })}
               </LayoutHomeSection>
             );
