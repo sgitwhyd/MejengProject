@@ -18,7 +18,7 @@ module.exports = {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
-			profle_picture: {
+			profile_image: {
 				allowNull: true,
 				type: Sequelize.STRING,
 			},
@@ -30,18 +30,14 @@ module.exports = {
 				allowNull: true,
 				type: Sequelize.STRING,
 			},
-			total_views: {
-				allowNull: true,
-				type: Sequelize.STRING,
-			},
-			apreciation: {
+			country: {
 				allowNull: true,
 				type: Sequelize.STRING,
 			},
 			role: {
 				allowNull: false,
-				type: Sequelize.ENUM(['Admin', 'User']),
-				defaultValue: 'User',
+				type: Sequelize.ENUM(['admin', 'user']),
+				defaultValue: 'user',
 			},
 			is_active: {
 				type: Sequelize.BOOLEAN,

@@ -185,7 +185,7 @@ module.exports = {
 					{
 						model: User,
 						as: 'user',
-						attributes: ['name'],
+						attributes: ['name', 'profile_image'],
 					},
 					{
 						model: Tools,
@@ -369,7 +369,7 @@ module.exports = {
 					{
 						model: User,
 						as: 'user',
-						attributes: ['name'],
+						attributes: ['name', 'profile_image'],
 					},
 					{
 						model: Tools,
@@ -404,7 +404,7 @@ module.exports = {
 							{
 								model: User,
 								as: 'user',
-								attributes: ['name', 'email'],
+								attributes: ['name', 'profile_image'],
 							},
 							{
 								model: RepliesComment,
@@ -413,7 +413,7 @@ module.exports = {
 								include: {
 									model: User,
 									as: 'user',
-									attributes: ['name', 'email'],
+									attributes: ['name', 'profile_image'],
 								},
 							},
 						],
@@ -442,7 +442,7 @@ module.exports = {
 					{
 						model: User,
 						as: 'user',
-						attributes: ['email', 'name'],
+						attributes: ['name', 'profile_image'],
 					},
 					{
 						model: ReportCategories,
