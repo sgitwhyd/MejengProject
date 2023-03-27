@@ -9,6 +9,7 @@ const {
 	User,
 	Comment,
 	RepliesComment,
+	ProjectView,
 } = require('../db/models');
 const { validationResult } = require('express-validator');
 const fs = require('fs');
@@ -21,7 +22,7 @@ module.exports = {
 			const { CategoryId, ToolId, title, desc, url } = req.body;
 			const userId = req.user.id;
 			const pathProjectImage = [];
-			const { project_image } = req.files;
+			const { project_image, thumbnail_project_image } = req.files;
 			for (let image in project_image) {
 				pathProjectImage.push(project_image[image].path);
 			}
@@ -36,47 +37,60 @@ module.exports = {
 					msg: 'File undifined',
 				});
 			} else {
+				const isProjectTitleTaken = await Project.findOne({ where: { title } });
 				const slug = title.split(' ').join('-').toLowerCase();
-				await Project.create({
-					UserId: userId,
-					CategoryId,
-					title,
-					slug,
-					desc,
-					url,
-					thumbnail_project_image: req.files.thumbnail_project_image[0].path,
-					project_image: pathProjectImage,
-				})
-					.then(async (result) => {
-						if (ToolId >= 1) {
-							ProjectTools.create({
-								ProjectId: result.id,
-								ToolId,
-							});
-						} else {
-							await Promise.all(
-								ToolId.map((toolId) =>
-									ProjectTools.create({
-										ProjectId: result.id,
-										ToolId: toolId,
-									})
-								)
-							);
-						}
 
-						return res.status(200).json({
-							status: true,
-							msg: 'Project Upload Succesfully',
-							data: result,
-						});
-					})
-					.catch((err) => {
-						return res.status(401).json({
-							status: false,
-							msg: 'Project Upload Failed',
-							error: err.message,
-						});
+				if (isProjectTitleTaken) {
+					fs.unlinkSync(thumbnail_project_image[0].path);
+					for (let image in project_image) {
+						fs.unlinkSync(project_image[image].path);
+					}
+					return res.status(401).json({
+						status: false,
+						msg: 'Project title already taken',
 					});
+				} else {
+					await Project.create({
+						UserId: userId,
+						CategoryId,
+						title,
+						slug,
+						desc,
+						url,
+						thumbnail_project_image: req.files.thumbnail_project_image[0].path,
+						project_image: pathProjectImage,
+					})
+						.then(async (result) => {
+							if (ToolId >= 1) {
+								ProjectTools.create({
+									ProjectId: result.id,
+									ToolId,
+								});
+							} else {
+								await Promise.all(
+									ToolId.map((toolId) =>
+										ProjectTools.create({
+											ProjectId: result.id,
+											ToolId: toolId,
+										})
+									)
+								);
+							}
+
+							return res.status(200).json({
+								status: true,
+								msg: 'Project Upload Succesfully',
+								data: result,
+							});
+						})
+						.catch((err) => {
+							return res.status(401).json({
+								status: false,
+								msg: 'Project Upload Failed',
+								error: err.message,
+							});
+						});
+				}
 			}
 		} catch (error) {
 			return res.status(401).json({
@@ -108,7 +122,6 @@ module.exports = {
 				});
 			} else {
 				const userId = req.user.id;
-				console.log(userId);
 				await productLikes
 					.findOne({
 						where: {
@@ -150,22 +163,11 @@ module.exports = {
 								});
 						}
 
-						const totalLikes = await productLikes.count({
+						await Project.increment('total_likes', {
 							where: {
-								ProductId: projectId,
+								id: projectId,
 							},
 						});
-
-						await Project.update(
-							{
-								total_likes: totalLikes,
-							},
-							{
-								where: {
-									id: projectId,
-								},
-							}
-						);
 					})
 					.catch((err) => {
 						return res.status(401).json({
@@ -239,35 +241,51 @@ module.exports = {
 							id,
 						},
 					}).then(async () => {
-						await ProjectTools.findOne({
-							where: {
-								ProjectId: id,
-							},
-						}).then(async (result) => {
-							await ProjectTools.destroy({
+						// hapus project tools, report, like, view, comment
+						Promise.all([
+							ProjectTools.destroy({
 								where: {
-									ProjectId: result.ProjectId,
+									ProjectId: id,
 								},
-							});
-						});
-
-						await productLikes
-							.findOne({
+							}),
+							ProjectReport.destroy({
+								where: {
+									ProjectId: id,
+								},
+							}),
+							productLikes.destroy({
 								where: {
 									ProductId: id,
 								},
-							})
-							.then(async (productLike) => {
-								await productLikes.destroy({
-									where: {
-										ProductId: productLike.ProductId,
-									},
-								});
+							}),
+							ProjectView.destroy({
+								where: {
+									ProjectId: id,
+								},
+							}),
+							Comment.findOne({
+								where: {
+									ProjectId: id,
+								},
+							}).then((comment) => {
+								Promise.all([
+									Comment.destroy({
+										where: {
+											ProjectId: id,
+										},
+									}),
+									RepliesComment.destroy({
+										where: {
+											CommentId: comment.id,
+										},
+									}),
+								]);
+							}),
+						]).then(() => {
+							return res.status(200).json({
+								status: true,
+								message: 'Delete project success',
 							});
-						// jan lup buat hapus project report juga brow
-						return res.status(200).json({
-							status: true,
-							message: 'Delete project success',
 						});
 					});
 				} else {
