@@ -76,6 +76,11 @@ router.get(
 	con.commentController.getCommentByProjectHanlder
 );
 
+router.post(
+	'/api/project/view/:projectId',
+	con.projectViewsController.addingViews
+);
+
 // user profile route
 router.get('/api/user/profile', restrict, con.us.getProfile);
 

@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
 				otherId: 'ReportCategoryId',
 			});
 			this.hasMany(models.Comment, { as: 'comment' });
+			this.hasMany(models.ProjectView, { as: 'projectView' });
 		}
 	}
 	Project.init(
