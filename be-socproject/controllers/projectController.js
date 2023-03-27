@@ -7,6 +7,8 @@ const {
 	ProjectReport,
 	ReportCategories,
 	User,
+	Comment,
+	RepliesComment,
 } = require('../db/models');
 const { validationResult } = require('express-validator');
 const fs = require('fs');
@@ -179,6 +181,11 @@ module.exports = {
 			const tes = await Project.findAll({
 				include: [
 					{
+						model: User,
+						as: 'user',
+						attributes: ['name'],
+					},
+					{
 						model: Tools,
 						as: 'tools',
 						attributes: ['slug', 'name'],
@@ -342,6 +349,11 @@ module.exports = {
 				},
 				include: [
 					{
+						model: User,
+						as: 'user',
+						attributes: ['name'],
+					},
+					{
 						model: Tools,
 						as: 'tools',
 						attributes: ['slug', 'name'],
@@ -365,6 +377,28 @@ module.exports = {
 							as: 'projectReport',
 							attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
 						},
+					},
+					{
+						model: Comment,
+						as: 'comment',
+						attributes: ['body'],
+						include: [
+							{
+								model: User,
+								as: 'user',
+								attributes: ['name', 'email'],
+							},
+							{
+								model: RepliesComment,
+								as: 'repliesComment',
+								attributes: ['body'],
+								include: {
+									model: User,
+									as: 'user',
+									attributes: ['name', 'email'],
+								},
+							},
+						],
 					},
 				],
 			});

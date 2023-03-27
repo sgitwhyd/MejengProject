@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
 			// define association here
 			this.hasMany(models.Project, { as: 'project' });
+			this.hasMany(models.Comment, { as: 'comment' });
+			this.hasMany(models.RepliesComment, { as: 'repliesComment' });
 		}
 	}
 	User.init(

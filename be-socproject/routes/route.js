@@ -60,6 +60,22 @@ router.post(
 router.get('/api/project/detail/:slug', con.projectController.getDetailProject);
 router.put('/api/project/ban-project', con.projectController.banProject);
 
+// comment route
+router.post(
+	'/api/comment/create-comment',
+	restrict,
+	con.commentController.postComment
+);
+router.post(
+	'/api/comment/reply-comment',
+	restrict,
+	con.commentController.replyCommentHandler
+);
+router.get(
+	'/api/comment/:projectId',
+	con.commentController.getCommentByProjectHanlder
+);
+
 // user profile route
 router.get('/api/user/profile', restrict, con.us.getProfile);
 

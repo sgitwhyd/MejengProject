@@ -1,17 +1,18 @@
 'use strict';
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		await queryInterface.createTable('Comments', {
+		await queryInterface.createTable('RepliesComments', {
 			id: {
 				allowNull: false,
 				autoIncrement: true,
 				primaryKey: true,
 				type: Sequelize.INTEGER,
 			},
-			UserId: {
+			CommentId: {
 				type: Sequelize.INTEGER,
 			},
-			ProjectId: {
+			UserId: {
 				type: Sequelize.INTEGER,
 			},
 			body: {
@@ -28,6 +29,6 @@ module.exports = {
 		});
 	},
 	async down(queryInterface, Sequelize) {
-		await queryInterface.dropTable('Comments');
+		await queryInterface.dropTable('RepliesComments');
 	},
 };

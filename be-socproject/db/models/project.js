@@ -10,8 +10,10 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
 			// define association here
 			this.belongsTo(models.User, { foreignKey: 'UserId', as: 'user' }),
-			this.belongsTo(models.Categories, {	foreignKey: 'CategoryId', as: 'categories',
-			});
+				this.belongsTo(models.Categories, {
+					foreignKey: 'CategoryId',
+					as: 'categories',
+				});
 			this.belongsToMany(models.Tools, {
 				through: 'ProjectTools',
 				as: 'tools',
@@ -25,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
 				foreignKey: 'ProjectId',
 				otherId: 'ReportCategoryId',
 			});
+			this.hasMany(models.Comment, { as: 'comment' });
 		}
 	}
 	Project.init(
