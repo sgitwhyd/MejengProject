@@ -17,9 +17,11 @@ export default function Register() {
 
       <div className="flex h-screen items-center justify-center ">
         <Sidebar
-          title="Welcome to"
-          bgImage={bgRegister}
-          bgImageTitle="bg-image-register"
+          title="Welcome back to"
+          image={{
+            src: bgRegister,
+            alt: "bg-image-register",
+          }}
         />
 
         <form className="flex h-full basis-1/2 flex-col items-start justify-center px-[66px]">

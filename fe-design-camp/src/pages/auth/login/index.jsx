@@ -17,8 +17,10 @@ export default function Login() {
       <div className="flex h-screen items-center justify-center ">
         <Sidebar
           title="Welcome back to"
-          bgImage={bgLogin}
-          bgImageTitle="bg-image-register"
+          image={{
+            src: bgLogin,
+            alt: "bg-image-register",
+          }}
         />
 
         <form className="flex h-full basis-1/2 flex-col items-start justify-center px-[66px]">
@@ -66,14 +68,6 @@ export default function Login() {
                 />
               )}
             </div>
-            {/* <div className="flex w-full justify-end">
-              <Link
-                href="/auth/forgot-password"
-                className="underline-animation text-sm text-primary"
-              >
-                Forgot your password?
-              </Link>
-            </div> */}
           </div>
           <div className="flex w-full items-center justify-center">
             <button

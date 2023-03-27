@@ -3,18 +3,19 @@ import Image from "next/image";
 import { FaHome } from "react-icons/fa";
 import Link from "next/link";
 
-export default function Sidebar(props) {
+export default function Sidebar({ title, image }) {
   return (
     <div className="flex h-full w-full basis-1/2 flex-col items-center justify-center text-white">
       <div className="relative z-50 text-center">
-        <h1 className="pb-4 text-4xl font-semibold">{props.title}</h1>
+        <h1 className="pb-4 text-4xl font-semibold">{title}</h1>
         <Image src={mejengWhite} alt="mejeng logo" width={351} />
       </div>
       <div className="absolute brightness-50">
         <Image
-          src={props.bgImage}
-          alt={props.bgImageTitle}
+          alt={image.alt}
+          src={image.src}
           className="h-screen"
+          loading="lazy"
         />
       </div>
       <Link
