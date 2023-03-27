@@ -14,6 +14,7 @@ export default function Home() {
       post: [
         {
           id: 1,
+          title: "Mobile Design 01 Booking Application",
           srcPostImage: "https://picsum.photos/seed/picsuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -24,6 +25,7 @@ export default function Home() {
         },
         {
           id: 2,
+          title: "Mobile Design 02",
           srcPostImage: "https://picsum.photos/seed/icsuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -34,6 +36,7 @@ export default function Home() {
         },
         {
           id: 3,
+          title: "Mobile Design 03",
           srcPostImage: "https://picsum.photos/seed/paicsuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -52,6 +55,7 @@ export default function Home() {
       post: [
         {
           id: 1,
+          title: "Web Design 01",
           srcPostImage: "https://picsum.photos/seed/picsuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -62,6 +66,7 @@ export default function Home() {
         },
         {
           id: 2,
+          title: "Web Design 02",
           srcPostImage: "https://picsum.photos/seed/picsuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -72,6 +77,7 @@ export default function Home() {
         },
         {
           id: 3,
+          title: "Web Design 03",
           srcPostImage: "https://picsum.photos/seed/picsura/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -91,6 +97,7 @@ export default function Home() {
       post: [
         {
           id: 1,
+          title: "UI Components 01",
           srcPostImage: "https://picsum.photos/seed/piuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -101,6 +108,7 @@ export default function Home() {
         },
         {
           id: 2,
+          title: "UI Components 02",
           srcPostImage: "https://picsum.photos/seed/piuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -111,6 +119,7 @@ export default function Home() {
         },
         {
           id: 3,
+          title: "UI Components 03",
           srcPostImage: "https://picsum.photos/seed/piuma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -130,6 +139,7 @@ export default function Home() {
       post: [
         {
           id: 1,
+          title: "Branding 01",
           srcPostImage: "https://picsum.photos/seed/puma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -140,6 +150,7 @@ export default function Home() {
         },
         {
           id: 2,
+          title: "Branding 02",
           srcPostImage: "https://picsum.photos/seed/puma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
@@ -150,6 +161,7 @@ export default function Home() {
         },
         {
           id: 3,
+          title: "Branding 03",
           srcPostImage: "https://picsum.photos/seed/puma/300/325",
           altPostImage: "gambar",
           srcAvatarPost: "https://ui-avatars.com/api/?background=random",
