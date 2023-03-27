@@ -1,0 +1,39 @@
+const { ProjectView, Project } = require('../db/models');
+
+module.exports = {
+	addingViews: async (req, res) => {
+		try {
+			const { projectId } = req.params;
+			const { ip_address } = req.body;
+			const userAlreadyViews = await ProjectView.findOne({
+				where: {
+					ip_address,
+					ProjectId: projectId,
+				},
+			});
+
+			if (userAlreadyViews) {
+				return res.status(200).json({
+					message: 'user already views this project',
+				});
+			} else {
+				Promise.all([
+					ProjectView.create({
+						ip_address,
+						ProjectId: projectId,
+					}),
+					Project.increment('total_views', { where: { id: projectId } }),
+				]).then(() => {
+					return res.status(200).json({
+						message: 'views added',
+					});
+				});
+			}
+		} catch (error) {
+			res.status(500).json({
+				message: 'error adding views',
+				err: error,
+			});
+		}
+	},
+};

@@ -37,6 +37,7 @@ module.exports = {
 				email: email,
 				password: encryptPassword,
 				name: name,
+				profile_image: `https://ui-avatars.com/api/?name=${name}`,
 			})
 				.then(() => {
 					return res.status(200).json({

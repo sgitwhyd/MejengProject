@@ -1,4 +1,6 @@
 const nodemailer = require('nodemailer');
+const creatorActivation = require('../views/creatorActivation');
+const projectBannedView = require('../views/projectBanned');
 
 const transporter = nodemailer.createTransport({
 	host: 'smtp.gmail.com',
@@ -12,14 +14,12 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendCreatorsVerification = async (res, email, token, client_url) => {
+	const link = `${client_url}/api/creators/activate/${token}`;
 	const mailOptions = {
 		from: '"Mejeng 👻" <no-reply.gmail.com>',
 		to: email,
 		subject: 'Mejeng Creators Verification',
-		html: `<p>Silahkan klik link dibawah ini  untuk aktivasi email anda</p><a href="${client_url}/api/creators/activate/${token}">
-						Verification Email
-						</a>
-            <p>Link akan expired dalam waktu 15 Menit`,
+		html: creatorActivation(link),
 	};
 
 	await transporter
@@ -44,9 +44,7 @@ const sendBannedProjectNotification = async (res, client_url, { project }) => {
 		from: '"Mejeng 👻" <no-reply.gmail.com>',
 		to: project.user.email,
 		subject: 'Project Banned',
-		html: `<p>Project anda telah di banned oleh admin</p><a href="${client_url}/api/project/detail/${project.slug}">
-link to your project
-						</a>`,
+		html: projectBannedView(project),
 	};
 
 	await transporter

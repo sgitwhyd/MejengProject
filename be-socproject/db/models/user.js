@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
 			// define association here
 			this.hasMany(models.Project, { as: 'project' });
+			this.hasMany(models.Comment, { as: 'comment' });
+			this.hasMany(models.RepliesComment, { as: 'repliesComment' });
 		}
 	}
 	User.init(
@@ -17,11 +19,10 @@ module.exports = (sequelize, DataTypes) => {
 			email: DataTypes.STRING,
 			password: DataTypes.STRING,
 			name: DataTypes.STRING,
-			profle_picture: DataTypes.STRING,
+			profile_image: DataTypes.STRING,
 			description: DataTypes.STRING,
 			region: DataTypes.STRING,
-			total_views: DataTypes.STRING,
-			apreciation: DataTypes.STRING,
+			country: DataTypes.STRING,
 			role: DataTypes.ENUM(['admin', 'user']),
 			is_active: DataTypes.BOOLEAN,
 			is_verify: DataTypes.BOOLEAN,
