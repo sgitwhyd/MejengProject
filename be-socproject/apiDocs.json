@@ -1,0 +1,212 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Dokumentasi API Mejeng Project",
+    "version": "3.0.0",
+    "title": "Dokumentasi API Mejeng Project",
+    "contact": {
+      "name": "Github Project",
+      "url": "https://github.com/doniwahyus"
+    }
+  },
+  "server": {
+    "url": "http://localhost:3000/api-docs/"
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Auth API"
+    },
+    {
+      "name": "Project",
+      "description": "Project API"
+    },
+    {
+      "name": "Admin",
+      "description": "Admin API"
+    },
+    {
+      "name": "User", 
+      "description": "User API"
+    },
+    {
+      "name": "Category",
+      "description": "Category API"
+    }
+  ],
+  "schemes": ["http"],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login User",
+        "description": "Post Login",
+        "operationId": "post-login",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "form input",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/login"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succes Login"
+          },
+          "404": {
+            "description": "user not found"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register User",
+        "description": "Post Register",
+        "operationId": "post-register",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "form input",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/register"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succes Register"
+          },
+          "400": {
+            "description": "email already used!"
+          }
+        }
+      }
+    },
+    "/api/creators/request": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Request to be creator",
+        "description": "Post Request Creator",
+        "operationId": "post-request-creator",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "id",
+            "in": "path",
+            "description": "get user id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "email",
+            "in": "path",
+            "description": "get user email",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "description": "get user name",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Creators Verification link has been sent to your email"
+          },
+          "401": {
+            "description": "Creators Verification link failed to sent"
+          }
+        }
+      }
+    },
+    "/api/creators/activate/{token}": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get Activate Token",
+        "description": "",
+        "operationId": "get-activate-token",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "description": "Get token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "You are now is creator"
+          },
+          "404":{
+            "description": "Incorret or expired link!. Please register again"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Authorization": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "login": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "Popo10@mail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "Popo123"
+        }
+      }
+    },
+    "register": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "Popo10@mail.com"
+        },
+        "password":{
+          "type": "string",
+          "example": "Popo123"
+        },
+        "name": {
+          "type": "string",
+          "example": "Popo Mahmud"
+        }
+      }
+    }
+  } 
+}

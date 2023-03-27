@@ -23,7 +23,9 @@
     "nodemailer": "^6.9.1",
     "path": "^0.12.7",
     "pg": "^8.10.0",
-    "sequelize": "^6.29.1"
+    "sequelize": "^6.29.1",
+    "swagger-ui-express": "^4.6.2",
+    "yamljs": "^0.3.0"
   },
   "description": ""
 }
