@@ -7,7 +7,7 @@ module.exports = {
 			return res.status(400).json({
 				code: 400,
 				status: 'BAD_REQUEST',
-				error: 'required body',
+				error: { message: 'required body' },
 			});
 		} else {
 			try {

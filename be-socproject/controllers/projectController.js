@@ -29,7 +29,7 @@ module.exports = {
 				return res.status(400).json({
 					code: 400,
 					status: 'BAD_REQUEST',
-					error: 'required body',
+					error: { message: 'required body' },
 				});
 			} else {
 				const isProjectTitleTaken = await Project.findOne({ where: { title } });
@@ -101,7 +101,7 @@ module.exports = {
 			return res.status(400).json({
 				code: 400,
 				status: 'BAD_REQUEST',
-				error: 'required body',
+				error: { message: 'required body' },
 			});
 		} else {
 			const isProjectExist = await Project.findOne({
@@ -347,7 +347,7 @@ module.exports = {
 			return res.status(400).json({
 				code: 400,
 				status: 'BAD_REQUEST',
-				error: 'required body',
+				error: { message: 'required body' },
 			});
 		} else {
 			const isProjectExist = await Project.findOne({
@@ -360,7 +360,7 @@ module.exports = {
 				return res.status(400).json({
 					code: 400,
 					status: 'BAD_REQUEST',
-					error: 'required body',
+					error: { message: 'required body' },
 				});
 			} else {
 				try {
