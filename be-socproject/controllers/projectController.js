@@ -17,11 +17,11 @@ const { sendBannedProjectNotification } = require('../utils/sendEmail');
 
 module.exports = {
 	createProject: async (req, res, next) => {
+		const { CategoryId, ToolId, title, desc, url } = req.body;
+		const userId = req.user.id;
+		const pathProjectImage = [];
+		const { project_image, thumbnail_project_image } = req.files;
 		try {
-			const { CategoryId, ToolId, title, desc, url } = req.body;
-			const userId = req.user.id;
-			const pathProjectImage = [];
-			const { project_image, thumbnail_project_image } = req.files;
 			for (let image in project_image) {
 				pathProjectImage.push(project_image[image].path);
 			}
@@ -66,7 +66,7 @@ module.exports = {
 							});
 						} else {
 							await Promise.all(
-								ToolId.map((toolId) =>
+								ToolId.split(',').map((toolId) =>
 									ProjectTools.create({
 										ProjectId: result.id,
 										ToolId: toolId,
@@ -84,7 +84,11 @@ module.exports = {
 					});
 				}
 			}
-		} catch (error) {
+		} catch (err) {
+			fs.unlinkSync(thumbnail_project_image[0].path);
+			for (let image in project_image) {
+				fs.unlinkSync(project_image[image].path);
+			}
 			return res.status(500).json({
 				code: 500,
 				status: 'Internal Server Error',
@@ -232,7 +236,7 @@ module.exports = {
 					},
 				});
 			}
-		} catch (error) {
+		} catch (err) {
 			return res.status(500).json({
 				code: 500,
 				status: 'Internal Server Error',
@@ -256,7 +260,7 @@ module.exports = {
 						result.project_image.forEach((image) => {
 							fs.unlinkSync(path.normalize(`${image}`));
 						});
-					} catch (error) {
+					} catch (err) {
 						return res.status(500).json({
 							code: 500,
 							status: 'Internal Server Error',
@@ -330,7 +334,7 @@ module.exports = {
 					});
 				}
 			});
-		} catch (error) {
+		} catch (err) {
 			return res.status(500).json({
 				code: 500,
 				status: 'Internal Server Error',
@@ -542,7 +546,7 @@ module.exports = {
 					});
 				}
 			});
-		} catch (error) {
+		} catch (err) {
 			return res.status(500).json({
 				code: 500,
 				status: 'Internal Server Error',
@@ -591,7 +595,7 @@ module.exports = {
 				message: 'Success get project by categories',
 				data: projectCategory,
 			});
-		} catch (error) {
+		} catch (err) {
 			return res.status(500).json({
 				code: 500,
 				status: 'Internal Server Error',
