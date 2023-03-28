@@ -102,11 +102,18 @@ module.exports = {
 				],
 			})
 				.then((comment) => {
-					return res.status(200).json({
-						status: true,
-						message: 'Comment is found',
-						data: comment,
-					});
+					if (comment.length > 0) {
+						return res.status(200).json({
+							status: true,
+							message: 'Comment is found',
+							data: comment,
+						});
+					} else {
+						return res.status(401).json({
+							status: false,
+							message: 'Comment Not Found',
+						});
+					}
 				})
 				.catch((err) => {
 					return res.status(401).json({
