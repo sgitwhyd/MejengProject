@@ -7,6 +7,8 @@ const { MODUL } = require('../utils/module');
 const {
 	uploadHandler,
 	fileFilter,
+	userProfileImageFilter,
+	userProfileUploadHandler,
 } = require('../middleware/imageFileValidation');
 const {
 	requestCreatorsLimiter,
@@ -24,7 +26,11 @@ router.post(
 	requestCreatorsLimiter,
 	con.au.requestCreatorsVerifications
 );
-router.get('/api/creators/activate/:token', con.au.creatorsVerificationHandler);
+router.get(
+	'/api/creators/activate/:token',
+	restrict,
+	con.au.creatorsVerificationHandler
+);
 
 // project route
 router.post(
@@ -41,7 +47,11 @@ router.post(
 	con.projectController.likeProject
 );
 
-router.post('/api/project/delete-project', con.projectController.deleteProject);
+router.post(
+	'/api/project/delete-project',
+	restrict,
+	con.projectController.deleteProject
+);
 
 router.get('/api/project/get-all-project', con.projectController.getAllProject);
 
@@ -57,8 +67,13 @@ router.post(
 	con.projectController.reportProject
 );
 
-router.get('/api/project/detail/:slug', con.projectController.getDetailProject);
-router.put('/api/project/ban-project', con.projectController.banProject);
+router.get('/api/project/detail/:id', con.projectController.getDetailProject);
+router.put(
+	'/api/project/ban-project',
+	restrict,
+	rbac(MODUL.AdminDashboard, true, true),
+	con.projectController.banProject
+);
 
 // comment route
 router.post(
@@ -73,6 +88,7 @@ router.post(
 );
 router.get(
 	'/api/comment/:projectId',
+	restrict,
 	con.commentController.getCommentByProjectHanlder
 );
 
@@ -83,6 +99,14 @@ router.post(
 
 // user profile route
 router.get('/api/user/profile', restrict, con.us.getProfile);
+
+router.put(
+	'/api/user/update-profile',
+	restrict,
+	userProfileUploadHandler,
+	userProfileImageFilter,
+	con.us.updateProfile
+);
 
 // Category
 // user akses
