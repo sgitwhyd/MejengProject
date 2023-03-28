@@ -45,11 +45,18 @@ module.exports = {
 			const categoires = await Categories.findAll();
 			const ammount = await Categories.count();
 
-			return res.status(200).json({
-				status: true,
-				ammount,
-				categoires,
-			});
+			if (categoires.length > 0) {
+				return res.status(200).json({
+					status: true,
+					ammount,
+					categoires,
+				});
+			} else {
+				return res.status(400).json({
+					status: false,
+					msg: 'No Category Found',
+				});
+			}
 		} catch (error) {
 			return res.status(400).json({
 				status: false,
