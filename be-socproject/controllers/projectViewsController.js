@@ -12,22 +12,34 @@ module.exports = {
 				},
 			});
 
-			if (userAlreadyViews) {
-				return res.status(200).json({
-					message: 'user already views this project',
+			const isProjectExist = await Project.findOne({
+				where: {
+					id: projectId,
+				},
+			});
+
+			if (!isProjectExist) {
+				res.status(404).json({
+					message: 'project not found',
 				});
 			} else {
-				Promise.all([
-					ProjectView.create({
-						ip_address,
-						ProjectId: projectId,
-					}),
-					Project.increment('total_views', { where: { id: projectId } }),
-				]).then(() => {
+				if (userAlreadyViews) {
 					return res.status(200).json({
-						message: 'views added',
+						message: 'user already views this project',
 					});
-				});
+				} else {
+					Promise.all([
+						ProjectView.create({
+							ip_address,
+							ProjectId: projectId,
+						}),
+						Project.increment('total_views', { where: { id: projectId } }),
+					]).then(() => {
+						return res.status(200).json({
+							message: 'views added',
+						});
+					});
+				}
 			}
 		} catch (error) {
 			res.status(500).json({
