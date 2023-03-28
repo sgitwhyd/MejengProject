@@ -47,10 +47,18 @@ module.exports = {
 	getTools: async (req, res, next) => {
 		try {
 			await Tools.findAll().then((result) => {
-				return res.status(200).json({
-					status: true,
-					data: result,
-				});
+				if (result.length > 0) {
+					return res.status(200).json({
+						status: true,
+						msg: 'Get All Tools Successfully',
+						data: result,
+					});
+				} else {
+					return res.status(200).json({
+						status: false,
+						msg: 'No Tools Found',
+					});
+				}
 			});
 		} catch (error) {
 			return res.status(401).json({
