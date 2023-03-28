@@ -20,8 +20,11 @@ const fileFilter = async (req, res, next) => {
 		// CHECK IF NO IMAGE FILE IS UPLOAD
 		if (!req.files) {
 			return res.status(400).json({
-				status: false,
-				error: 'No Image upload',
+				code: 400,
+				status: 'Bad Request',
+				error: {
+					message: 'No Image upload',
+				},
 			});
 		}
 
@@ -54,9 +57,12 @@ const fileFilter = async (req, res, next) => {
 			for (let image in project_image) {
 				fs.unlinkSync(project_image[image].path);
 			}
-			return res.json({
-				status: false,
-				error: 'file too large. Max 1 MB',
+			return res.status(406).json({
+				code: 406,
+				status: 'Not Acceptable',
+				error: {
+					message: 'file too large. Max 1 MB',
+				},
 			});
 		}
 
@@ -66,23 +72,27 @@ const fileFilter = async (req, res, next) => {
 		for (let image in project_image) {
 			fs.unlinkSync(project_image[image].path);
 		}
-		return res.json({
-			status: false,
-			error: 'Image Validate Error. Please Contact Developers',
-			msg: error,
+		return res.status(500).json({
+			code: 500,
+			status: 'Internal Server Error',
+			error: {
+				message: error.message,
+			},
 		});
 	}
 };
 
 const userProfileImageFilter = async (req, res, next) => {
 	const user_image = req.file;
-	console.log(user_image);
 	try {
 		// CHECK IF NO IMAGE FILE IS UPLOAD
 		if (!req.file) {
 			return res.status(400).json({
-				status: false,
-				error: 'No Image upload',
+				code: 400,
+				status: 'Bad Request',
+				error: {
+					message: 'No Image upload',
+				},
 			});
 		}
 
@@ -103,19 +113,24 @@ const userProfileImageFilter = async (req, res, next) => {
 		// CHECK IMAGE SIZE
 		if (user_image.size > 1024 * 1024) {
 			fs.unlinkSync(user_image.path);
-			return res.status(400).json({
-				status: false,
-				error: 'file too large. Max 1 MB',
+			return res.status(406).json({
+				code: 406,
+				status: 'Not Acceptable',
+				error: {
+					error: 'file too large. Max 1 MB',
+				},
 			});
 		} else {
 			next();
 		}
 	} catch (error) {
 		fs.unlinkSync(user_image.path);
-		return res.status(400).json({
-			status: false,
-			error: 'Image Validate Error. Please Contact Developers',
-			msg: error,
+		return res.status(500).json({
+			code: 500,
+			status: 'Internal Server Error',
+			error: {
+				message: error.message,
+			},
 		});
 	}
 };

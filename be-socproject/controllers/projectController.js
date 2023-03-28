@@ -11,7 +11,6 @@ const {
 	RepliesComment,
 	ProjectView,
 } = require('../db/models');
-const { validationResult } = require('express-validator');
 const fs = require('fs');
 const path = require('path');
 const { sendBannedProjectNotification } = require('../utils/sendEmail');
@@ -26,15 +25,11 @@ module.exports = {
 			for (let image in project_image) {
 				pathProjectImage.push(project_image[image].path);
 			}
-			if (!req.body) {
-				return res.status(401).json({
-					status: false,
-					msg: 'Invalid payload',
-				});
-			} else if (!req.files) {
-				return res.status(401).json({
-					status: false,
-					msg: 'File undifined',
+			if (!req.body || !req.files) {
+				return res.status(400).json({
+					code: 400,
+					status: 'BAD_REQUEST',
+					error: 'required body',
 				});
 			} else {
 				const isProjectTitleTaken = await Project.findOne({ where: { title } });
@@ -45,9 +40,12 @@ module.exports = {
 					for (let image in project_image) {
 						fs.unlinkSync(project_image[image].path);
 					}
-					return res.status(401).json({
-						status: false,
-						msg: 'Project title already taken',
+					return res.status(406).json({
+						code: 406,
+						status: 'NOT_ACCEPTABLE',
+						error: {
+							message: 'Project title already taken',
+						},
 					});
 				} else {
 					await Project.create({
@@ -58,45 +56,41 @@ module.exports = {
 						desc,
 						url,
 						thumbnail_project_image: req.files.thumbnail_project_image[0].path,
-						project_image: pathProjectImage,
-					})
-						.then(async (result) => {
-							if (ToolId >= 1) {
-								ProjectTools.create({
-									ProjectId: result.id,
-									ToolId,
-								});
-							} else {
-								await Promise.all(
-									ToolId.map((toolId) =>
-										ProjectTools.create({
-											ProjectId: result.id,
-											ToolId: toolId,
-										})
-									)
-								);
-							}
+						project_image:
+							pathProjectImage.length < 1 ? null : pathProjectImage,
+					}).then(async (result) => {
+						if (ToolId >= 1) {
+							ProjectTools.create({
+								ProjectId: result.id,
+								ToolId,
+							});
+						} else {
+							await Promise.all(
+								ToolId.map((toolId) =>
+									ProjectTools.create({
+										ProjectId: result.id,
+										ToolId: toolId,
+									})
+								)
+							);
+						}
 
-							return res.status(200).json({
-								status: true,
-								msg: 'Project Upload Succesfully',
-								data: result,
-							});
-						})
-						.catch((err) => {
-							return res.status(401).json({
-								status: false,
-								msg: 'Project Upload Failed',
-								error: err.message,
-							});
+						return res.status(201).json({
+							code: 201,
+							status: 'CREATED',
+							message: 'Project Upload Succesfully',
+							data: result,
 						});
+					});
 				}
 			}
 		} catch (error) {
-			return res.status(401).json({
-				status: false,
-				msg: 'Project Upload Failed',
-				err: error.message,
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: err.message,
+				},
 			});
 		}
 	},
@@ -104,9 +98,10 @@ module.exports = {
 		const { projectId } = req.body;
 
 		if (!projectId) {
-			return res.status(401).json({
-				status: false,
-				msg: 'Invalid payload',
+			return res.status(400).json({
+				code: 400,
+				status: 'BAD_REQUEST',
+				error: 'required body',
 			});
 		} else {
 			const isProjectExist = await Project.findOne({
@@ -116,9 +111,12 @@ module.exports = {
 			});
 
 			if (!isProjectExist) {
-				return res.status(401).json({
-					status: false,
-					message: 'Project Not Found',
+				return res.status(404).json({
+					code: 404,
+					status: 'NOT_FOUND',
+					error: {
+						message: 'Project Not Found',
+					},
 				});
 			} else {
 				const userId = req.user.id;
@@ -136,16 +134,25 @@ module.exports = {
 									ProductId: projectId,
 									UserId: userId,
 								})
-								.then(() => {
+								.then(async () => {
+									await Project.increment('total_likes', {
+										where: {
+											id: projectId,
+										},
+									});
 									return res.status(200).json({
-										status: true,
-										msg: 'Liked Succesfully',
+										code: 200,
+										status: 'OK',
+										message: 'Liked Succesfully',
 									});
 								})
 								.catch((err) => {
-									return res.status(401).json({
-										status: false,
-										msg: 'Liked Failed',
+									return res.status(500).json({
+										code: 500,
+										status: 'Internal Server Error',
+										error: {
+											message: err.message,
+										},
 									});
 								});
 						} else {
@@ -155,24 +162,27 @@ module.exports = {
 										id: product_like.id,
 									},
 								})
-								.then(() => {
+								.then(async () => {
+									await Project.decrement('total_likes', {
+										where: {
+											id: projectId,
+										},
+									});
 									return res.status(200).json({
-										status: true,
+										code: 200,
+										status: 'OK',
 										message: 'Successfully removed like',
 									});
 								});
 						}
-
-						await Project.increment('total_likes', {
-							where: {
-								id: projectId,
-							},
-						});
 					})
 					.catch((err) => {
-						return res.status(401).json({
-							status: false,
-							err: err.message,
+						return res.status(500).json({
+							code: 500,
+							status: 'Internal Server Error',
+							error: {
+								message: err.message,
+							},
 						});
 					});
 			}
@@ -207,19 +217,29 @@ module.exports = {
 
 			if (projects.length > 0) {
 				return res.status(200).json({
-					status: true,
-					message: 'Display all project',
+					code: 200,
+					status: 'OK',
+					message: 'All project found',
 					ammount: projects.length,
 					data: projects,
 				});
 			} else {
-				return res.status(401).json({
-					status: false,
-					message: 'No project found',
+				return res.status(404).json({
+					code: 404,
+					status: 'NOT_FOUND',
+					error: {
+						message: 'No project found',
+					},
 				});
 			}
 		} catch (error) {
-			next(error);
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: err.message,
+				},
+			});
 		}
 	},
 	deleteProject: async (req, res, next) => {
@@ -237,10 +257,12 @@ module.exports = {
 							fs.unlinkSync(path.normalize(`${image}`));
 						});
 					} catch (error) {
-						return res.status(401).json({
-							status: false,
-							message: 'Delete project failed',
-							error: error.message,
+						return res.status(500).json({
+							code: 500,
+							status: 'Internal Server Error',
+							error: {
+								message: err.message,
+							},
 						});
 					}
 					Project.destroy({
@@ -292,33 +314,40 @@ module.exports = {
 							}),
 						]).then(() => {
 							return res.status(200).json({
-								status: true,
+								code: 200,
+								status: 'OK',
 								message: 'Delete project success',
 							});
 						});
 					});
 				} else {
-					return res.status(401).json({
-						status: false,
-						message: 'Project not found',
+					return res.status(404).json({
+						code: 404,
+						status: 'NOT_FOUND',
+						error: {
+							message: 'Project not found',
+						},
 					});
 				}
 			});
 		} catch (error) {
-			return res.status(401).json({
-				status: false,
-				message: 'Delete project failed',
-				error: error.message,
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: err.message,
+				},
 			});
 		}
 	},
 	reportProject: async (req, res, next) => {
 		const { projectId, reportCategoryId } = req.body;
 
-		if (!projectId || !reportCategoryId) {
-			return res.status(401).json({
-				status: false,
-				msg: 'Invalid payload',
+		if (!req.body) {
+			return res.status(400).json({
+				code: 400,
+				status: 'BAD_REQUEST',
+				error: 'required body',
 			});
 		} else {
 			const isProjectExist = await Project.findOne({
@@ -328,40 +357,48 @@ module.exports = {
 			});
 
 			if (!isProjectExist) {
-				return res.status(401).json({
-					status: false,
-					message: 'Project Not Found',
+				return res.status(400).json({
+					code: 400,
+					status: 'BAD_REQUEST',
+					error: 'required body',
 				});
 			} else {
-				const alreadyReportProject = await ProjectReport.findOne({
-					where: {
-						UserId: req.user.id,
-						ProjectId: projectId,
-					},
-				});
+				try {
+					const alreadyReportProject = await ProjectReport.findOne({
+						where: {
+							UserId: req.user.id,
+							ProjectId: projectId,
+						},
+					});
 
-				if (!alreadyReportProject) {
-					await ProjectReport.create({
-						UserId: req.user.id,
-						ProjectId: projectId,
-						ReportCategoryId: reportCategoryId,
-					})
-						.then(() => {
-							return res.status(200).json({
-								status: true,
-								msg: 'Report Succesfully',
-							});
-						})
-						.catch((err) => {
-							return res.status(401).json({
-								status: false,
-								msg: 'Report Failed',
+					if (!alreadyReportProject) {
+						await ProjectReport.create({
+							UserId: req.user.id,
+							ProjectId: projectId,
+							ReportCategoryId: reportCategoryId,
+						}).then(() => {
+							return res.status(201).json({
+								code: 201,
+								status: 'Created',
+								message: 'Report Project Created',
 							});
 						});
-				} else {
-					return res.status(401).json({
-						status: false,
-						msg: 'You already report this project',
+					} else {
+						return res.status(406).json({
+							code: 406,
+							status: 'Not Acceptable',
+							error: {
+								message: 'You already report this project',
+							},
+						});
+					}
+				} catch (err) {
+					return res.status(500).json({
+						code: 500,
+						status: 'Internal Server Error',
+						error: {
+							message: err.message,
+						},
 					});
 				}
 			}
@@ -432,18 +469,28 @@ module.exports = {
 
 			if (project) {
 				return res.status(200).json({
-					status: true,
-					message: 'Display all project',
+					code: 200,
+					status: 'OK',
+					message: 'Get detail project success',
 					data: project,
 				});
 			} else {
-				return res.status(401).json({
-					status: false,
-					message: 'Project not found',
+				return res.status(404).json({
+					code: 404,
+					status: 'NOT_FOUND',
+					error: {
+						message: 'Project not found',
+					},
 				});
 			}
-		} catch (error) {
-			next(error);
+		} catch (err) {
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: err.message,
+				},
+			});
 		}
 	},
 	banProject: async (req, res, next) => {
@@ -486,17 +533,22 @@ module.exports = {
 						await sendBannedProjectNotification(res, CLIENT_URL, { project });
 					});
 				} else {
-					return res.status(401).json({
-						status: false,
-						message: 'Project not found',
+					return res.status(404).json({
+						code: 404,
+						status: 'NOT_FOUND',
+						error: {
+							message: 'Project not found',
+						},
 					});
 				}
 			});
 		} catch (error) {
-			return res.status(401).json({
-				status: false,
-				message: 'Ban project failed',
-				error: error.message,
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: err.message,
+				},
 			});
 		}
 	},
@@ -505,8 +557,10 @@ module.exports = {
 			const { slug } = req.params;
 
 			if (!slug) {
-				res.status(400).json({
-					message: 'Name not found',
+				return res.status(400).json({
+					code: 400,
+					status: 'BAD_REQUEST',
+					error: 'required params',
 				});
 			}
 			const projectCategory = await Categories.findOne({
@@ -531,13 +585,20 @@ module.exports = {
 					},
 				],
 			});
-			return res.status(201).json({
-				status: true,
+			return res.status(200).json({
+				code: 200,
+				status: 'OK',
 				message: 'Success get project by categories',
 				data: projectCategory,
 			});
 		} catch (error) {
-			next(error);
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: err.message,
+				},
+			});
 		}
 	},
 };

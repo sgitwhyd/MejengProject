@@ -6,18 +6,22 @@ module.exports = {
 
 		const user = await User.findOne({ where: { id } });
 		if (!user)
-			return res.status(401).json({
-				status: false,
-				message: 'Not found user',
-				data: null,
+			return res.status(404).json({
+				code: 404,
+				status: 'NOT_FOUND',
+				error: {
+					message: 'Not found user',
+				},
 			});
 
 		if (!user.is_verify)
 			return res.status(401).json({
-				status: false,
-				message:
-					'you is not creator, request creator verification creator to upload your project',
-				data: null,
+				code: 401,
+				status: 'UNAUTHORIZED',
+				error: {
+					message:
+						'you is not creator, request creator verification creator to upload your project',
+				},
 			});
 
 		next();

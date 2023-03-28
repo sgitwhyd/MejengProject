@@ -20,12 +20,20 @@ module.exports = {
 
 			if (!isProjectExist) {
 				res.status(404).json({
-					message: 'project not found',
+					code: 404,
+					status: 'NOT_FOUND',
+					error: {
+						message: 'project not found',
+					},
 				});
 			} else {
 				if (userAlreadyViews) {
-					return res.status(200).json({
-						message: 'user already views this project',
+					return res.status(406).json({
+						code: 406,
+						status: 'Not Acceptable',
+						error: {
+							message: 'user already views this project',
+						},
 					});
 				} else {
 					Promise.all([
@@ -35,16 +43,21 @@ module.exports = {
 						}),
 						Project.increment('total_views', { where: { id: projectId } }),
 					]).then(() => {
-						return res.status(200).json({
-							message: 'views added',
+						return res.status(201).json({
+							code: 201,
+							status: 'CREATED',
+							message: 'views created',
 						});
 					});
 				}
 			}
 		} catch (error) {
-			res.status(500).json({
-				message: 'error adding views',
-				err: error,
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: err.message,
+				},
 			});
 		}
 	},
