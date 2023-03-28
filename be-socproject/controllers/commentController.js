@@ -83,7 +83,7 @@ module.exports = {
 					});
 				});
 			}
-		} catch (error) {
+		} catch (err) {
 			return res.status(404).json({
 				code: 404,
 				status: 'NOT_FOUND',

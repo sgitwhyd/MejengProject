@@ -70,7 +70,7 @@ module.exports = {
 					},
 				});
 			}
-		} catch (error) {
+		} catch (err) {
 			return res.status(500).json({
 				code: 500,
 				status: 'Internal Server Error',
@@ -109,7 +109,7 @@ module.exports = {
 					message: 'Category has been updated',
 				});
 			});
-		} catch (error) {
+		} catch (err) {
 			return res.status(500).json({
 				code: 500,
 				status: 'Internal Server Error',
@@ -158,7 +158,7 @@ module.exports = {
 					},
 				});
 			}
-		} catch (error) {
+		} catch (err) {
 			return res.status(500).json({
 				code: 500,
 				status: 'Internal Server Error',

@@ -20,7 +20,7 @@ module.exports = {
 				amountUsers: totalUser,
 				data: users,
 			});
-		} catch (error) {
+		} catch(err) {
 			return res.status(500).json({
 				code: 501,
 				status: 'INTERNAL_SERVER_ERROR',

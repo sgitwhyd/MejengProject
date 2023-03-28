@@ -67,7 +67,7 @@ const fileFilter = async (req, res, next) => {
 		}
 
 		next();
-	} catch (error) {
+	} catch (err) {
 		fs.unlinkSync(thumbnail_project_image[0].path);
 		for (let image in project_image) {
 			fs.unlinkSync(project_image[image].path);
@@ -76,7 +76,7 @@ const fileFilter = async (req, res, next) => {
 			code: 500,
 			status: 'Internal Server Error',
 			error: {
-				message: error.message,
+				message: err.message,
 			},
 		});
 	}
@@ -123,13 +123,13 @@ const userProfileImageFilter = async (req, res, next) => {
 		} else {
 			next();
 		}
-	} catch (error) {
+	} catch (err) {
 		fs.unlinkSync(user_image.path);
 		return res.status(500).json({
 			code: 500,
 			status: 'Internal Server Error',
 			error: {
-				message: error.message,
+				message: err.message,
 			},
 		});
 	}

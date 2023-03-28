@@ -179,7 +179,7 @@ module.exports = {
 					role: user.role,
 				},
 			});
-		} catch (error) {
+		} catch (err) {
 			return res.status(500).json({
 				code: 500,
 				status: 'Internal Server Error',
