@@ -180,7 +180,7 @@ module.exports = {
 	},
 	getAllProject: async (req, res, next) => {
 		try {
-			const tes = await Project.findAll({
+			const projects = await Project.findAll({
 				include: [
 					{
 						model: User,
@@ -205,12 +205,19 @@ module.exports = {
 				],
 			});
 
-			return res.status(200).json({
-				status: true,
-				message: 'Display all project',
-				ammount: tes.length,
-				data: tes,
-			});
+			if (projects.length > 0) {
+				return res.status(200).json({
+					status: true,
+					message: 'Display all project',
+					ammount: projects.length,
+					data: projects,
+				});
+			} else {
+				return res.status(401).json({
+					status: false,
+					message: 'No project found',
+				});
+			}
 		} catch (error) {
 			next(error);
 		}
@@ -274,11 +281,13 @@ module.exports = {
 											ProjectId: id,
 										},
 									}),
-									RepliesComment.destroy({
-										where: {
-											CommentId: comment.id,
-										},
-									}),
+									comment?.id
+										? RepliesComment.destroy({
+												where: {
+													CommentId: comment.id,
+												},
+										  })
+										: null,
 								]);
 							}),
 						]).then(() => {
@@ -359,11 +368,11 @@ module.exports = {
 		}
 	},
 	getDetailProject: async (req, res, next) => {
-		const { slug } = req.params;
+		const { id } = req.params;
 		try {
-			const tes = await Project.findOne({
+			const project = await Project.findOne({
 				where: {
-					slug,
+					id,
 				},
 				include: [
 					{
@@ -421,11 +430,18 @@ module.exports = {
 				],
 			});
 
-			return res.status(200).json({
-				status: true,
-				message: 'Display all project',
-				data: tes,
-			});
+			if (project) {
+				return res.status(200).json({
+					status: true,
+					message: 'Display all project',
+					data: project,
+				});
+			} else {
+				return res.status(401).json({
+					status: false,
+					message: 'Project not found',
+				});
+			}
 		} catch (error) {
 			next(error);
 		}
@@ -495,6 +511,7 @@ module.exports = {
 			}
 			const projectCategory = await Categories.findOne({
 				where: { slug },
+				attributes: { exclude: ['id', 'name', 'createdAt', 'updatedAt'] },
 				include: [
 					{
 						model: Project,
@@ -516,7 +533,7 @@ module.exports = {
 			});
 			return res.status(201).json({
 				status: true,
-				message: 'Succes get project by categories',
+				message: 'Success get project by categories',
 				data: projectCategory,
 			});
 		} catch (error) {
