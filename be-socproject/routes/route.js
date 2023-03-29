@@ -49,7 +49,7 @@ router.post(
 	con.projectController.likeProject
 );
 
-router.post(
+router.delete(
 	'/api/project/delete-project',
 	restrict,
 	con.projectController.deleteProject
@@ -152,7 +152,7 @@ router.post(
 	rbac(MODUL.AdminDashboard, true, true),
 	con.toolsController.updateTool
 );
-router.post(
+router.delete(
 	'/api/tools/delete-tools',
 	restrict,
 	rbac(MODUL.AdminDashboard, true, true),
