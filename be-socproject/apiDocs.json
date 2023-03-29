@@ -141,6 +141,70 @@
         }
       }
     },
+    "/api/user/update-profile": {
+      "put": {
+        "tags": ["User"],
+        "summary": "Update Profile",
+        "description": "this enpoint is to update profile",
+        "operationId": "update-profile",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "input name profile",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "desc",
+            "in": "formData",
+            "description": "input description profile",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "region",
+            "in": "formData",
+            "description": "input title",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "country",
+            "in": "formData",
+            "description": "input description",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user_image",
+            "in": "formData",
+            "description": "input image profile",
+            "required": true,
+            "type": "file",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Update Category Successfully"
+          },
+          "401": {
+            "description": "Update category failure"
+          }
+        }
+      }
+    },    
     "/api/creators/activate/{token}": {
       "get": {
         "tags": ["User"],
