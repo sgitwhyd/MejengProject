@@ -204,7 +204,9 @@ module.exports = {
 					{
 						model: Tools,
 						as: 'tools',
-						attributes: ['slug', 'name'],
+						attributes: {
+							exclude: ['id', 'createdAt', 'updatedAt'],
+						},
 						through: {
 							model: ProjectTools,
 							as: 'projcetTools',
@@ -424,7 +426,9 @@ module.exports = {
 					{
 						model: Tools,
 						as: 'tools',
-						attributes: ['slug', 'name'],
+						attributes: {
+							exclude: ['id', 'createdAt', 'updatedAt'],
+						},
 						through: {
 							model: ProjectTools,
 							as: 'projcetTools',

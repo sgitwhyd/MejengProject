@@ -6,6 +6,7 @@ const {
 	Categories,
 } = require('../db/models');
 const fs = require('fs');
+const path = require('path');
 
 module.exports = {
 	getProfile: async (req, res, next) => {
@@ -64,37 +65,54 @@ module.exports = {
 		});
 
 		try {
-			await User.update(
-				{
-					name,
-					description: desc,
-					region,
-					country,
-					profile_image: user_image.path,
-				},
-				{
-					where: {
-						id,
+			if (user_image) {
+				if (user.profile_image.includes('api')) {
+					await User.update(
+						{
+							name,
+							description: desc,
+							region,
+							country,
+							profile_image: user_image.path,
+						},
+						{ where: { id } }
+					);
+				} else {
+					fs.unlinkSync(path.normalize(user.profile_image));
+					await User.update(
+						{
+							name,
+							description: desc,
+							region,
+							country,
+							profile_image: user_image.path,
+						},
+						{ where: { id } }
+					);
+				}
+			} else {
+				await User.update(
+					{
+						name,
+						description: desc,
+						region,
+						country,
 					},
-				}
-			).then(() => {
-				if (
-					!user.profile_image.includes(
-						'jpeg' &&
-							!user.profile_image.includes(
-								'png' && !user.profile_image.includes('jpg')
-							)
-					)
-				) {
-					fs.unlinkSync(user.profile_image);
-				}
-				return res.status(200).json({
-					code: 200,
-					status: 'OK',
-					message: 'Success update profile',
-				});
+					{ where: { id } }
+				);
+			}
+
+			return res.status(200).json({
+				code: 200,
+				status: 'OK',
+				message: 'Success update profile',
 			});
+			// end logic
 		} catch (err) {
+			if (user_image) {
+				fs.unlinkSync(user_image.path);
+			}
+			console.log(err);
 			return res.status(500).json({
 				code: 500,
 				status: 'Internal Server Error',

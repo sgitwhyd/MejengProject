@@ -1,9 +1,12 @@
 const { Tools } = require('../db/models');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = {
 	createTool: async (req, res, next) => {
 		const { name } = req.body;
-		if (!name) {
+		const tool_icon = req.file;
+		if (!req.body || !req.file) {
 			return res.status(400).json({
 				code: 400,
 				status: 'BAD_REQUEST',
@@ -17,6 +20,7 @@ module.exports = {
 					await Tools.create({
 						name,
 						slug,
+						icon: tool_icon.path,
 					}).then(() => {
 						return res.status(201).json({
 							code: 201,
@@ -25,6 +29,7 @@ module.exports = {
 						});
 					});
 				} else {
+					fs.unlinkSync(path.normalize(tool_icon.path));
 					return res.status(406).json({
 						code: 406,
 						status: 'Not Acceptable',
@@ -77,7 +82,8 @@ module.exports = {
 	},
 	updateTool: async (req, res, next) => {
 		const { id, newName } = req.body;
-		if (!newName) {
+		const tool_icon = req.file;
+		if (!req.body) {
 			return res.status(400).json({
 				code: 400,
 				status: 'BAD_REQUEST',
@@ -87,7 +93,7 @@ module.exports = {
 			});
 		} else {
 			try {
-				const slug = newName.split(' ').join('-');
+				const slug = newName.split(' ').join('-').toLowerCase();
 				const isToolExist = await Tools.findOne({
 					where: {
 						id,
@@ -95,6 +101,9 @@ module.exports = {
 				});
 
 				if (!isToolExist) {
+					if (tool_icon) {
+						fs.unlinkSync(path.normalize(tool_icon.path));
+					}
 					return res.status(404).json({
 						code: 404,
 						status: 'Not Found',
@@ -107,6 +116,7 @@ module.exports = {
 						{
 							name: newName,
 							slug,
+							icon: tool_icon ? tool_icon.path : isToolExist.icon,
 						},
 						{
 							where: {
@@ -114,6 +124,7 @@ module.exports = {
 							},
 						}
 					).then(() => {
+						if (tool_icon) fs.unlinkSync(path.normalize(isToolExist.icon));
 						return res.status(200).json({
 							code: 200,
 							status: 'OK',
