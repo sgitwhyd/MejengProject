@@ -30,8 +30,12 @@
       "description": "User API"
     },
     {
-      "name": "Category",
-      "description": "Category API"
+      "name": "Categories",
+      "description": "Categories API"
+    },
+    {
+      "name": "Tools",
+      "description": "Tools API"
     }
   ],
   "schemes": ["http"],
@@ -168,6 +172,481 @@
           }
         }
       }
+    },
+    "/api/admin/get-all-user": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get all user",
+        "description": "",
+        "operationId": "get-all-user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success get all data users"
+          }
+        }
+      }
+    },
+    "/api/admin/ban-user": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Ban user",
+        "description": "this enpoint to ban user",
+        "operationId": "ban-user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id user where is to ban",
+            "required": true,
+            "type": "integer",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "object",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "user has been banned"
+          },
+          "401": {
+            "description": "error while trying ban user"
+          }
+        }
+      }
+    },
+    "/api/admin/unban-user": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "UnBan user",
+        "description": "this enpoint to unBan user",
+        "operationId": "unBan-user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id user where is to unBan",
+            "required": true,
+            "type": "integer",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "object",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "user has been unBanned"
+          },
+          "401": {
+            "description": "error while trying unBan user"
+          }
+        }
+      }
+    },
+    "/api/categories/create-category": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Create Categories",
+        "description": "this enpoint is to create category",
+        "operationId": "create-category",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "name category",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "object",
+                  "example": "UI/UX"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Add Category Successfully"
+          },
+          "401": {
+            "description": "Add category failure"
+          }
+        }
+      }
+    },
+    "/api/categories": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Get All Categories",
+        "description": "this enpoint is to get all categories",
+        "operationId": "get-all-categories",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],        
+        "responses":{
+          "200":{
+            "description": "Get All Categories Successfully"
+          }
+        }
+      }
+    },
+    "/api/categories/update-category": {
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Update Categories",
+        "description": "this enpoint is to update category",
+        "operationId": "update-category",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "object",
+                  "example": "1"
+                },
+                "name": {
+                  "type": "object",
+                  "example": "UI/UX"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Update Category Successfully"
+          },
+          "401": {
+            "description": "Update category failure"
+          }
+        }
+      }
+    },
+    "/api/categories/delete-category": {
+      "delete": {
+        "tags": ["Admin"],
+        "summary": "Delete Categories",
+        "description": "this enpoint is to delete category",
+        "operationId": "delete-category",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id category",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "object",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Delete Category Successfully"
+          },
+          "401": {
+            "description": "Delete category failure"
+          }
+        }
+      }
+    },
+    "/api/tools/create-tools": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Create Tools",
+        "description": "this enpoint is to create tools",
+        "operationId": "create-tools",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "name tools",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "object",
+                  "example": "Figma"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Add Tools Successfully"
+          },
+          "401": {
+            "description": "Add Tools failure"
+          }
+        }
+      }
+    },
+    "/api/tools/update-tools": {
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Update Tools",
+        "description": "this enpoint is to update tools",
+        "operationId": "update-tools",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "object",
+                  "example": "1"
+                },
+                "newName": {
+                  "type": "object",
+                  "example": "Adobe Photoshop"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Update Tools Successfully"
+          },
+          "401": {
+            "description": "Update Tools failure"
+          }
+        }
+      }
+    },
+    "/api/tools": {
+      "get": {
+        "tags": ["Tools"],
+        "summary": "Get All Tools",
+        "description": "this enpoint is to get tools",
+        "operationId": "get-all-tools",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Get All Tools Successfully"
+          },
+          "401": {
+            "description": "Get All Tools failure"
+          }
+        }
+      }
+    },
+    "/api/tools/delete-tools": {
+      "delete": {
+        "tags": ["Admin"],
+        "summary": "Delete Tools",
+        "description": "this enpoint is to delete tools",
+        "operationId": "delete-tools",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id tools",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "object",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Delete Tools Successfully"
+          },
+          "401": {
+            "description": "Delete Tools failure"
+          }
+        }
+      }
+    },
+    "/api/project/create-project": {
+      "post": {
+        "tags": ["Project"],
+        "summary": "Create Project",
+        "description": "this enpoint is to create Project",
+        "operationId": "create-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "CategoryId",
+            "in": "formData",
+            "description": "input CategoryId",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "ToolId",
+            "in": "formData",
+            "description": "input ToolId",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "title",
+            "in": "formData",
+            "description": "input title",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "desc",
+            "in": "formData",
+            "description": "input description",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "url",
+            "in": "formData",
+            "description": "input url",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "thumbnail_project_image",
+            "in": "formData",
+            "description": "input thumbnail",
+            "required": true,
+            "type": "file",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            }
+          },
+          {
+            "name": "project_image",
+            "in": "formData",
+            "description": "input project image",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "file",
+              "format":"binary"
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Add Project Successfully"
+          },
+          "401": {
+            "description": "Add Tools failure"
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {
@@ -188,6 +667,19 @@
         "password": {
           "type": "string",
           "example": "Popo123"
+        }
+      }
+    },
+    "loginAdmin": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "admin"
+        },
+        "password": {
+          "type": "string",
+          "example": "admin"
         }
       }
     },
