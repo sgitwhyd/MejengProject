@@ -47,7 +47,7 @@ router.post(
 	con.projectController.likeProject
 );
 
-router.post(
+router.delete(
 	'/api/project/delete-project',
 	restrict,
 	con.projectController.deleteProject

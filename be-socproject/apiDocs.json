@@ -212,12 +212,11 @@
             "in": "body",
             "description": "id user where is to ban",
             "required": true,
-            "type": "integer",
             "schema": {
               "type": "object",
               "properties": {
                 "id": {
-                  "type": "object",
+                  "type": "integer",
                   "example": "1"
                 }
               }
@@ -253,12 +252,11 @@
             "in": "body",
             "description": "id user where is to unBan",
             "required": true,
-            "type": "integer",
             "schema": {
               "type": "object",
               "properties": {
                 "id": {
-                  "type": "object",
+                  "type": "integer",
                   "example": "1"
                 }
               }
@@ -298,7 +296,7 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "object",
+                  "type": "string",
                   "example": "UI/UX"
                 }
               }
@@ -358,11 +356,11 @@
               "type": "object",
               "properties": {
                 "id": {
-                  "type": "object",
+                  "type": "integer",
                   "example": "1"
                 },
                 "name": {
-                  "type": "object",
+                  "type": "string",
                   "example": "UI/UX"
                 }
               }
@@ -402,7 +400,7 @@
               "type": "object",
               "properties": {
                 "id": {
-                  "type": "object",
+                  "type": "string",
                   "example": "1"
                 }
               }
@@ -442,7 +440,7 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "object",
+                  "type": "string",
                   "example": "Figma"
                 }
               }
@@ -482,11 +480,11 @@
               "type": "object",
               "properties": {
                 "id": {
-                  "type": "object",
+                  "type": "integer",
                   "example": "1"
                 },
                 "newName": {
-                  "type": "object",
+                  "type": "string",
                   "example": "Adobe Photoshop"
                 }
               }
@@ -549,7 +547,7 @@
               "type": "object",
               "properties": {
                 "id": {
-                  "type": "object",
+                  "type": "integer",
                   "example": "1"
                 }
               }
@@ -570,7 +568,7 @@
       "post": {
         "tags": ["Project"],
         "summary": "Create Project",
-        "description": "this enpoint is to create Project",
+        "description": "this enpoint is to Upload Project",
         "operationId": "create-project",
         "consumes": ["application/json"],
         "produces": ["application/json"],
@@ -592,7 +590,7 @@
             "in": "formData",
             "description": "input ToolId",
             "required": true,
-            "type": "integer"
+            "type": "string"
           },
           {
             "name": "title",
@@ -639,11 +637,444 @@
           }
         ],
         "responses":{
-          "200":{
-            "description": "Add Project Successfully"
+          "201":{
+            "description": "Project Successfully Upload"
           },
-          "401": {
-            "description": "Add Tools failure"
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/project/get-all-project": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get All Projcet",
+        "description": "this enpoint is to get all tools",
+        "operationId": "get-all-projcet",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Get All Projcet Successfully"
+          },
+          "404": {
+            "description": "Projcet not found"
+          }
+        }
+      }
+    },
+    "/api/project/delete-project": {
+      "delete": {
+        "tags": ["Project"],
+        "summary": "Delete Project",
+        "description": "this enpoint is to delete project",
+        "operationId": "delete-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id project",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Delete Projcet Successfully"
+          },
+          "404": {
+            "description": "Projct not found"
+          }
+        }
+      }
+    },
+    "/api/project/like-project": {
+      "post": {
+        "tags": ["Project"],
+        "summary": "Like and UnLike Button Project",
+        "description": "this enpoint is to like button",
+        "operationId": "button-like-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id project",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "projectId": {
+                  "type": "integer",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Like Successfully"
+          },
+          "404": {
+            "description": "Project not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/project/report-project": {
+      "post": {
+        "tags": ["Project"],
+        "summary": "Report Project",
+        "description": "this enpoint is to report project",
+        "operationId": "report-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id projcet",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "projectId": {
+                  "type": "object",
+                  "example": "1"
+                },
+                "reportCategoryId": {
+                  "type": "object",
+                  "example":"1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "201":{
+            "description": "Report Project Created"
+          },
+          "406": {
+            "description": "You already report this project"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/project/detail/{id}": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get Detail Project",
+        "description": "this enpoint is to detail project",
+        "operationId": "get-detail-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Get id project",
+            "required": true,
+            "type": "integer"
+
+          }
+        ],        
+        "responses":{
+          "200":{
+            "description": "Get Detail Project Successfully"
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        }
+      }
+    },
+    "/api/project/ban-project": {
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Ban Project",
+        "description": "this enpoint is to ban project",
+        "operationId": "ban-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id project",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "404": {
+            "description": "project not found"
+          }
+        }
+      }
+    },
+    "/api/project/category/{slug}": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get Project by Category",
+        "description": "this enpoint is to get project by the category",
+        "operationId": "get-project-by-category",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "Get slug project",
+            "required": true,
+            "type": "string"
+
+          }
+        ],        
+        "responses":{
+          "200":{
+            "description": "Success get project by categories"
+          },
+          "404": {
+            "description": "required params"
+          }
+        }
+      }
+    },
+    "/api/comment/post-comment": {
+      "post": {
+        "tags": ["Comment"],
+        "summary": "Post Comment",
+        "description": "this enpoint is to post comment",
+        "operationId": "post-comment",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "string",
+                  "example": "mang engking"
+                },
+                "projectId":{
+                  "type": "integer",
+                  "example":"1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Comment is created"
+          },
+          "404": {
+            "description": "Projcet not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/comment/reply-comment": {
+      "post": {
+        "tags": ["Comment"],
+        "summary": "Post Reply Comment",
+        "description": "this enpoint is to post reply comment",
+        "operationId": "post-reply-comment",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "string",
+                  "example": "wawiwuwiwok"
+                },
+                "commentId":{
+                  "type": "integer",
+                  "example":"1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Reply Comment is created"
+          },
+          "404": {
+            "description": "Projcet not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/comment/{projectId}": {
+      "get": {
+        "tags": ["Comment"],
+        "summary": "Get Comment by Project",
+        "description": "this enpoint is to get comment by project",
+        "operationId": "get-comment-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "Get id project",
+            "required": true,
+            "type": "integer"
+
+          }
+        ],        
+        "responses":{
+          "200":{
+            "description": "Get Comment by Project Successfully"
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        }
+      }
+    },
+    "/api/project/view/{projectId}": {
+      "post": {
+        "tags": ["Project"],
+        "summary": "add Views Project",
+        "description": "this enpoint is to add views project",
+        "operationId": "views-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ip_address": {
+                  "type": "string",
+                  "example": "ipone"
+                }
+              }
+            }
+          },
+          {
+            "name":"projectId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "integer" 
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Reply Comment is created"
+          },
+          "404": {
+            "description": "Projcet not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
