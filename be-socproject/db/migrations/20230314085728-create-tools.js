@@ -14,6 +14,9 @@ module.exports = {
 			slug: {
 				type: Sequelize.STRING,
 			},
+			icon: {
+				type: Sequelize.STRING,
+			},
 			createdAt: {
 				allowNull: false,
 				type: Sequelize.DATE,

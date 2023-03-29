@@ -9,6 +9,8 @@ const {
 	fileFilter,
 	userProfileImageFilter,
 	userProfileUploadHandler,
+	toolIconFilter,
+	toolsIconUploadHandler,
 } = require('../middleware/imageFileValidation');
 const {
 	requestCreatorsLimiter,
@@ -137,12 +139,16 @@ router.get('/api/tools', con.toolsController.getTools);
 router.post(
 	'/api/tools/create-tools',
 	restrict,
+	toolsIconUploadHandler,
+	toolIconFilter,
 	rbac(MODUL.AdminDashboard, true, true),
 	con.toolsController.createTool
 );
 router.post(
 	'/api/tools/update-tools',
 	restrict,
+	toolsIconUploadHandler,
+	toolIconFilter,
 	rbac(MODUL.AdminDashboard, true, true),
 	con.toolsController.updateTool
 );

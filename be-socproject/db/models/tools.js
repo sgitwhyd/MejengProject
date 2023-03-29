@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 				through: 'ProjectTools',
 				as: 'project',
 				foreignKey: 'ToolId',
-				otherId: 'ProjectId'
+				otherId: 'ProjectId',
 			});
 		}
 	}
@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			name: DataTypes.STRING,
 			slug: DataTypes.STRING,
+			icon: DataTypes.STRING,
 		},
 		{
 			sequelize,
