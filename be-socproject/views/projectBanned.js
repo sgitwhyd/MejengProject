@@ -183,7 +183,7 @@ const projectBannedView = (project) => {
 									Attention Needed!
 								</h1>
 								<img
-									src="https://i.ibb.co/2nSPt0L/mejeng.webp"
+									src="https://i.ibb.co/bvwCCWf/mejeng.png"
 									width="125"
 									height="120"
 									style="display: block; border: 0px"

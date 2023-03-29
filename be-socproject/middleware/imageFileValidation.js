@@ -20,8 +20,11 @@ const fileFilter = async (req, res, next) => {
 		// CHECK IF NO IMAGE FILE IS UPLOAD
 		if (!req.files) {
 			return res.status(400).json({
-				status: false,
-				error: 'No Image upload',
+				code: 400,
+				status: 'Bad Request',
+				error: {
+					message: 'No Image upload',
+				},
 			});
 		}
 
@@ -54,25 +57,88 @@ const fileFilter = async (req, res, next) => {
 			for (let image in project_image) {
 				fs.unlinkSync(project_image[image].path);
 			}
-			return res.json({
-				status: false,
-				error: 'file too large. Max 1 MB',
+			return res.status(406).json({
+				code: 406,
+				status: 'Not Acceptable',
+				error: {
+					message: 'file too large. Max 1 MB',
+				},
 			});
 		}
 
 		next();
-	} catch (error) {
+	} catch (err) {
 		fs.unlinkSync(thumbnail_project_image[0].path);
 		for (let image in project_image) {
 			fs.unlinkSync(project_image[image].path);
 		}
-		return res.json({
-			status: false,
-			error: 'Image Validate Error. Please Contact Developers',
-			msg: error,
+		return res.status(500).json({
+			code: 500,
+			status: 'Internal Server Error',
+			error: {
+				message: err.message,
+			},
 		});
 	}
 };
+
+const userProfileImageFilter = async (req, res, next) => {
+	const user_image = req.file;
+	try {
+		// CHECK IF NO IMAGE FILE IS UPLOAD
+		if (!req.file) {
+			return res.status(400).json({
+				code: 400,
+				status: 'Bad Request',
+				error: {
+					message: 'No Image upload',
+				},
+			});
+		}
+
+		// CHECK IMAGE FILE VALIDATE
+
+		if (
+			!user_image.mimetype.includes('jpeg') &&
+			!user_image.mimetype.includes('png') &&
+			!user_image.mimetype.includes('jpg')
+		) {
+			fs.unlinkSync(user_image.path);
+			return res.status(400).json({
+				status: false,
+				error: 'Invalid file type. Only JPEG, PNG, JPG are allowed',
+			});
+		}
+
+		// CHECK IMAGE SIZE
+		if (user_image.size > 1024 * 1024) {
+			fs.unlinkSync(user_image.path);
+			return res.status(406).json({
+				code: 406,
+				status: 'Not Acceptable',
+				error: {
+					error: 'file too large. Max 1 MB',
+				},
+			});
+		} else {
+			next();
+		}
+	} catch (err) {
+		fs.unlinkSync(user_image.path);
+		return res.status(500).json({
+			code: 500,
+			status: 'Internal Server Error',
+			error: {
+				message: err.message,
+			},
+		});
+	}
+};
+
+const userProfileUploadHandler = multer({
+	storage: storage,
+	limits: 1024 * 1024,
+}).single('user_image');
 
 const uploadHandler = multer({
 	storage: storage,
@@ -85,4 +151,6 @@ const uploadHandler = multer({
 module.exports = {
 	uploadHandler,
 	fileFilter,
+	userProfileImageFilter,
+	userProfileUploadHandler,
 };

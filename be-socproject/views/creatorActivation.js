@@ -183,7 +183,7 @@ const creatorActivation = (link) => {
 									Welcome to
 								</h1>
 								<img
-									src="https://i.ibb.co/2nSPt0L/mejeng.webp"
+									src="https://i.ibb.co/bvwCCWf/mejeng.png"
 									width="150"
 									height="150"
 									style="display: block; border: 0px; margin-left: 10px"

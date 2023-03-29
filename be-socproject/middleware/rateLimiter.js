@@ -5,8 +5,11 @@ const requestCreatorsLimiter = rateLimit({
 	max: 1, // Limit each IP to 1 requests per `window`
 	message: (req, res, next) => {
 		res.status(429).json({
-			status: false,
-			message: 'You have exceeded the 15 minutes limit!',
+			code: 429,
+			status: 'to many request',
+			error: {
+				message: 'You have exceeded the 15 minutes limit!',
+			},
 		});
 	},
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
@@ -18,8 +21,11 @@ const reportProjectLimiter = rateLimit({
 	max: 1, // Limit each IP to 1 requests per `window`
 	message: (req, res, next) => {
 		res.status(429).json({
-			status: false,
-			message: 'You have exceeded the 5 minutes limit!',
+			code: 429,
+			status: 'to many request',
+			error: {
+				message: 'You have exceeded the 5 minutes limit!',
+			},
 		});
 	},
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers

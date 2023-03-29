@@ -6,17 +6,23 @@ module.exports = {
 
 		if (!name) {
 			return res.status(400).json({
-				status: false,
-				msg: 'Body Is Not Valid',
+				code: 400,
+				status: 'BAD_REQUEST',
+				error: {
+					message: 'required body',
+				},
 			});
 		}
 
 		const isCategoryExist = await Categories.findOne({ where: { name } });
 
 		if (isCategoryExist) {
-			return res.status(400).json({
-				status: false,
-				msg: 'Category already exist',
+			return res.status(406).json({
+				code: 406,
+				status: 'Not Acceptable',
+				error: {
+					message: 'Category already exist',
+				},
 			});
 		} else {
 			const slug = name.toLowerCase().split(' ').join('-');
@@ -27,15 +33,18 @@ module.exports = {
 					slug,
 				});
 
-				return res.status(200).json({
-					status: true,
-					msg: 'Add Category Successfully',
+				return res.status(201).json({
+					code: 201,
+					status: 'Created',
+					message: 'Create Category Successfully',
 				});
-			} catch (error) {
-				return res.status(401).json({
-					status: false,
-					msg: 'Add Category Failure',
-					error: error.message,
+			} catch (err) {
+				return res.status(500).json({
+					code: 500,
+					status: 'Internal Server Error',
+					error: {
+						message: err.message,
+					},
 				});
 			}
 		}
@@ -45,15 +54,29 @@ module.exports = {
 			const categoires = await Categories.findAll();
 			const ammount = await Categories.count();
 
-			return res.status(200).json({
-				status: true,
-				ammount,
-				categoires,
-			});
-		} catch (error) {
-			return res.status(400).json({
-				status: false,
-				error: error.message,
+			if (categoires.length > 0) {
+				return res.status(200).json({
+					code: 200,
+					status: 'OK',
+					ammountCategory: ammount,
+					data: categoires,
+				});
+			} else {
+				return res.status(404).json({
+					code: 404,
+					status: 'Not Found',
+					error: {
+						message: 'No Category Found',
+					},
+				});
+			}
+		} catch (err) {
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: err.message,
+				},
 			});
 		}
 	},
@@ -62,9 +85,12 @@ module.exports = {
 			const { id, name } = req.body;
 
 			if (!id || !name) {
-				return res.status(400).json({
-					status: false,
-					msg: 'Body Is Not Valid',
+				return res.status(406).json({
+					code: 406,
+					status: 'Not Acceptable',
+					error: {
+						message: 'Body Is Not Valid',
+					},
 				});
 			}
 
@@ -76,17 +102,20 @@ module.exports = {
 						id,
 					},
 				}
-			);
-
-			return res.status(200).json({
-				status: true,
-				msg: 'Category has been updated',
+			).then(() => {
+				return res.status(200).json({
+					code: 200,
+					status: 'OK',
+					message: 'Category has been updated',
+				});
 			});
-		} catch (error) {
-			return res.status(401).json({
-				status: false,
-				msg: 'Update Category Failure',
-				err: error.message,
+		} catch (err) {
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: err.message,
+				},
 			});
 		}
 	},
@@ -94,9 +123,12 @@ module.exports = {
 		const { id } = req.body;
 
 		if (!id) {
-			return res.status(400).json({
-				status: false,
-				msg: 'Body Is Not Valid',
+			return res.status(406).json({
+				code: 406,
+				status: 'Not Acceptable',
+				error: {
+					message: 'Body Is Not Valid',
+				},
 			});
 		}
 
@@ -110,23 +142,29 @@ module.exports = {
 					where: {
 						id,
 					},
-				});
-
-				return res.status(200).json({
-					status: true,
-					msg: 'Delete Category Succesfully',
+				}).then(() => {
+					return res.status(200).json({
+						code: 200,
+						status: 'OK',
+						message: 'Delete Category Succesfully',
+					});
 				});
 			} else {
-				return res.status(401).json({
-					status: false,
-					msg: 'Category Not Found',
+				return res.status(404).json({
+					code: 404,
+					status: 'Not Found',
+					error: {
+						message: 'Category Not Found',
+					},
 				});
 			}
-		} catch (error) {
-			return res.status(401).json({
-				status: false,
-				msg: 'Delete Category Failed',
-				err: error.message,
+		} catch (err) {
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: err.message,
+				},
 			});
 		}
 	},

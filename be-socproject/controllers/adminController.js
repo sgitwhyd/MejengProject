@@ -4,27 +4,42 @@ module.exports = {
 	getAllUsers: async (req, res, next) => {
 		try {
 			const totalUser = await User.count();
-			const users = await User.findAll({
-				include: 'project',
-			});
+			const users = await User.findAll(
+				{
+					attributes: { exclude: ['password'] },
+				},
+				{
+					include: 'project',
+				}
+			);
 
-			return res.status(201).json({
-				status: true,
+			return res.status(200).json({
+				code: 200,
+				status: 'OK',
 				message: 'Success get all data user',
 				amountUsers: totalUser,
 				data: users,
 			});
-		} catch (error) {
-			next(error);
+		} catch(err) {
+			return res.status(500).json({
+				code: 501,
+				status: 'INTERNAL_SERVER_ERROR',
+				error: {
+					message: err.message,
+				},
+			});
 		}
 	},
 	banUser: async (req, res, next) => {
 		const { id } = req.body;
 
 		if (!id) {
-			return res.status(401).json({
-				status: false,
-				msg: 'required body',
+			return res.status(400).json({
+				code: 400,
+				status: 'BAD_REQUEST',
+				error: {
+					message: 'required body',
+				},
 			});
 		} else {
 			const isUserExist = await User.findOne({ where: { id } });
@@ -39,23 +54,29 @@ module.exports = {
 						},
 					}
 				)
-					.then((result) => {
+					.then(() => {
 						return res.status(200).json({
-							status: true,
-							msg: `user has been banned`,
+							code: 200,
+							status: 'OK',
+							message: `user has been banned`,
 						});
 					})
 					.catch((err) => {
-						return res.status(401).json({
-							status: false,
-							msg: 'error while trying ban user',
-							error: err.message,
+						return res.status(500).json({
+							code: 500,
+							status: 'INTERNAL_SERVER_ERROR',
+							error: {
+								message: err.message,
+							},
 						});
 					});
 			} else {
-				return res.status(401).json({
-					status: false,
-					msg: 'user not exist',
+				return res.status(404).json({
+					code: 404,
+					status: 'NOT_FOUND',
+					error: {
+						message: 'user not exist',
+					},
 				});
 			}
 		}
@@ -64,9 +85,12 @@ module.exports = {
 		const { id } = req.body;
 
 		if (!id) {
-			return res.status(401).json({
-				status: false,
-				msg: 'required body',
+			return res.status(400).json({
+				code: 400,
+				status: 'BAD_REQUEST',
+				error: {
+					message: 'required body',
+				},
 			});
 		} else {
 			const isUserExist = await User.findOne({ where: { id } });
@@ -81,23 +105,29 @@ module.exports = {
 						},
 					}
 				)
-					.then((result) => {
+					.then(() => {
 						return res.status(200).json({
-							status: true,
-							msg: 'the user is no longer banned',
+							code: 200,
+							status: 'OK',
+							message: 'the user is no longer banned',
 						});
 					})
 					.catch((err) => {
-						return res.status(401).json({
-							status: false,
-							msg: 'error while trying unban user',
-							error: err.message,
+						return res.status(500).json({
+							code: 500,
+							status: 'INTERNAL_SERVER_ERROR',
+							error: {
+								message: err.message,
+							},
 						});
 					});
 			} else {
-				return res.status(401).json({
-					status: false,
-					msg: 'user not exist',
+				return res.status(404).json({
+					code: 404,
+					status: 'NOT_FOUND',
+					error: {
+						message: 'user not exist',
+					},
 				});
 			}
 		}
