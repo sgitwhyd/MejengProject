@@ -10,6 +10,7 @@ const {
 	Comment,
 	RepliesComment,
 	ProjectView,
+	Sequelize,
 } = require('../db/models');
 const fs = require('fs');
 const path = require('path');
@@ -609,4 +610,58 @@ module.exports = {
 			});
 		}
 	},
+	searchProjcet: async(req, res ,next) =>{
+		try {
+			let search = ""
+
+			if (req.query.search){
+				search = req.query.search
+			}
+			Project.findAll({
+				where: {
+					title: {[Sequelize.Op.iLike]: `%${search}%`}				
+				},
+				order: [['updatedAt', 'DESC']]
+			}).then((filter) => {
+				if (filter.length == 0) {					
+					return res.status(404).json({
+						code: 404,
+						status: 'Project NOT FOUND'
+					})
+				}else{									
+					return res.status(201).json({
+						code: 201,
+						status: 'Succes Find Project',
+						filter
+					})
+				}
+			})
+		} catch (error) {
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: error.message,
+				},
+			});
+		}
+	},
+	searchProjectByCatandTool: async(req,res, next) => {
+		try {
+			const {cat, tool} = req.query
+			await Categories.findAll({
+				where: {
+					
+				}
+			})
+		} catch (error) {
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: error.message,
+				},
+			});
+		}
+	}
 };

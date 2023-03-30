@@ -77,6 +77,8 @@ router.put(
 	con.projectController.banProject
 );
 
+router.get('/api/project?', con.projectController.searchProjcet)
+
 // comment route
 router.post(
 	'/api/comment/create-comment',

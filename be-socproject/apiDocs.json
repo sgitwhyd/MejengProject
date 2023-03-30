@@ -496,19 +496,22 @@
         ],
         "parameters":[
           {
-            "name": "body",
-            "in": "body",
+            "name": "name",
+            "in": "formData",
             "description": "name tools",
             "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "example": "Figma"
-                }
+            "type": "string"
+          },
+          {
+            "name": "tool_icon",
+            "in": "formData",
+            "description": "icon tool",
+            "required": true,
+            "type": "file",
+              "items": {
+                "type": "string",
+                "format": "binary"
               }
-            }
           }
         ],
         "responses":{
