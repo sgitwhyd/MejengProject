@@ -1,4 +1,6 @@
 const nodemailer = require('nodemailer');
+const creatorActivation = require('../views/creatorActivation');
+const projectBannedView = require('../views/projectBanned');
 
 const transporter = nodemailer.createTransport({
 	host: 'smtp.gmail.com',
@@ -12,14 +14,12 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendCreatorsVerification = async (res, email, token, client_url) => {
+	const link = `${client_url}/api/creators/activate/${token}`;
 	const mailOptions = {
 		from: '"Mejeng 👻" <no-reply.gmail.com>',
 		to: email,
 		subject: 'Mejeng Creators Verification',
-		html: `<p>Silahkan klik link dibawah ini  untuk aktivasi email anda</p><a href="${client_url}/api/creators/activate/${token}">
-						Verification Email
-						</a>
-            <p>Link akan expired dalam waktu 15 Menit`,
+		html: creatorActivation(link),
 	};
 
 	await transporter
@@ -39,6 +39,32 @@ const sendCreatorsVerification = async (res, email, token, client_url) => {
 		});
 };
 
+const sendBannedProjectNotification = async (res, client_url, { project }) => {
+	const mailOptions = {
+		from: '"Mejeng 👻" <no-reply.gmail.com>',
+		to: project.user.email,
+		subject: 'Project Banned',
+		html: projectBannedView(project),
+	};
+
+	await transporter
+		.sendMail(mailOptions)
+		.then(() => {
+			return res.status(200).json({
+				status: true,
+				message: 'Project Banned & Send Notif Successfully ',
+			});
+		})
+		.catch((err) => {
+			return res.status(401).json({
+				status: false,
+				message: 'Project Banned & Send Notif Successfully ',
+				error: err.message,
+			});
+		});
+};
+
 module.exports = {
 	sendCreatorsVerification,
+	sendBannedProjectNotification,
 };

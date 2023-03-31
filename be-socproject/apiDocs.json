@@ -1,0 +1,1202 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Dokumentasi API Mejeng Project",
+    "version": "3.0.0",
+    "title": "Dokumentasi API Mejeng Project",
+    "contact": {
+      "name": "Github Project",
+      "url": "https://github.com/doniwahyus"
+    }
+  },
+  "server": {
+    "url": "http://localhost:3000/api-docs/"
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Auth API"
+    },
+    {
+      "name": "Project",
+      "description": "Project API"
+    },
+    {
+      "name": "Admin",
+      "description": "Admin API"
+    },
+    {
+      "name": "User", 
+      "description": "User API"
+    },
+    {
+      "name": "Categories",
+      "description": "Categories API"
+    },
+    {
+      "name": "Tools",
+      "description": "Tools API"
+    }
+  ],
+  "schemes": ["http"],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login User",
+        "description": "Post Login",
+        "operationId": "post-login",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "form input",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/login"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succes Login"
+          },
+          "404": {
+            "description": "user not found"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register User",
+        "description": "Post Register",
+        "operationId": "post-register",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "form input",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/register"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succes Register"
+          },
+          "400": {
+            "description": "email already used!"
+          }
+        }
+      }
+    },
+    "/api/creators/request": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Request to be creator",
+        "description": "Post Request Creator",
+        "operationId": "post-request-creator",
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "id",
+            "in": "path",
+            "description": "get user id",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "email",
+            "in": "path",
+            "description": "get user email",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "description": "get user name",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Creators Verification link has been sent to your email"
+          },
+          "401": {
+            "description": "Creators Verification link failed to sent"
+          }
+        }
+      }
+    },
+    "/api/user/update-profile": {
+      "put": {
+        "tags": ["User"],
+        "summary": "Update Profile",
+        "description": "this enpoint is to update profile",
+        "operationId": "update-profile",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "input name profile",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "desc",
+            "in": "formData",
+            "description": "input description profile",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "region",
+            "in": "formData",
+            "description": "input title",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "country",
+            "in": "formData",
+            "description": "input description",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user_image",
+            "in": "formData",
+            "description": "input image profile",
+            "required": true,
+            "type": "file",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Update Category Successfully"
+          },
+          "401": {
+            "description": "Update category failure"
+          }
+        }
+      }
+    },    
+    "/api/creators/activate/{token}": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get Activate Token",
+        "description": "",
+        "operationId": "get-activate-token",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "description": "Get token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "You are now is creator"
+          },
+          "404":{
+            "description": "Incorret or expired link!. Please register again"
+          }
+        }
+      }
+    },
+    "/api/admin/get-all-user": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get all user",
+        "description": "",
+        "operationId": "get-all-user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success get all data users"
+          }
+        }
+      }
+    },
+    "/api/admin/ban-user": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Ban user",
+        "description": "this enpoint to ban user",
+        "operationId": "ban-user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id user where is to ban",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "user has been banned"
+          },
+          "401": {
+            "description": "error while trying ban user"
+          }
+        }
+      }
+    },
+    "/api/admin/unban-user": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "UnBan user",
+        "description": "this enpoint to unBan user",
+        "operationId": "unBan-user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id user where is to unBan",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "user has been unBanned"
+          },
+          "401": {
+            "description": "error while trying unBan user"
+          }
+        }
+      }
+    },
+    "/api/categories/create-category": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Create Categories",
+        "description": "this enpoint is to create category",
+        "operationId": "create-category",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "name category",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "UI/UX"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Add Category Successfully"
+          },
+          "401": {
+            "description": "Add category failure"
+          }
+        }
+      }
+    },
+    "/api/categories": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Get All Categories",
+        "description": "this enpoint is to get all categories",
+        "operationId": "get-all-categories",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],        
+        "responses":{
+          "200":{
+            "description": "Get All Categories Successfully"
+          }
+        }
+      }
+    },
+    "/api/categories/update-category": {
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Update Categories",
+        "description": "this enpoint is to update category",
+        "operationId": "update-category",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "UI/UX"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Update Category Successfully"
+          },
+          "401": {
+            "description": "Update category failure"
+          }
+        }
+      }
+    },
+    "/api/categories/delete-category": {
+      "delete": {
+        "tags": ["Admin"],
+        "summary": "Delete Categories",
+        "description": "this enpoint is to delete category",
+        "operationId": "delete-category",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id category",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Delete Category Successfully"
+          },
+          "401": {
+            "description": "Delete category failure"
+          }
+        }
+      }
+    },
+    "/api/tools/create-tools": {
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Create Tools",
+        "description": "this enpoint is to create tools",
+        "operationId": "create-tools",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "name tools",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "tool_icon",
+            "in": "formData",
+            "description": "icon tool",
+            "required": true,
+            "type": "file",
+              "items": {
+                "type": "string",
+                "format": "binary"
+              }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Add Tools Successfully"
+          },
+          "401": {
+            "description": "Add Tools failure"
+          }
+        }
+      }
+    },
+    "/api/tools/update-tools": {
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Update Tools",
+        "description": "this enpoint is to update tools",
+        "operationId": "update-tools",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                },
+                "newName": {
+                  "type": "string",
+                  "example": "Adobe Photoshop"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Update Tools Successfully"
+          },
+          "401": {
+            "description": "Update Tools failure"
+          }
+        }
+      }
+    },
+    "/api/tools": {
+      "get": {
+        "tags": ["Tools"],
+        "summary": "Get All Tools",
+        "description": "this enpoint is to get tools",
+        "operationId": "get-all-tools",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Get All Tools Successfully"
+          },
+          "401": {
+            "description": "Get All Tools failure"
+          }
+        }
+      }
+    },
+    "/api/tools/delete-tools": {
+      "delete": {
+        "tags": ["Admin"],
+        "summary": "Delete Tools",
+        "description": "this enpoint is to delete tools",
+        "operationId": "delete-tools",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id tools",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Delete Tools Successfully"
+          },
+          "401": {
+            "description": "Delete Tools failure"
+          }
+        }
+      }
+    },
+    "/api/project/create-project": {
+      "post": {
+        "tags": ["Project"],
+        "summary": "Create Project",
+        "description": "this enpoint is to Upload Project",
+        "operationId": "create-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "CategoryId",
+            "in": "formData",
+            "description": "input CategoryId",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "ToolId",
+            "in": "formData",
+            "description": "input ToolId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "formData",
+            "description": "input title",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "desc",
+            "in": "formData",
+            "description": "input description",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "url",
+            "in": "formData",
+            "description": "input url",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "thumbnail_project_image",
+            "in": "formData",
+            "description": "input thumbnail",
+            "required": true,
+            "type": "file",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            }
+          },
+          {
+            "name": "project_image",
+            "in": "formData",
+            "description": "input project image",
+            "required": true,
+            "type": "array",
+            "items": {
+              "type": "file",
+              "format":"binary"
+            }
+          }
+        ],
+        "responses":{
+          "201":{
+            "description": "Project Successfully Upload"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/project/get-all-project": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get All Projcet",
+        "description": "this enpoint is to get all tools",
+        "operationId": "get-all-projcet",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Get All Projcet Successfully"
+          },
+          "404": {
+            "description": "Projcet not found"
+          }
+        }
+      }
+    },
+    "/api/project/delete-project": {
+      "delete": {
+        "tags": ["Project"],
+        "summary": "Delete Project",
+        "description": "this enpoint is to delete project",
+        "operationId": "delete-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id project",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Delete Projcet Successfully"
+          },
+          "404": {
+            "description": "Projct not found"
+          }
+        }
+      }
+    },
+    "/api/project/like-project": {
+      "post": {
+        "tags": ["Project"],
+        "summary": "Like and UnLike Button Project",
+        "description": "this enpoint is to like button",
+        "operationId": "button-like-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id project",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "projectId": {
+                  "type": "integer",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Like Successfully"
+          },
+          "404": {
+            "description": "Project not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/project/report-project": {
+      "post": {
+        "tags": ["Project"],
+        "summary": "Report Project",
+        "description": "this enpoint is to report project",
+        "operationId": "report-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id projcet",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "projectId": {
+                  "type": "object",
+                  "example": "1"
+                },
+                "reportCategoryId": {
+                  "type": "object",
+                  "example":"1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "201":{
+            "description": "Report Project Created"
+          },
+          "406": {
+            "description": "You already report this project"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/project/detail/{id}": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get Detail Project",
+        "description": "this enpoint is to detail project",
+        "operationId": "get-detail-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Get id project",
+            "required": true,
+            "type": "integer"
+
+          }
+        ],        
+        "responses":{
+          "200":{
+            "description": "Get Detail Project Successfully"
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        }
+      }
+    },
+    "/api/project/ban-project": {
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Ban Project",
+        "description": "this enpoint is to ban project",
+        "operationId": "ban-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id project",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "404": {
+            "description": "project not found"
+          }
+        }
+      }
+    },
+    "/api/project/category/{slug}": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get Project by Category",
+        "description": "this enpoint is to get project by the category",
+        "operationId": "get-project-by-category",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "slug",
+            "in": "path",
+            "description": "Get slug project",
+            "required": true,
+            "type": "string"
+
+          }
+        ],        
+        "responses":{
+          "200":{
+            "description": "Success get project by categories"
+          },
+          "404": {
+            "description": "required params"
+          }
+        }
+      }
+    },
+    "/api/comment/post-comment": {
+      "post": {
+        "tags": ["Comment"],
+        "summary": "Post Comment",
+        "description": "this enpoint is to post comment",
+        "operationId": "post-comment",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "string",
+                  "example": "mang engking"
+                },
+                "projectId":{
+                  "type": "integer",
+                  "example":"1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Comment is created"
+          },
+          "404": {
+            "description": "Projcet not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/comment/reply-comment": {
+      "post": {
+        "tags": ["Comment"],
+        "summary": "Post Reply Comment",
+        "description": "this enpoint is to post reply comment",
+        "operationId": "post-reply-comment",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "string",
+                  "example": "wawiwuwiwok"
+                },
+                "commentId":{
+                  "type": "integer",
+                  "example":"1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Reply Comment is created"
+          },
+          "404": {
+            "description": "Projcet not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/comment/{projectId}": {
+      "get": {
+        "tags": ["Comment"],
+        "summary": "Get Comment by Project",
+        "description": "this enpoint is to get comment by project",
+        "operationId": "get-comment-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "projectId",
+            "in": "path",
+            "description": "Get id project",
+            "required": true,
+            "type": "integer"
+
+          }
+        ],        
+        "responses":{
+          "200":{
+            "description": "Get Comment by Project Successfully"
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        }
+      }
+    },
+    "/api/project/view/{projectId}": {
+      "post": {
+        "tags": ["Project"],
+        "summary": "add Views Project",
+        "description": "this enpoint is to add views project",
+        "operationId": "views-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ip_address": {
+                  "type": "string",
+                  "example": "ipone"
+                }
+              }
+            }
+          },
+          {
+            "name":"projectId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "integer" 
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Reply Comment is created"
+          },
+          "404": {
+            "description": "Projcet not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Authorization": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "login": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "Popo10@mail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "Popo123"
+        }
+      }
+    },
+    "loginAdmin": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "admin"
+        },
+        "password": {
+          "type": "string",
+          "example": "admin"
+        }
+      }
+    },
+    "register": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "Popo10@mail.com"
+        },
+        "password":{
+          "type": "string",
+          "example": "Popo123"
+        },
+        "name": {
+          "type": "string",
+          "example": "Popo Mahmud"
+        }
+      }
+    }
+  } 
+}

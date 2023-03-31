@@ -14,13 +14,14 @@ module.exports = (sequelize, DataTypes) => {
 					foreignKey: 'ProjectId',
 					as: 'project',
 				});
+			this.hasMany(models.RepliesComment, { as: 'repliesComment' });
 		}
 	}
 	Comment.init(
 		{
 			UserId: DataTypes.INTEGER,
-			ProjectId: DataTypes.STRING,
-			content: DataTypes.STRING,
+			ProjectId: DataTypes.INTEGER,
+			body: DataTypes.STRING,
 		},
 		{
 			sequelize,
