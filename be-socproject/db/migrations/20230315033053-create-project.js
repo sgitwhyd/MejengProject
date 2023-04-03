@@ -1,53 +1,49 @@
 'use strict';
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		await queryInterface.createTable('Users', {
+		await queryInterface.createTable('Projects', {
 			id: {
 				allowNull: false,
 				autoIncrement: true,
 				primaryKey: true,
 				type: Sequelize.INTEGER,
 			},
-			email: {
+			UserId: {
+				type: Sequelize.INTEGER,
+			},
+			CategoryId: {
+				type: Sequelize.INTEGER,
+			},
+			title: {
 				type: Sequelize.STRING,
 			},
-			password: {
+			slug: {
 				type: Sequelize.STRING,
 			},
-			name: {
-				type: Sequelize.STRING,
-				allowNull: false,
-			},
-			profile_image: {
-				allowNull: true,
+			thumbnail_project_image: {
 				type: Sequelize.STRING,
 			},
-			description: {
-				allowNull: true,
+			project_image: {
+				type: Sequelize.ARRAY(Sequelize.STRING),
+			},
+			desc: {
 				type: Sequelize.STRING,
 			},
-			region: {
-				allowNull: true,
+			url: {
 				type: Sequelize.STRING,
 			},
-			country: {
-				allowNull: true,
-				type: Sequelize.STRING,
+			total_views: {
+				type: Sequelize.INTEGER,
+				defaultValue: 0,
 			},
-			role: {
-				allowNull: false,
-				type: Sequelize.ENUM(['Admin', 'User']),
-				defaultValue: 'user',
+			total_likes: {
+				type: Sequelize.INTEGER,
+				defaultValue: 0,
 			},
 			is_active: {
 				type: Sequelize.BOOLEAN,
-				allowNull: false,
 				defaultValue: true,
-			},
-			is_verify: {
-				allowNull: false,
-				type: Sequelize.BOOLEAN,
-				defaultValue: false,
 			},
 			createdAt: {
 				allowNull: false,
@@ -60,6 +56,6 @@ module.exports = {
 		});
 	},
 	async down(queryInterface, Sequelize) {
-		await queryInterface.dropTable('Users');
+		await queryInterface.dropTable('Projects');
 	},
 };
