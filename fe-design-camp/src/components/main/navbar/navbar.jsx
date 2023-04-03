@@ -54,20 +54,25 @@ export default function Navbar() {
             <BiSearch size={20} />
           </div>
           {data.login === true ? (
-            <div className="">
+            <div className="relative">
               <div
                 className="avatar flex cursor-pointer items-center gap-2 py-2 px-3"
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}
               >
-                <p className="font-semibold">Nicko Ilham</p>
+                <p
+                  className="w-[150px] truncate font-semibold"
+                  title={data.name}
+                >
+                  {data.name}
+                </p>
                 <div className="w-8 rounded-full">
                   <img src="https://picsum.photos/200/300" />
                 </div>
               </div>
               {isHover && (
                 <div
-                  className="absolute flex -translate-x-3 flex-col items-start justify-center gap-4 rounded-lg bg-white px-5 pt-7 pb-5 drop-shadow-xl"
+                  className="absolute right-0 flex -translate-x-2 flex-col items-start justify-center gap-4 rounded-lg bg-white px-5 pt-7 pb-5 drop-shadow-xl"
                   onMouseEnter={() => {
                     setIsHover(true);
                   }}
