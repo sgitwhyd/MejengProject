@@ -55,14 +55,14 @@ export default function Admin() {
           <div className="flex items-center justify-between">
             <div className="decoration-none breadcrumbs text-sm">
               <ul>
-                <li className="text-gray-400 hover:text-blue-500">
-                  <a className="no-underline">Dashboard</a>
+                <li className="cursor-pointer text-gray-500 hover:text-blue-400">
+                  <p className="no-underline">Dashboard</p>
                 </li>
                 {menuItems.map((item) => {
                   if (page === item.value && page !== "dashboard") {
                     return (
                       <li key={item.value}>
-                        <a>{item.label}</a>
+                        <span>{item.label}</span>
                       </li>
                     );
                   }
@@ -70,6 +70,8 @@ export default function Admin() {
                 })}
               </ul>
             </div>
+
+            {/* User Menu */}
             <div className="dropdown-end dropdown">
               <div
                 tabIndex={0}
@@ -85,14 +87,20 @@ export default function Admin() {
                 className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
               >
                 <li>
-                  <Link href="/">Homepage</Link>
+                  <Link href="/" className="hover:text-black">
+                    Homepage
+                  </Link>
                 </li>
                 <li>
-                  <a>Logout</a>
+                  <Link href="/" className="hover:text-black">
+                    Logout
+                  </Link>
                 </li>
               </ul>
             </div>
           </div>
+          {/* User Menu End */}
+
           {/* <!-- Page content Start --> */}
           {page === "dashboard" && <AdminHome />}
           {page === "profileCreator" && <AdminProfileCreator />}
@@ -123,8 +131,8 @@ export default function Admin() {
                       onClick={() => handlePage(item.value)}
                       className={
                         page === item.value
-                          ? "flex  bg-gradient-to-tr from-sky-600 to-sky-400 text-white"
-                          : ""
+                          ? "flex bg-gradient-to-tr from-sky-600 to-sky-400 text-white hover:text-white"
+                          : "from-sky-600 to-sky-400 hover:bg-gradient-to-tr hover:text-white"
                       }
                     >
                       {item.icons}
