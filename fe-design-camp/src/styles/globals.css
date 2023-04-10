@@ -39,7 +39,7 @@
 .underline-animation-footer {
   display: inline-block;
   position: relative;
-  color: #9F9F9F;
+  color: #9f9f9f;
 }
 
 .underline-animation-footer::after {
@@ -58,4 +58,8 @@
 .underline-animation-footer:hover::after {
   transform: scaleX(1);
   transform-origin: bottom left;
+}
+
+a {
+  @apply text-primary hover:text-primary/80;
 }
