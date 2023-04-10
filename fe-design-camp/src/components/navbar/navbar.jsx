@@ -37,22 +37,18 @@ export default function Navbar() {
           <Link href="/">
             <Image src={logo} alt="logo" height={30} />
           </Link>
-          <Link href="/inspirations" className="hover:text-primary">
-            Inspirations
-          </Link>
-          <Link href="/discover" className="hover:text-primary">
-            Discover
-          </Link>
+          <Link href="/inspirations">Inspirations</Link>
+          <Link href="/discover">Discover</Link>
         </div>
         <div className="flex items-center justify-center gap-11">
-          <div className="flex h-12 w-96 items-center justify-center rounded-full bg-[#F0F1F2] px-5 text-[#9F9F9F]">
+          {/* <div className="flex h-12 w-96 items-center justify-center rounded-full bg-[#F0F1F2] px-5 text-[#9F9F9F]">
             <input
               type="text"
               placeholder="Cari blog dan artikel disini ..."
               className="w-full bg-transparent focus:outline-none"
             />
             <BiSearch size={20} />
-          </div>
+          </div> */}
           {data.login === true ? (
             <div className="relative">
               <div
@@ -111,7 +107,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href={"/auth/register"}
-                className="rounded-[15px] bg-primary py-[14px] px-8 font-bold text-white"
+                className="rounded-[15px] bg-primary py-[14px] px-8 font-bold text-white hover:text-white"
               >
                 Register
               </Link>
