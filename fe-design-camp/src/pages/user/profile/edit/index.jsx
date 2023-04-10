@@ -1,23 +1,16 @@
-import { useState } from "react";
+import Link from "next/link";
 import Head from "next/head";
+import Button from "@/components/button/button";
 
 export default function index() {
-  const [country, setCountry] = useState([]);
-
-  const getCountries = async () => {
-    const res = await fetch("https://restcountries.eu/rest/v2/all");
-    const data = await res.json();
-    setCountry(data);
-  };
-
   return (
     <>
       <Head>
         <title>Edit Profile - Mejeng</title>
         <meta name="description" content="Login page Mejeng App " />
       </Head>
-      <section className="flex flex-col items-center justify-center">
-        <div className="flex items-center justify-center gap-24">
+      <section className="flex flex-col items-center justify-center gap-16">
+        <div className="grid grid-cols-3 gap-24">
           <div>
             <h3>Username</h3>
             <input
@@ -36,17 +29,50 @@ export default function index() {
           </div>
           <div>
             <h3>Country</h3>
-            <select className="select-info select w-64 max-w-xs">
-              <option disabled selected>
+            <select
+              className="select-bordered select w-64 max-w-xs"
+              defaultValue=""
+            >
+              <option value="" disabled>
                 Select language
               </option>
-              <option>English</option>
-              <option>Japanese</option>
-              <option>Italian</option>
+              <option value="indonesia">Indonesia</option>
             </select>
           </div>
         </div>
-        <div></div>
+
+        <div className="grid grid-cols-3 gap-24">
+          <div className="col-span-2">
+            <h3>Profile Description</h3>
+            <textarea
+              placeholder="write your profile description here"
+              className="col-span-2 h-32 w-full border-b-2 border-[#9F9F9F] py-2 focus:outline-none"
+            ></textarea>
+          </div>
+          <div>
+            <h3>Profile Picture</h3>
+            <input
+              type="file"
+              placeholder=""
+              className="w-64 border-b-2 border-[#9F9F9F] py-2 focus:outline-none "
+            />
+          </div>
+        </div>
+
+        <div className="mt-7 flex items-center justify-center gap-5">
+          <Link
+            href="/user/profile"
+            className="w-[215px] rounded-xl bg-primary px-4 py-3 text-center text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80 hover:text-white"
+          >
+            Cancel
+          </Link>
+          <Link
+            href="/user/profile"
+            className="w-[215px] rounded-xl bg-primary px-4 py-3 text-center text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80 hover:text-white"
+          >
+            Save Changes
+          </Link>
+        </div>
       </section>
     </>
   );
