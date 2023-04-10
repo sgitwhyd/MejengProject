@@ -68,6 +68,12 @@ export default function Login() {
                 />
               )}
             </div>
+            <Link
+              href="/auth/forgot-password"
+              className="flex w-full justify-end text-primary"
+            >
+              Forgot your password?
+            </Link>
           </div>
           <div className="flex w-full items-center justify-center">
             <button
