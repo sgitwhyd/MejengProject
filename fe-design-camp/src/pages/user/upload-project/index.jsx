@@ -25,9 +25,6 @@ export default function UploadProject() {
   const [checkedTools, setCheckedTools] = useState([]);
   const [link, setLink] = useState("");
 
-  const handleNextStep = () => {
-    setStep(step + 1);
-  };
   const handlePrevStep = () => {
     setStep(step - 1);
   };
@@ -154,12 +151,10 @@ export default function UploadProject() {
         {step === 1 && (
           <button
             className="w-[125px] rounded-md bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80"
-            onClick={(e) => {
+            onClick={() => {
               title.trim() === "" || thumbnail === null
-                ? alert(
-                    "Please fill in the required fields before moving to the next step."
-                  )
-                : handleNextStep(e);
+                ? errorNotify()
+                : setStep(2);
             }}
           >
             Next
@@ -175,7 +170,14 @@ export default function UploadProject() {
             </button>
             <button
               className="w-[125px] rounded-md bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80"
-              onClick={handleNextStep}
+              onClick={() => {
+                description.trim() === "" ||
+                image1 === null ||
+                isCategory === "" ||
+                checkedTools.length === 0
+                  ? errorNotify()
+                  : setStep(3);
+              }}
             >
               Next
             </button>
@@ -189,10 +191,7 @@ export default function UploadProject() {
             >
               Prev
             </button>
-            <button
-              className="w-[125px] rounded-md bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80"
-              onClick={handleNextStep}
-            >
+            <button className="w-[125px] rounded-md bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80">
               Publish
             </button>
           </div>

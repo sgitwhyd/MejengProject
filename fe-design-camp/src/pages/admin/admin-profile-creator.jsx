@@ -65,7 +65,7 @@ export default function AdminProfileCreator() {
   );
 
   return (
-    <>
+    <section className="relative h-full">
       <header className="text-xl font-bold">Profile Creator</header>
       <div
         className={`mt-6 mb-2 flex items-center justify-end ${
@@ -153,7 +153,7 @@ export default function AdminProfileCreator() {
         </table>
       </div>
       {isModalOpen && (
-        <div className="absolute inset-0 z-[99] mx-auto my-auto  h-[300px] w-[478px] border bg-white shadow-lg drop-shadow-xl">
+        <div className="absolute inset-0 z-[99] mx-auto my-auto  h-[300px] w-[478px] rounded-2xl  border bg-white shadow-lg drop-shadow-xl">
           <div className="relative flex h-full w-full flex-col items-center justify-center">
             <label
               className="btn-sm btn-circle btn absolute right-2 top-2"
@@ -164,8 +164,9 @@ export default function AdminProfileCreator() {
             <h1 className="text-lg font-bold">
               Are you sure to ban this creator?
             </h1>
-            <p>Creator name : {modalData.name}</p>
-            <div className="flex gap-4">
+            <p>Creator Name : {modalData.name}</p>
+            <p>Reason Ban : Karena ...</p>
+            <div className="mt-3 flex gap-4">
               <button
                 className="btn-error btn-sm btn text-white"
                 onClick={() => setIsModalOpen(false)}
@@ -177,6 +178,6 @@ export default function AdminProfileCreator() {
           </div>
         </div>
       )}
-    </>
+    </section>
   );
 }
