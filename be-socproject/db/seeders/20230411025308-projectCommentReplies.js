@@ -1,22 +1,26 @@
 'use strict';
 
 const faker = require('@faker-js/faker');
-
 const fake = faker.faker;
 
-const categoriesName = ['Website', 'Mobile', 'Game'];
-
-const categories = [...Array(3)].map((category, index) => ({
-	name: categoriesName[index],
-	slug: fake.helpers.slugify(categoriesName[index]).toLocaleLowerCase(),
-	createdAt: new Date(),
-	updatedAt: new Date(),
-}));
+const projectCommentReplies = [...Array(10)].map(
+	(projectCommentReply, index) => ({
+		UserId: fake.mersenne.rand(2, 1),
+		CommentId: fake.mersenne.rand(10, 1),
+		body: fake.random.words(5),
+		createdAt: new Date(),
+		updatedAt: new Date(),
+	})
+);
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		await queryInterface.bulkInsert('Categories', categories, {});
+		await queryInterface.bulkInsert(
+			'RepliesComments',
+			projectCommentReplies,
+			{}
+		);
 	},
 
 	async down(queryInterface, Sequelize) {
