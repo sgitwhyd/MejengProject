@@ -1,12 +1,23 @@
 import { useState, useRef } from "react";
 import { TiPlus } from "react-icons/ti";
-import { FiEdit3, FiTrash2, FiUpload } from "react-icons/fi";
-import Image from "next/image";
+import { FiEdit3, FiTrash2 } from "react-icons/fi";
+import DeleteModal from "@/components/modal/delete-modal";
+import AdminCategoryModal from "@/components/modal/admin-category-modal";
+import AdminToolModal from "@/components/modal/admin-tool-modal";
 
 export default function AdminAddFeature() {
+  //Category
+  const [category, setCategory] = useState("");
   const [isAddCategory, setIsAddCategory] = useState(false);
-  const [isAddTool, setIsAddTool] = useState(false);
+  const [isEditCategory, setIsEditCategory] = useState(false);
 
+  // Public
+  const [isDelete, setIsDelete] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+
+  //Tool
+  const [tool, setTool] = useState("");
+  const [isAddTool, setIsAddTool] = useState(false);
   const [logoTool, setLogoTool] = useState(null);
   const logoToolRef = useRef(null);
 
@@ -35,11 +46,12 @@ export default function AdminAddFeature() {
   ];
 
   return (
-    <section className="relative">
+    <section className="relative h-full">
       <header className="text-xl font-bold">Add Feature</header>
       <section
         className={`mt-5 flex items-center justify-between gap-10 ${
-          (isAddCategory || isAddTool) && "blur-sm"
+          (isAddCategory || isAddTool || isDelete || isEditCategory) &&
+          "blur-sm"
         }`}
       >
         {/* Table Categories */}
@@ -62,12 +74,20 @@ export default function AdminAddFeature() {
                     <button
                       title="Edit category"
                       className="btn-info btn-sm btn-circle btn text-white"
+                      onClick={() => {
+                        setIsEditCategory(true);
+                        setCategory(category.name);
+                      }}
                     >
                       <FiEdit3 size={18} />
                     </button>
                     <button
                       title="Delete category"
                       className="btn-error btn-sm btn-circle btn text-white"
+                      onClick={() => {
+                        setIsDelete(true);
+                        setDeleteId(category.name);
+                      }}
                     >
                       <FiTrash2 size={18} />
                     </button>
@@ -117,6 +137,10 @@ export default function AdminAddFeature() {
                     <button
                       title="Delete tool"
                       className="btn-error btn-sm btn-circle btn text-white"
+                      onClick={() => {
+                        setIsDelete(true);
+                        setDeleteId(tool.name);
+                      }}
                     >
                       <FiTrash2 size={18} />
                     </button>
@@ -139,129 +163,43 @@ export default function AdminAddFeature() {
         </div>
       </section>
 
+      {/* Delete modal */}
+      {isDelete && (
+        <DeleteModal setIsDelete={setIsDelete} deleteId={deleteId} />
+      )}
+
       {/* Modal Add Category */}
       {isAddCategory && (
-        <div className="absolute right-0 left-0 top-0 z-[99] mx-auto my-auto w-[478px] translate-y-1/2 rounded-2xl border bg-white p-6 shadow-lg drop-shadow-xl">
-          <div className="relative flex h-full w-full flex-col items-center justify-center">
-            <label
-              className="btn-sm btn-circle btn absolute -right-2 -top-2"
-              onClick={() => setIsAddCategory(false)}
-            >
-              ✕
-            </label>
-            <h3 className="text-lg font-bold">Tambahakan category baru</h3>
-            <div className="mb-8 w-full">
-              <label className="label">
-                <span className="label-text">Nama category</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Tulis disini..."
-                className="input-bordered input w-full "
-              />
-            </div>
-            <div className="flex gap-2">
-              <button
-                className="btn-error btn-sm btn text-white"
-                onClick={() => setIsAddCategory(false)}
-              >
-                Cancel
-              </button>
-              <button className="btn-success btn-sm btn text-white">Yes</button>
-            </div>
-          </div>
-        </div>
+        <AdminCategoryModal
+          closeModal={setIsAddCategory}
+          title="Tambahakan category baru"
+          category={category}
+          setCategory={setCategory}
+        />
       )}
-      {/* Modal Add Category End*/}
+
+      {/* Modal Edit Category */}
+      {isEditCategory && (
+        <AdminCategoryModal
+          closeModal={setIsEditCategory}
+          title="Edit nama category"
+          category={category}
+          setCategory={setCategory}
+        />
+      )}
 
       {/* Modal Add Tool */}
       {isAddTool && (
-        <div
-          className={`absolute right-0 left-0 bottom-0 z-[99] mx-auto my-auto w-[478px] rounded-2xl border bg-white p-6 shadow-lg drop-shadow-xl ${
-            logoTool && "-bottom-10"
-          }`}
-        >
-          <div className="relative flex h-full w-full flex-col items-center justify-center">
-            <label
-              className="btn-sm btn-circle btn absolute -right-2 -top-2"
-              onClick={() => {
-                setIsAddTool(false);
-                setLogoTool(null);
-              }}
-            >
-              ✕
-            </label>
-            <h3 className="text-lg font-bold">Tambahakan tool baru</h3>
-            <div className="w-full">
-              <label className="label">
-                <span className="label-text">Logo tool</span>
-              </label>
-              <div className="relative">
-                {logoTool ? (
-                  <div className="relative w-1/3">
-                    <Image
-                      src={logoTool}
-                      alt="Uploaded file"
-                      width={100}
-                      height={100}
-                      className="h-full w-full object-cover"
-                    />
-                    <button
-                      onClick={handleLogoTool}
-                      className="absolute top-0 right-0 m-2 flex rounded-full border bg-white p-2 shadow-lg hover:bg-gray-100"
-                    >
-                      <FiEdit3 size={20} />
-                    </button>
-                    <input
-                      type="file"
-                      ref={logoToolRef}
-                      className="hidden"
-                      onChange={handleLogoToolChange}
-                    />
-                  </div>
-                ) : (
-                  <>
-                    <div
-                      onClick={handleLogoTool}
-                      className="flex w-1/3 cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/40 py-3 font-semibold"
-                    >
-                      <FiUpload size={18} />
-                      <p>Upload logo</p>
-                    </div>
-                    <input
-                      type="file"
-                      ref={logoToolRef}
-                      className="hidden"
-                      onChange={handleLogoToolChange}
-                    />
-                  </>
-                )}
-              </div>
-            </div>
-            <div className="mb-8 w-full">
-              <label className="label">
-                <span className="label-text">Nama tool</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Tulis disini..."
-                className="input-bordered input w-full"
-              />
-            </div>
-            <div className="flex gap-2">
-              <button
-                className="btn-error btn-sm btn text-white"
-                onClick={() => {
-                  setIsAddTool(false);
-                  setLogoTool(null);
-                }}
-              >
-                Cancel
-              </button>
-              <button className="btn-success btn-sm btn text-white">Yes</button>
-            </div>
-          </div>
-        </div>
+        <AdminToolModal
+          tool={tool}
+          setTool={setTool}
+          setIsAddTool={setIsAddTool}
+          setLogoTool={setLogoTool}
+          logoTool={logoTool}
+          logoToolRef={logoToolRef}
+          handleLogoTool={handleLogoTool}
+          handleLogoToolChange={handleLogoToolChange}
+        />
       )}
       {/* Modal Add Tool End */}
     </section>
