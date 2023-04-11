@@ -8,6 +8,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@faker-js/faker": "^7.6.0",
     "bcrypt": "^5.1.0",
     "cloudinary": "^1.35.0",
     "cors": "^2.8.5",
@@ -16,6 +17,7 @@
     "express-fileupload": "^1.4.0",
     "express-rate-limit": "^6.7.0",
     "express-validator": "^6.15.0",
+    "faker": "^5.5.3",
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^9.0.0",
     "morgan": "^1.10.0",
