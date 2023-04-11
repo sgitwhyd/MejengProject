@@ -610,32 +610,32 @@ module.exports = {
 			});
 		}
 	},
-	searchProjcet: async(req, res ,next) =>{
+	searchProjcet: async (req, res, next) => {
 		try {
-			let search = ""
+			let search = '';
 
-			if (req.query.search){
-				search = req.query.search
+			if (req.query.search) {
+				search = req.query.search;
 			}
 			Project.findAll({
 				where: {
-					title: {[Sequelize.Op.iLike]: `%${search}%`}				
+					title: { [Sequelize.Op.iLike]: `%${search}%` },
 				},
-				order: [['updatedAt', 'DESC']]
+				order: [['updatedAt', 'DESC']],
 			}).then((filter) => {
-				if (filter.length == 0) {					
+				if (filter.length == 0) {
 					return res.status(404).json({
 						code: 404,
-						status: 'Project NOT FOUND'
-					})
-				}else{									
+						status: 'Project NOT FOUND',
+					});
+				} else {
 					return res.status(201).json({
 						code: 201,
 						status: 'Succes Find Project',
-						filter
-					})
+						filter,
+					});
 				}
-			})
+			});
 		} catch (error) {
 			return res.status(500).json({
 				code: 500,
@@ -646,14 +646,12 @@ module.exports = {
 			});
 		}
 	},
-	searchProjectByCatandTool: async(req,res, next) => {
+	searchProjectByCatandTool: async (req, res, next) => {
 		try {
-			const {cat, tool} = req.query
+			const { cat, tool } = req.query;
 			await Categories.findAll({
-				where: {
-					
-				}
-			})
+				where: {},
+			});
 		} catch (error) {
 			return res.status(500).json({
 				code: 500,
@@ -663,5 +661,62 @@ module.exports = {
 				},
 			});
 		}
-	}
+	},
+	getAllProjectByReport: async (req, res, next) => {
+		try {
+			await ProjectReport.findAll({
+				attributes: [],
+				include: [
+					{
+						model: Project,
+						as: 'project',
+						attributes: {
+							exclude: [, 'createdAt', 'updatedAt', 'UserId', 'CategoryId'],
+						},
+						include: [
+							{
+								model: User,
+								as: 'user',
+								attributes: ['name', 'profile_image'],
+							},
+							{
+								model: ReportCategories,
+								as: 'projectReportCategories',
+								group: ['projectReportCategories.name'],
+								attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+								through: {
+									model: ProjectReport,
+									as: 'projectReport',
+									attributes: [],
+								},
+							},
+						],
+					},
+				],
+			}).then((result) => {
+				const projects = result.map((item) => {
+					total_report = item.project.projectReportCategories.length;
+					return {
+						total_report,
+						...item.project.dataValues,
+					};
+				});
+
+				return res.status(200).json({
+					code: 200,
+					status: 'OK',
+					message: 'Success get all project by report',
+					data: projects,
+				});
+			});
+		} catch (error) {
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: error.message,
+				},
+			});
+		}
+	},
 };
