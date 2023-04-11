@@ -77,7 +77,7 @@ router.put(
 	con.projectController.banProject
 );
 
-router.get('/api/project?', con.projectController.searchProjcet)
+router.get('/api/project?', con.projectController.searchProjcet);
 
 // comment route
 router.post(
@@ -111,6 +111,8 @@ router.put(
 	userProfileImageFilter,
 	con.us.updateProfile
 );
+
+router.post('/api/user/forgot-password', con.us.forgotPassword);
 
 // Category
 // user akses
@@ -179,6 +181,11 @@ router.post(
 	restrict,
 	rbac(MODUL.AdminDashboard, true, true),
 	con.adminController.unBanUser
+);
+
+router.get(
+	'/api/project/reported',
+	con.projectController.getAllProjectByReport
 );
 
 router.post(
