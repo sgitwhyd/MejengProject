@@ -863,6 +863,39 @@
         }
       }
     },
+    "/api/project?reportCategory={reportCategory}": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get Project by report",
+        "description": "this enpoint is to get project by category",
+        "operationId": "get-project-report",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "reportCategory",
+            "in": "query",
+            "description": "input report category to search project",
+            "required": true,
+            "type": "string",
+            "default": " "
+          }
+        ],        
+        "responses":{
+          "200":{
+            "description": "Get Project by Reported Successfully"
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        }
+      }
+    },
     "/api/project/detail/{id}": {
       "get": {
         "tags": ["Project"],
