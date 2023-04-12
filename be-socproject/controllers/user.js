@@ -9,6 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const { sendEmailForgotPassword } = require('../utils/sendEmail');
+const bcrypt = require('bcrypt');
 
 module.exports = {
 	getProfile: async (req, res, next) => {
@@ -127,46 +128,92 @@ module.exports = {
 	forgotPassword: async (req, res) => {
 		const { email } = req.body;
 
-		if (!email) {
-			return res.status(400).json({
-				code: 400,
-				status: 'Bad Request',
-				message: 'Email is required',
-			});
-		} else {
-			try {
-				const user = await User.findOne({
-					where: { email },
+		if (!req.query.token) {
+			if (!email) {
+				return res.status(400).json({
+					code: 400,
+					status: 'Bad Request',
+					message: 'Email is required',
 				});
-
-				if (!user) {
-					return res.status(404).json({
-						code: 404,
-						status: 'Not Found',
-						message: 'Email not found',
+			} else {
+				try {
+					const user = await User.findOne({
+						where: { email },
 					});
-				} else {
-					const token = jwt.sign(
-						{
-							email: user.email,
-							id: user.id,
-						},
-						process.env.JWT_SECRET_KEY,
-						{
-							expiresIn: '15m',
-						}
-					);
 
-					await sendEmailForgotPassword(res, user.email, token);
+					if (!user) {
+						return res.status(404).json({
+							code: 404,
+							status: 'Not Found',
+							message: 'Email not found',
+						});
+					} else {
+						const token = jwt.sign(
+							{
+								email: user.email,
+								id: user.id,
+							},
+							process.env.JWT_SECRET_KEY,
+							{
+								expiresIn: '5m',
+							}
+						);
+
+						await sendEmailForgotPassword(res, user.email, token);
+					}
+				} catch (err) {
+					return res.status(500).json({
+						code: 500,
+						status: 'Internal Server Error',
+						error: {
+							message: err.message,
+						},
+					});
 				}
-			} catch (err) {
-				return res.status(500).json({
-					code: 500,
-					status: 'Internal Server Error',
-					error: {
-						message: err.message,
-					},
+			}
+		} else {
+			const { token } = req.query;
+			const { new_password } = req.body;
+
+			if (!new_password) {
+				return res.status(400).json({
+					code: 400,
+					status: 'Bad Request',
+					message: 'New password is required',
 				});
+			} else {
+				try {
+					const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+					if (!decoded) {
+						return res.status(401).json({
+							code: 401,
+							status: 'Unauthorized',
+							message: 'Token is invalid',
+						});
+					} else {
+						const encryptPassword = await bcrypt.hash(new_password, 10);
+						await User.update(
+							{
+								password: encryptPassword,
+							},
+							{ where: { id: decoded.id } }
+						);
+
+						return res.status(200).json({
+							code: 200,
+							status: 'OK',
+							message: 'Success update password',
+						});
+					}
+				} catch (err) {
+					return res.status(500).json({
+						code: 500,
+						status: 'Internal Server Error',
+						error: {
+							message: err.message,
+						},
+					});
+				}
 			}
 		}
 	},
