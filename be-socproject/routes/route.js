@@ -57,10 +57,10 @@ router.delete(
 
 // router.get('/api/project/get-all-project', con.projectController.getAllProject);
 
-router.get(
-	'/api/project/category/:slug',
-	con.projectController.getProjectByCategory
-);
+// router.get(
+// 	'/api/project/category/:slug',
+// 	con.projectController.getProjectByCategory
+// );
 
 router.post(
 	'/api/project/report-project',
@@ -185,7 +185,7 @@ router.post(
 );
 
 router.get(
-	'/api/project/reported',
+	'/api/project/reported?',
 	con.projectController.getAllProjectByReport
 );
 

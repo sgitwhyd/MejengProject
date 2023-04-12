@@ -138,6 +138,29 @@
         }
       }
     },
+    "/api/user/profile": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get Profile User",
+        "description": "this enpoint to get profile user",
+        "operationId": "get-profile",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succes get profile"
+          },
+          "500":{
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/user/update-profile": {
       "put": {
         "tags": ["User"],
@@ -710,29 +733,6 @@
         }
       }
     },
-    "/api/project/get-all-project": {
-      "get": {
-        "tags": ["Project"],
-        "summary": "Get All Projcet",
-        "description": "this enpoint is to get all tools",
-        "operationId": "get-all-projcet",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ],
-        "responses":{
-          "200":{
-            "description": "Get All Projcet Successfully"
-          },
-          "404": {
-            "description": "Projcet not found"
-          }
-        }
-      }
-    },
     "/api/project/delete-project": {
       "delete": {
         "tags": ["Project"],
@@ -863,6 +863,39 @@
         }
       }
     },
+    "/api/project?reportCategory={reportCategory}": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Get Project by report",
+        "description": "this enpoint is to get project by category",
+        "operationId": "get-project-report",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "reportCategory",
+            "in": "query",
+            "description": "input report category to search project",
+            "required": true,
+            "type": "string",
+            "default": " "
+          }
+        ],        
+        "responses":{
+          "200":{
+            "description": "Get Project by Reported Successfully"
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        }
+      }
+    },
     "/api/project/detail/{id}": {
       "get": {
         "tags": ["Project"],
@@ -896,11 +929,11 @@
         }
       }
     },
-    "/api/project?search={search}": {
+    "/api/project?title={title}&category={category}&tool={tool}": {
       "get": {
         "tags": ["Project"],
-        "summary": "Get Project By Search",
-        "description": "this enpoint is to search project",
+        "summary": "Get Project By Search, category, tools and also get all project",
+        "description": "this enpoint is to search project and get all project",
         "operationId": "search-project",
         "consumes": ["application/json"],
         "produces": ["application/json"],
@@ -911,13 +944,29 @@
         ],
         "parameters":[
           {
-            "name": "search",
+            "name": "title",
             "in": "query",
-            "description": "input search to find project",
+            "description": "input title to find project",
             "required": false,
             "type": "string",
             "default": " "
 
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "input category to find project",
+            "required": false,
+            "type": "string",
+            "default": " "
+          },
+          {
+            "name": "tool",
+            "in": "query",
+            "description": "input tool to find project",
+            "required": false,
+            "type": "string",
+            "default": " "
           }
         ],        
         "responses":{
@@ -963,39 +1012,6 @@
         "responses":{
           "404": {
             "description": "project not found"
-          }
-        }
-      }
-    },
-    "/api/project/category/{slug}": {
-      "get": {
-        "tags": ["Project"],
-        "summary": "Get Project by Category",
-        "description": "this enpoint is to get project by the category",
-        "operationId": "get-project-by-category",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ],
-        "parameters":[
-          {
-            "name": "slug",
-            "in": "path",
-            "description": "Get slug project",
-            "required": true,
-            "type": "string"
-
-          }
-        ],        
-        "responses":{
-          "200":{
-            "description": "Success get project by categories"
-          },
-          "404": {
-            "description": "required params"
           }
         }
       }

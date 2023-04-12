@@ -505,55 +505,6 @@ module.exports = {
 			});
 		}
 	},
-	getProjectByCategory: async (req, res, next) => {
-		try {
-			const { slug } = req.params;
-
-			if (!slug) {
-				return res.status(400).json({
-					code: 400,
-					status: 'BAD_REQUEST',
-					error: 'required params',
-				});
-			}
-			const projectCategory = await Categories.findOne({
-				where: { slug },
-				attributes: { exclude: ['id', 'name', 'createdAt', 'updatedAt'] },
-				include: [
-					{
-						model: Project,
-						as: 'project',
-						include: [
-							{
-								model: Tools,
-								as: 'tools',
-								attributes: ['slug', 'name'],
-								through: {
-									model: ProjectTools,
-									as: 'projcetTools',
-									attributes: { exclude: ['createdAt', 'updatedAt'] },
-								},
-							},
-						],
-					},
-				],
-			});
-			return res.status(200).json({
-				code: 200,
-				status: 'OK',
-				message: 'Success get project by categories',
-				data: projectCategory,
-			});
-		} catch (err) {
-			return res.status(500).json({
-				code: 500,
-				status: 'Internal Server Error',
-				error: {
-					message: err.message,
-				},
-			});
-		}
-	},
 	getAllProjectSearch: async(req, res, next) => {
 		try {
 			let title = "";
@@ -606,15 +557,15 @@ module.exports = {
 			}else{
 				const whereFilter = {
 					[Sequelize.Op.and]: [
-					  {title: {[Sequelize.Op.iLike]: `%${title}%`}},
-					  {"$categories.slug$" : {[Sequelize.Op.iLike]: `%${category}%`}}
+						{title: {[Sequelize.Op.iLike]: `%${title}%`}},
+						{"$categories.slug$" : {[Sequelize.Op.iLike]: `%${category}%`}}
 					]
-				  }
-
+				}
+				
 				if (tool.length > 0) {
 					whereFilter[Sequelize.Op.and].push({'$tools.slug$': {[Sequelize.Op.in]: tool}})
 				}
-
+				
 				Project.findAll({
 					include: [					
 						{
@@ -662,6 +613,171 @@ module.exports = {
 			});
 		}
 	},
+	getAllProjectByReport: async (req, res, next) => {
+		try {
+			let reportProject = "";
+
+			if (req.query.reportProject) {
+				reportProject = req.query.reportProject
+			}
+			if (!req.query) {
+				await ProjectReport.findAll({
+					where: {
+						'$project.projectReportCategories.slug$': {[Sequelize.Op.iLike]: `%${reportProject}%`}
+					},
+					attributes: [],
+					include: [
+						{
+							model: Project,
+							as: 'project',
+							attributes: {
+								exclude: [, 'createdAt', 'updatedAt', 'UserId', 'CategoryId'],
+							},
+							include: [
+								{
+									model: User,
+									as: 'user',
+									attributes: ['name', 'profile_image'],
+								},
+								{
+									model: ReportCategories,
+									as: 'projectReportCategories',
+									group: ['projectReportCategories.name'],
+									attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+									through: {
+										model: ProjectReport,
+										as: 'projectReport',
+										attributes: [],
+									},
+								},
+							],
+						},
+					],
+				}).then((result) => {
+					const projects = result.map((item) => {
+						total_report = item.project.projectReportCategories.length;
+						return {
+							total_report,
+							...item.project.dataValues,
+						};
+					});
+	
+					return res.status(200).json({
+						code: 200,
+						status: 'OK',
+						message: 'Success get all project by report',
+						data: projects,
+					});
+				});
+			}else{ 			
+			await ProjectReport.findAll({
+				where: {
+					'$project.projectReportCategories.slug$': {[Sequelize.Op.iLike]: `%${reportProject}%`}
+				},
+				attributes: [],
+				include: [
+					{
+						model: Project,
+						as: 'project',
+						attributes: {
+							exclude: [, 'createdAt', 'updatedAt', 'UserId', 'CategoryId'],
+						},
+						include: [
+							{
+								model: User,
+								as: 'user',
+								attributes: ['name', 'profile_image'],
+							},
+							{
+								model: ReportCategories,
+								as: 'projectReportCategories',
+								group: ['projectReportCategories.name'],
+								attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+								through: {
+									model: ProjectReport,
+									as: 'projectReport',
+									attributes: [],
+								},
+							},
+						],
+					},
+				],
+			}).then((result) => {
+				const projects = result.map((item) => {
+					total_report = item.project.projectReportCategories.length;
+					return {
+						total_report,
+						...item.project.dataValues,
+					};
+				});
+
+				return res.status(200).json({
+					code: 200,
+					status: 'OK',
+					message: 'Success get all project by report',
+					data: projects,
+				});
+			});
+		}
+		} catch (error) {
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: error.message,
+				},
+			});
+		}
+	},
+	// getProjectByCategory: async (req, res, next) => {
+	// 	try {
+	// 		const { slug } = req.params;
+
+	// 		if (!slug) {
+	// 			return res.status(400).json({
+	// 				code: 400,
+	// 				status: 'BAD_REQUEST',
+	// 				error: 'required params',
+	// 			});
+	// 		}
+	// 		const projectCategory = await Categories.findOne({
+	// 			where: { slug },
+	// 			attributes: { exclude: ['id', 'name', 'createdAt', 'updatedAt'] },
+	// 			include: [
+	// 				{
+	// 					model: Project,
+	// 					as: 'project',
+	// 					include: [
+	// 						{
+	// 							model: Tools,
+	// 							as: 'tools',
+	// 							attributes: ['slug', 'name'],
+	// 							through: {
+	// 								model: ProjectTools,
+	// 								as: 'projcetTools',
+	// 								attributes: { exclude: ['createdAt', 'updatedAt'] },
+	// 							},
+	// 						},
+	// 					],
+	// 				},
+	// 			],
+	// 		});
+	// 		return res.status(200).json({
+	// 			code: 200,
+	// 			status: 'OK',
+	// 			message: 'Success get project by categories',
+	// 			data: projectCategory,
+	// 		});
+	// 	} catch (err) {
+	// 		return res.status(500).json({
+	// 			code: 500,
+	// 			status: 'Internal Server Error',
+	// 			error: {
+	// 				message: err.message,
+	// 			},
+	// 		});
+	// 	}
+	// },
 	// getAllProject: async (req, res, next) => {
 	// 	try {
 	// 		const projects = await Project.findAll({
