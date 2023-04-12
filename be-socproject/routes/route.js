@@ -78,7 +78,7 @@ router.put(
 );
 
 // router.get('/api/project?', con.projectController.searchProjcet)
-router.get('/api/project?', con.projectController.getAllProjectSearch)
+router.get('/api/project?', con.projectController.getAllProjectSearch);
 
 // comment route
 router.post(
@@ -113,7 +113,7 @@ router.put(
 	con.us.updateProfile
 );
 
-router.post('/api/user/forgot-password', con.us.forgotPassword);
+router.post('/api/user/forgot-password?', con.us.forgotPassword);
 
 // Category
 // user akses

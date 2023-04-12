@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const creatorActivation = require('../views/creatorActivation');
 const projectBannedView = require('../views/projectBanned');
+const forgot_password_email = require('../views/forgot_password');
 
 const transporter = nodemailer.createTransport({
 	host: 'smtp.gmail.com',
@@ -31,7 +32,7 @@ const sendCreatorsVerification = async (res, email, token, client_url) => {
 			});
 		})
 		.catch((err) => {
-			console.log(err)
+			console.log(err);
 			return res.status(401).json({
 				status: false,
 				message: 'Creators Verification link failed to sent',
@@ -65,15 +66,12 @@ const sendBannedProjectNotification = async (res, client_url, { project }) => {
 		});
 };
 
-const sendEmailForgotPassword = async (res, email, token, client_url) => {
+const sendEmailForgotPassword = async (res, email, token) => {
 	const mailOptions = {
 		from: '"Mejeng 👻" <no-reply.gmail.com>',
 		to: email,
-		subject: 'Mejeng Reset Password',
-		html: `
-			<h1>Reset Password</h1>
-			<p>Click this <a href="${client_url}/forgot-password?token=${token}">link</a> to reset your password</p>
-		`,
+		subject: 'Reset Your Mejeng Password',
+		html: forgot_password_email(token, process.env.FE_BASE_URL),
 	};
 
 	await transporter
