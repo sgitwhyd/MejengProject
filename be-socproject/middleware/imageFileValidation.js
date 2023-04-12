@@ -63,12 +63,12 @@ const fileFilter = async (req, res, next) => {
 		// CHECK IMAGE SIZE
 		let projectImageHasLargeImageSize = false;
 		for (let image in project_image) {
-			if (project_image[image].size > 1024 * 1024) {
+			if (project_image[image].size > 3072 * 3072) {
 				projectImageHasLargeImageSize = true;
 			}
 		}
 		if (
-			thumbnail_project_image[0].size > 1024 * 1024 ||
+			thumbnail_project_image[0].size > 3072 * 3072 ||
 			projectImageHasLargeImageSize
 		) {
 			fs.unlinkSync(thumbnail_project_image[0].path);
@@ -79,7 +79,7 @@ const fileFilter = async (req, res, next) => {
 				code: 406,
 				status: 'Not Acceptable',
 				error: {
-					message: 'file too large. Max 1 MB',
+					message: 'file too large. Max 3 MB',
 				},
 			});
 		}
@@ -129,13 +129,13 @@ const userProfileImageFilter = async (req, res, next) => {
 			}
 
 			// CHECK IMAGE SIZE
-			if (user_image.size > 1024 * 1024) {
+			if (user_image.size > 3072 * 3072) {
 				fs.unlinkSync(user_image.path);
 				return res.status(406).json({
 					code: 406,
 					status: 'Not Acceptable',
 					error: {
-						error: 'file too large. Max 1 MB',
+						error: 'file too large. Max 3 MB',
 					},
 				});
 			} else {
@@ -183,13 +183,13 @@ const toolIconFilter = async (req, res, next) => {
 			}
 
 			// CHECK IMAGE SIZE
-			if (tool_icon.size > 1024 * 1024) {
+			if (tool_icon.size > 3072 * 3072) {
 				fs.unlinkSync(tool_icon.path);
 				return res.status(406).json({
 					code: 406,
 					status: 'Not Acceptable',
 					error: {
-						error: 'file too large. Max 1 MB',
+						error: 'file too large. Max 3 MB',
 					},
 				});
 			} else {
@@ -209,17 +209,17 @@ const toolIconFilter = async (req, res, next) => {
 
 const toolsIconUploadHandler = multer({
 	storage: toolsIconStorage,
-	limits: 1024 * 1024,
+	limits: 3072 * 3072,
 }).single('tool_icon');
 
 const userProfileUploadHandler = multer({
 	storage: userStorage,
-	limits: 1024 * 1024,
+	limits: 3072 * 3072,
 }).single('user_image');
 
 const uploadHandler = multer({
 	storage: projectStorage,
-	limits: 1024 * 1024,
+	limits: 3072 * 3072,
 }).fields([
 	{ name: 'thumbnail_project_image', maxCount: 1 },
 	{ name: 'project_image', maxCount: 3 },

@@ -9,9 +9,6 @@
       "url": "https://github.com/doniwahyus"
     }
   },
-  "server": {
-    "url": "http://localhost:3000/api-docs/"
-  },
   "tags": [
     {
       "name": "Auth",
@@ -892,6 +889,40 @@
         "responses":{
           "200":{
             "description": "Get Detail Project Successfully"
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        }
+      }
+    },
+    "/api/project?search={search}": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get Project By Search",
+        "description": "this enpoint is to search project",
+        "operationId": "search-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "search",
+            "in": "query",
+            "description": "input search to find project",
+            "required": false,
+            "type": "string",
+            "default": " "
+
+          }
+        ],        
+        "responses":{
+          "200":{
+            "description": "Get Search Project Successfully"
           },
           "404": {
             "description": "Project not found"

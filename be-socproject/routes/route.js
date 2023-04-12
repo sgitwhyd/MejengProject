@@ -55,7 +55,7 @@ router.delete(
 	con.projectController.deleteProject
 );
 
-router.get('/api/project/get-all-project', con.projectController.getAllProject);
+// router.get('/api/project/get-all-project', con.projectController.getAllProject);
 
 router.get(
 	'/api/project/category/:slug',
@@ -77,7 +77,8 @@ router.put(
 	con.projectController.banProject
 );
 
-router.get('/api/project?', con.projectController.searchProjcet)
+// router.get('/api/project?', con.projectController.searchProjcet)
+router.get('/api/project?', con.projectController.getAllProjectSearch)
 
 // comment route
 router.post(
