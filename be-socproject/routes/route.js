@@ -113,6 +113,8 @@ router.put(
 	con.us.updateProfile
 );
 
+router.post('/api/user/forgot-password', con.us.forgotPassword);
+
 // Category
 // user akses
 router.get('/api/categories', con.categoriesController.getAllCategories);
@@ -180,6 +182,11 @@ router.post(
 	restrict,
 	rbac(MODUL.AdminDashboard, true, true),
 	con.adminController.unBanUser
+);
+
+router.get(
+	'/api/project/reported',
+	con.projectController.getAllProjectByReport
 );
 
 router.post(

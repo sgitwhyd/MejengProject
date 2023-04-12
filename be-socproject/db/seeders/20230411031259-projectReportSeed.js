@@ -1,21 +1,12 @@
 'use strict';
 
 const faker = require('@faker-js/faker');
-
 const fake = faker.faker;
 
-const toolsName = [
-	'Figma',
-	'Adobe XD',
-	'Adobe Photoshop',
-	'Adobe Illustrator',
-	'Adobe InDesign',
-];
-
-const tools = [...Array(5)].map((tool, index) => ({
-	name: toolsName[index],
-	slug: fake.helpers.slugify(toolsName[index]).toLocaleLowerCase(),
-	icon: fake.image.imageUrl(100, 100, 'tools'),
+const projectReports = [...Array(10)].map((projectReport, index) => ({
+	UserId: fake.mersenne.rand(2, 1),
+	ProjectId: index + 1,
+	ReportCategoryId: fake.mersenne.rand(3, 1),
 	createdAt: new Date(),
 	updatedAt: new Date(),
 }));
@@ -23,7 +14,7 @@ const tools = [...Array(5)].map((tool, index) => ({
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		await queryInterface.bulkInsert('Tools', tools, {});
+		await queryInterface.bulkInsert('ProjectReports', projectReports, {});
 	},
 
 	async down(queryInterface, Sequelize) {

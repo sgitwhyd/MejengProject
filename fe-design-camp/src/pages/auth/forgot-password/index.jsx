@@ -14,7 +14,7 @@ export default function ForgotPassword() {
         <form className="flex h-full basis-1/2 flex-col items-start justify-center px-[66px]">
           <Link
             href="/auth/login"
-            className="tooltip tooltip-right absolute top-5 left-5 rounded-full bg-black p-2 text-white "
+            className="tooltip tooltip-right absolute top-5 left-5 rounded-full bg-black p-2 text-white hover:text-white"
             data-tip="Back to Login Page"
           >
             <BiArrowBack className="h-6 w-6" />

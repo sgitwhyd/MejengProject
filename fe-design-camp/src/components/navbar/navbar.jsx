@@ -37,37 +37,38 @@ export default function Navbar() {
           <Link href="/">
             <Image src={logo} alt="logo" height={30} />
           </Link>
-          <Link href="/inspirations" className="hover:text-primary">
-            Inspirations
-          </Link>
-          <Link href="/discover" className="hover:text-primary">
-            Discover
-          </Link>
+          <Link href="/inspirations">Inspirations</Link>
+          <Link href="/discover">Discover</Link>
         </div>
         <div className="flex items-center justify-center gap-11">
-          <div className="flex h-12 w-96 items-center justify-center rounded-full bg-[#F0F1F2] px-5 text-[#9F9F9F]">
+          {/* <div className="flex h-12 w-96 items-center justify-center rounded-full bg-[#F0F1F2] px-5 text-[#9F9F9F]">
             <input
               type="text"
               placeholder="Cari blog dan artikel disini ..."
               className="w-full bg-transparent focus:outline-none"
             />
             <BiSearch size={20} />
-          </div>
+          </div> */}
           {data.login === true ? (
-            <div className="">
+            <div className="relative">
               <div
                 className="avatar flex cursor-pointer items-center gap-2 py-2 px-3"
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}
               >
-                <p className="font-semibold">Nicko Ilham</p>
+                <p
+                  className="w-[150px] truncate font-semibold"
+                  title={data.name}
+                >
+                  {data.name}
+                </p>
                 <div className="w-8 rounded-full">
                   <img src="https://picsum.photos/200/300" />
                 </div>
               </div>
               {isHover && (
                 <div
-                  className="absolute flex -translate-x-3 flex-col items-start justify-center gap-4 rounded-lg bg-white px-5 pt-7 pb-5 drop-shadow-xl"
+                  className="absolute right-0 flex -translate-x-2 flex-col items-start justify-center gap-4 rounded-lg bg-white px-5 pt-7 pb-5 drop-shadow-xl"
                   onMouseEnter={() => {
                     setIsHover(true);
                   }}
@@ -106,7 +107,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href={"/auth/register"}
-                className="rounded-[15px] bg-primary py-[14px] px-8 font-bold text-white"
+                className="rounded-[15px] bg-primary py-[14px] px-8 font-bold text-white hover:text-white"
               >
                 Register
               </Link>

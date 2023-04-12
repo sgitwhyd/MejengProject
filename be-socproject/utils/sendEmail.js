@@ -65,7 +65,36 @@ const sendBannedProjectNotification = async (res, client_url, { project }) => {
 		});
 };
 
+const sendEmailForgotPassword = async (res, email, token, client_url) => {
+	const mailOptions = {
+		from: '"Mejeng 👻" <no-reply.gmail.com>',
+		to: email,
+		subject: 'Mejeng Reset Password',
+		html: `
+			<h1>Reset Password</h1>
+			<p>Click this <a href="${client_url}/forgot-password?token=${token}">link</a> to reset your password</p>
+		`,
+	};
+
+	await transporter
+		.sendMail(mailOptions)
+		.then(() => {
+			return res.status(200).json({
+				status: true,
+				message: 'Link reset password has been sent to your email',
+			});
+		})
+		.catch((err) => {
+			return res.status(401).json({
+				status: false,
+				message: 'Link reset password failed to sent',
+				error: err.message,
+			});
+		});
+};
+
 module.exports = {
 	sendCreatorsVerification,
 	sendBannedProjectNotification,
+	sendEmailForgotPassword,
 };

@@ -1,8 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
-import ProjectCard from "@/components/main/cards/project-card";
-import LayoutHomeSection from "@/components/main/layouts/layout-home-section";
-import LayoutHomeSectionReverse from "@/components/main/layouts/layout-home-section-reverse";
+import ProjectCard from "@/components/cards/project-card";
+import LayoutHomeSection from "@/components/layouts/layout-home-section";
+import LayoutHomeSectionReverse from "@/components/layouts/layout-home-section-reverse";
 
 export default function Home() {
   const projectDatas = [

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import ProjectCard from "@/components/main/cards/project-card";
+import ProjectCard from "@/components/cards/project-card";
 
 const getPosts = async () => {
   const res = await fetch("http://localhost:5000/data", { cache: "no-cache" });

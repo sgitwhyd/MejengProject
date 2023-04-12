@@ -1,7 +1,8 @@
 import "@/styles/globals.css";
-import LayoutAdmin from "@/components/main/layouts/layout-admin";
-import LayoutMain from "@/components/main/layouts/layout-main";
-import LayoutLogReg from "@/components/main/layouts/layout-log-reg";
+import LayoutAdmin from "@/components/layouts/layout-admin";
+import LayoutMain from "@/components/layouts/layout-main";
+import LayoutLogReg from "@/components/layouts/layout-log-reg";
+import { ToastContainer } from "react-toastify";
 
 export default function App({ Component, pageProps, router }) {
   const getLayout = router.pathname.includes("/admin")
@@ -10,5 +11,21 @@ export default function App({ Component, pageProps, router }) {
     ? (page) => <LayoutLogReg children={page} />
     : (page) => <LayoutMain children={page} />;
 
-  return <>{getLayout(<Component {...pageProps} />, pageProps)}</>;
+  return (
+    <>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      {getLayout(<Component {...pageProps} />, pageProps)}
+    </>
+  );
 }

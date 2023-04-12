@@ -1,26 +1,79 @@
-const { User } = require('../db/models');
+const {
+	User,
+	Project,
+	ProjectReport,
+	ReportCategories,
+} = require('../db/models');
+const { Sequelize } = require('sequelize');
 
 module.exports = {
 	getAllUsers: async (req, res, next) => {
 		try {
 			const totalUser = await User.count();
-			const users = await User.findAll(
-				{
-					attributes: { exclude: ['password'] },
+			await User.findAll({
+				attributes: {
+					exclude: ['id', 'password', 'createdAt', 'updatedAt'],
 				},
-				{
-					include: 'project',
-				}
-			);
 
-			return res.status(200).json({
-				code: 200,
-				status: 'OK',
-				message: 'Success get all data user',
-				amountUsers: totalUser,
-				data: users,
-			});
-		} catch(err) {
+				include: {
+					model: Project,
+					as: 'project',
+					attributes: {
+						exclude: ['id', 'UserId', 'CategoryId'],
+					},
+					include: {
+						model: ReportCategories,
+						as: 'projectReportCategories',
+						through: {
+							model: ProjectReport,
+							as: 'report',
+							attributes: [],
+						},
+						attributes: {
+							exclude: ['id', 'createdAt', 'updatedAt'],
+						},
+					},
+				},
+			})
+				.then((result) => {
+					const users = result.map((user) => {
+						const { project } = user;
+						const total_project_report = project.reduce((acc, cur) => {
+							return acc + cur.projectReportCategories.length;
+						}, 0);
+
+						const total_project_like = project.reduce((acc, cur) => {
+							return acc + cur.total_likes;
+						}, 0);
+
+						const total_project = project.length;
+
+						return {
+							total_project_report,
+							total_project_like,
+							total_project,
+							...user.dataValues,
+						};
+					});
+
+					return res.status(200).json({
+						code: 200,
+						status: 'OK',
+						message: 'Success get all data user',
+						amountUsers: totalUser,
+						data: users,
+					});
+				})
+				.catch((err) => {
+					return res.status(500).json({
+						code: 500,
+						status: 'INTERNAL_SERVER_ERROR',
+						error: {
+							message: err.message,
+						},
+					});
+				});
+		} catch (err) {
 			return res.status(500).json({
 				code: 501,
 				status: 'INTERNAL_SERVER_ERROR',
