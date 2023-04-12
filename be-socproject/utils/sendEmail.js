@@ -14,8 +14,8 @@ const transporter = nodemailer.createTransport({
 	},
 });
 
-const sendCreatorsVerification = async (res, email, token, client_url) => {
-	const link = `${client_url}/api/creators/activate/${token}`;
+const sendCreatorsVerification = async (res, email, token) => {
+	const link = `${process.env.FE_BASE_URL_REQUEST_CREATOR}/${token}`;
 	const mailOptions = {
 		from: '"Mejeng 👻" <no-reply.gmail.com>',
 		to: email,
@@ -32,7 +32,6 @@ const sendCreatorsVerification = async (res, email, token, client_url) => {
 			});
 		})
 		.catch((err) => {
-			console.log(err);
 			return res.status(401).json({
 				status: false,
 				message: 'Creators Verification link failed to sent',
@@ -76,6 +75,7 @@ const sendEmailForgotPassword = async (res, email, token) => {
 
 	await transporter
 		.sendMail(mailOptions)
+
 		.then(() => {
 			return res.status(200).json({
 				status: true,

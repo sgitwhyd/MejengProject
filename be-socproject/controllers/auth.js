@@ -69,7 +69,6 @@ module.exports = {
 		}
 	},
 	requestCreatorsVerifications: async (req, res, next) => {
-		const CLIENT_URL = 'http://' + req.headers.host;
 		const { id, email, name } = req.user;
 
 		const payload = {
@@ -82,7 +81,7 @@ module.exports = {
 			expiresIn: '15m',
 		});
 
-		await sendCreatorsVerification(res, email, token, CLIENT_URL);
+		await sendCreatorsVerification(res, email, token);
 	},
 	creatorsVerificationHandler: async (req, res, next) => {
 		const token = req.params.token;

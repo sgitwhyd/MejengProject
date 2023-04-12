@@ -7,11 +7,13 @@ var dummyAdmin = {
 	email: 'admin',
 	password: 'admin',
 	is_verify: true,
+	profile_image: 'https://ui-avatars.com/api/?name=admin',
 };
 var dummyUser = {
 	name: 'user',
 	email: 'user',
 	password: '123',
+	profile_image: 'https://ui-avatars.com/api/?name=user',
 };
 
 module.exports = {
@@ -31,7 +33,8 @@ module.exports = {
 				email: dummyAdmin.email,
 				password: password,
 				is_verify: dummyAdmin.is_verify,
-				role: 'Admin',
+				profile_image: dummyAdmin.profile_image,
+				role: 'admin',
 			});
 		}
 
@@ -42,19 +45,20 @@ module.exports = {
 				name: dummyUser.name,
 				email: dummyUser.email,
 				password: password,
-				role: 'User',
+				role: 'user',
+				profile_image: dummyUser.profile_image,
 			});
 		}
 
 		for (var property in MODUL) {
 			var modul = await Module.findOne({ where: { name: property } });
-			var roleAdmin = await User.findOne({ where: { role: 'Admin' } });
-			var roleUser = await User.findOne({ where: { role: 'User' } });
+			var roleAdmin = await User.findOne({ where: { role: 'admin' } });
+			var roleUser = await User.findOne({ where: { role: 'user' } });
 
 			for (var property in MODUL) {
 				var modul = await Module.findOne({ where: { name: property } });
-				var roleAdmin = await User.findOne({ where: { role: 'Admin' } });
-				var roleUser = await User.findOne({ where: { role: 'User' } });
+				var roleAdmin = await User.findOne({ where: { role: 'admin' } });
+				var roleUser = await User.findOne({ where: { role: 'user' } });
 
 				// admin Acces Admin & User Dahboard
 				var ra = await RoleAccess.findOne({
