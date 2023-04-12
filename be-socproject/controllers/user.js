@@ -7,6 +7,8 @@ const {
 } = require('../db/models');
 const fs = require('fs');
 const path = require('path');
+const jwt = require('jsonwebtoken');
+const { sendEmailForgotPassword } = require('../utils/sendEmail');
 
 module.exports = {
 	getProfile: async (req, res, next) => {
@@ -120,6 +122,52 @@ module.exports = {
 					message: err.message,
 				},
 			});
+		}
+	},
+	forgotPassword: async (req, res) => {
+		const { email } = req.body;
+
+		if (!email) {
+			return res.status(400).json({
+				code: 400,
+				status: 'Bad Request',
+				message: 'Email is required',
+			});
+		} else {
+			try {
+				const user = await User.findOne({
+					where: { email },
+				});
+
+				if (!user) {
+					return res.status(404).json({
+						code: 404,
+						status: 'Not Found',
+						message: 'Email not found',
+					});
+				} else {
+					const token = jwt.sign(
+						{
+							email: user.email,
+							id: user.id,
+						},
+						process.env.JWT_SECRET_KEY,
+						{
+							expiresIn: '15m',
+						}
+					);
+
+					await sendEmailForgotPassword(res, user.email, token);
+				}
+			} catch (err) {
+				return res.status(500).json({
+					code: 500,
+					status: 'Internal Server Error',
+					error: {
+						message: err.message,
+					},
+				});
+			}
 		}
 	},
 };

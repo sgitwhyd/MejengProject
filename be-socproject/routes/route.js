@@ -55,12 +55,12 @@ router.delete(
 	con.projectController.deleteProject
 );
 
-router.get('/api/project/get-all-project', con.projectController.getAllProject);
+// router.get('/api/project/get-all-project', con.projectController.getAllProject);
 
-router.get(
-	'/api/project/category/:slug',
-	con.projectController.getProjectByCategory
-);
+// router.get(
+// 	'/api/project/category/:slug',
+// 	con.projectController.getProjectByCategory
+// );
 
 router.post(
 	'/api/project/report-project',
@@ -77,7 +77,8 @@ router.put(
 	con.projectController.banProject
 );
 
-router.get('/api/project?', con.projectController.searchProjcet)
+// router.get('/api/project?', con.projectController.searchProjcet)
+router.get('/api/project?', con.projectController.getAllProjectSearch)
 
 // comment route
 router.post(
@@ -111,6 +112,8 @@ router.put(
 	userProfileImageFilter,
 	con.us.updateProfile
 );
+
+router.post('/api/user/forgot-password', con.us.forgotPassword);
 
 // Category
 // user akses
@@ -179,6 +182,11 @@ router.post(
 	restrict,
 	rbac(MODUL.AdminDashboard, true, true),
 	con.adminController.unBanUser
+);
+
+router.get(
+	'/api/project/reported?',
+	con.projectController.getAllProjectByReport
 );
 
 router.post(

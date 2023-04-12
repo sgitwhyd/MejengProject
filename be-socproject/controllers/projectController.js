@@ -193,62 +193,6 @@ module.exports = {
 			}
 		}
 	},
-	getAllProject: async (req, res, next) => {
-		try {
-			const projects = await Project.findAll({
-				include: [
-					{
-						model: User,
-						as: 'user',
-						attributes: ['name', 'profile_image'],
-					},
-					{
-						model: Tools,
-						as: 'tools',
-						attributes: {
-							exclude: ['id', 'createdAt', 'updatedAt'],
-						},
-						through: {
-							model: ProjectTools,
-							as: 'projcetTools',
-							attributes: { exclude: ['createdAt', 'updatedAt'] },
-						},
-					},
-					{
-						model: Categories,
-						as: 'categories',
-						attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
-					},
-				],
-			});
-
-			if (projects.length > 0) {
-				return res.status(200).json({
-					code: 200,
-					status: 'OK',
-					message: 'All project found',
-					ammount: projects.length,
-					data: projects,
-				});
-			} else {
-				return res.status(404).json({
-					code: 404,
-					status: 'NOT_FOUND',
-					error: {
-						message: 'No project found',
-					},
-				});
-			}
-		} catch (err) {
-			return res.status(500).json({
-				code: 500,
-				status: 'Internal Server Error',
-				error: {
-					message: err.message,
-				},
-			});
-		}
-	},
 	deleteProject: async (req, res, next) => {
 		const { id } = req.body;
 		try {
@@ -439,7 +383,7 @@ module.exports = {
 					{
 						model: Categories,
 						as: 'categories',
-						attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+						attributes: { exclude: ['id',  'createdAt', 'updatedAt'] },
 					},
 					{
 						model: ReportCategories,
@@ -561,81 +505,220 @@ module.exports = {
 			});
 		}
 	},
-	getProjectByCategory: async (req, res, next) => {
+	getAllProjectSearch: async(req, res, next) => {
 		try {
-			const { slug } = req.params;
-
-			if (!slug) {
-				return res.status(400).json({
-					code: 400,
-					status: 'BAD_REQUEST',
-					error: 'required params',
-				});
+			let title = "";
+			let category = "";
+			let tool = [];
+			
+			if(req.query.title){
+				title = req.query.title
 			}
-			const projectCategory = await Categories.findOne({
-				where: { slug },
-				attributes: { exclude: ['id', 'name', 'createdAt', 'updatedAt'] },
+			if(req.query.category){
+				category = req.query.category
+			}
+			if(req.query.tool){
+				tool = req.query.tool.split(',')
+			}
+
+			if (!req.query) {
+				await Project.findAll({
+					include: [
+						{
+							model: User,
+							as: 'user',
+							attributes: ['name', 'profile_image'],
+						},
+						{
+							model: Tools,
+							as: 'tools',
+							attributes: {
+								exclude: ['id', 'createdAt', 'updatedAt'],
+							},
+							through: {
+								model: ProjectTools,
+								as: 'projcetTools',
+								attributes: { exclude: ['createdAt', 'updatedAt'] },
+							},
+						},
+						{
+							model: Categories,
+							as: 'categories',
+							attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+						},
+					]
+				}).then((project) => {
+					return res.status(201).json({
+						code: 201,
+						status: 'Succes Find Project',
+						project
+					})
+				})
+			}else{
+				const whereFilter = {
+					[Sequelize.Op.and]: [
+						{title: {[Sequelize.Op.iLike]: `%${title}%`}},
+						{"$categories.slug$" : {[Sequelize.Op.iLike]: `%${category}%`}}
+					]
+				}
+				
+				if (tool.length > 0) {
+					whereFilter[Sequelize.Op.and].push({'$tools.slug$': {[Sequelize.Op.in]: tool}})
+				}
+				
+				Project.findAll({
+					include: [					
+						{
+							model: Tools,
+							as: 'tools',
+							attributes: {
+								exclude: ['id', 'createdAt', 'updatedAt'],
+							},
+							through: {
+								model: ProjectTools,
+								as: 'projcetTools',
+								attributes: { exclude: ['createdAt', 'updatedAt'] },
+							},
+						},
+						{
+							model: Categories,
+							as: 'categories',
+							attributes:  ['slug', 'name'],
+						},
+					],
+					where: whereFilter,
+					order: [['updatedAt', 'DESC']]
+				}).then((filter) => {
+					if (filter.length == 0) {					
+						return res.status(404).json({
+							code: 404,
+							status: 'Project NOT FOUND'
+						})
+					}else{									
+						return res.status(201).json({
+							code: 201,
+							status: 'Succes Find Project',
+							filter
+						})
+					}
+				})
+			}
+		} catch (error) {
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: error.message,
+				},
+			});
+		}
+	},
+	getAllProjectByReport: async (req, res, next) => {
+		try {
+			let reportProject = "";
+
+			if (req.query.reportProject) {
+				reportProject = req.query.reportProject
+			}
+			if (!req.query) {
+				await ProjectReport.findAll({
+					where: {
+						'$project.projectReportCategories.slug$': {[Sequelize.Op.iLike]: `%${reportProject}%`}
+					},
+					attributes: [],
+					include: [
+						{
+							model: Project,
+							as: 'project',
+							attributes: {
+								exclude: [, 'createdAt', 'updatedAt', 'UserId', 'CategoryId'],
+							},
+							include: [
+								{
+									model: User,
+									as: 'user',
+									attributes: ['name', 'profile_image'],
+								},
+								{
+									model: ReportCategories,
+									as: 'projectReportCategories',
+									group: ['projectReportCategories.name'],
+									attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+									through: {
+										model: ProjectReport,
+										as: 'projectReport',
+										attributes: [],
+									},
+								},
+							],
+						},
+					],
+				}).then((result) => {
+					const projects = result.map((item) => {
+						total_report = item.project.projectReportCategories.length;
+						return {
+							total_report,
+							...item.project.dataValues,
+						};
+					});
+	
+					return res.status(200).json({
+						code: 200,
+						status: 'OK',
+						message: 'Success get all project by report',
+						data: projects,
+					});
+				});
+			}else{ 			
+			await ProjectReport.findAll({
+				where: {
+					'$project.projectReportCategories.slug$': {[Sequelize.Op.iLike]: `%${reportProject}%`}
+				},
+				attributes: [],
 				include: [
 					{
 						model: Project,
 						as: 'project',
+						attributes: {
+							exclude: [, 'createdAt', 'updatedAt', 'UserId', 'CategoryId'],
+						},
 						include: [
 							{
-								model: Tools,
-								as: 'tools',
-								attributes: ['slug', 'name'],
+								model: User,
+								as: 'user',
+								attributes: ['name', 'profile_image'],
+							},
+							{
+								model: ReportCategories,
+								as: 'projectReportCategories',
+								group: ['projectReportCategories.name'],
+								attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
 								through: {
-									model: ProjectTools,
-									as: 'projcetTools',
-									attributes: { exclude: ['createdAt', 'updatedAt'] },
+									model: ProjectReport,
+									as: 'projectReport',
+									attributes: [],
 								},
 							},
 						],
 					},
 				],
-			});
-			return res.status(200).json({
-				code: 200,
-				status: 'OK',
-				message: 'Success get project by categories',
-				data: projectCategory,
-			});
-		} catch (err) {
-			return res.status(500).json({
-				code: 500,
-				status: 'Internal Server Error',
-				error: {
-					message: err.message,
-				},
-			});
-		}
-	},
-	searchProjcet: async(req, res ,next) =>{
-		try {
-			let search = ""
+			}).then((result) => {
+				const projects = result.map((item) => {
+					total_report = item.project.projectReportCategories.length;
+					return {
+						total_report,
+						...item.project.dataValues,
+					};
+				});
 
-			if (req.query.search){
-				search = req.query.search
-			}
-			Project.findAll({
-				where: {
-					title: {[Sequelize.Op.iLike]: `%${search}%`}				
-				},
-				order: [['updatedAt', 'DESC']]
-			}).then((filter) => {
-				if (filter.length == 0) {					
-					return res.status(404).json({
-						code: 404,
-						status: 'Project NOT FOUND'
-					})
-				}else{									
-					return res.status(201).json({
-						code: 201,
-						status: 'Succes Find Project',
-						filter
-					})
-				}
-			})
+				return res.status(200).json({
+					code: 200,
+					status: 'OK',
+					message: 'Success get all project by report',
+					data: projects,
+				});
+			});
+		}
 		} catch (error) {
 			return res.status(500).json({
 				code: 500,
@@ -646,22 +729,163 @@ module.exports = {
 			});
 		}
 	},
-	searchProjectByCatandTool: async(req,res, next) => {
-		try {
-			const {cat, tool} = req.query
-			await Categories.findAll({
-				where: {
+	// getProjectByCategory: async (req, res, next) => {
+	// 	try {
+	// 		const { slug } = req.params;
+
+	// 		if (!slug) {
+	// 			return res.status(400).json({
+	// 				code: 400,
+	// 				status: 'BAD_REQUEST',
+	// 				error: 'required params',
+	// 			});
+	// 		}
+	// 		const projectCategory = await Categories.findOne({
+	// 			where: { slug },
+	// 			attributes: { exclude: ['id', 'name', 'createdAt', 'updatedAt'] },
+	// 			include: [
+	// 				{
+	// 					model: Project,
+	// 					as: 'project',
+	// 					include: [
+	// 						{
+	// 							model: Tools,
+	// 							as: 'tools',
+	// 							attributes: ['slug', 'name'],
+	// 							through: {
+	// 								model: ProjectTools,
+	// 								as: 'projcetTools',
+	// 								attributes: { exclude: ['createdAt', 'updatedAt'] },
+	// 							},
+	// 						},
+	// 					],
+	// 				},
+	// 			],
+	// 		});
+	// 		return res.status(200).json({
+	// 			code: 200,
+	// 			status: 'OK',
+	// 			message: 'Success get project by categories',
+	// 			data: projectCategory,
+	// 		});
+	// 	} catch (err) {
+	// 		return res.status(500).json({
+	// 			code: 500,
+	// 			status: 'Internal Server Error',
+	// 			error: {
+	// 				message: err.message,
+	// 			},
+	// 		});
+	// 	}
+	// },
+	// getAllProject: async (req, res, next) => {
+	// 	try {
+	// 		const projects = await Project.findAll({
+	// 			include: [
+	// 				{
+	// 					model: User,
+	// 					as: 'user',
+	// 					attributes: ['name', 'profile_image'],
+	// 				},
+	// 				{
+	// 					model: Tools,
+	// 					as: 'tools',
+	// 					attributes: {
+	// 						exclude: ['id', 'createdAt', 'updatedAt'],
+	// 					},
+	// 					through: {
+	// 						model: ProjectTools,
+	// 						as: 'projcetTools',
+	// 						attributes: { exclude: ['createdAt', 'updatedAt'] },
+	// 					},
+	// 				},
+	// 				{
+	// 					model: Categories,
+	// 					as: 'categories',
+	// 					attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+	// 				},
+	// 			],
+	// 		});
+
+	// 		if (projects.length > 0) {
+	// 			return res.status(200).json({
+	// 				code: 200,
+	// 				status: 'OK',
+	// 				message: 'All project found',
+	// 				ammount: projects.length,
+	// 				data: projects,
+	// 			});
+	// 		} else {
+	// 			return res.status(404).json({
+	// 				code: 404,
+	// 				status: 'NOT_FOUND',
+	// 				error: {
+	// 					message: 'No project found',
+	// 				},
+	// 			});
+	// 		}
+	// 	} catch (err) {
+	// 		return res.status(500).json({
+	// 			code: 500,
+	// 			status: 'Internal Server Error',
+	// 			error: {
+	// 				message: err.message,
+	// 			},
+	// 		});
+	// 	}
+	// },
+	// searchProjcet: async(req, res ,next) =>{
+	// 	try {
+	// 		let search = ""
+
+	// 		if (req.query.search){
+	// 			search = req.query.search
+	// 		}
+	// 		Project.findAll({
+	// 			where: {
+	// 				title: {[Sequelize.Op.iLike]: `%${search}%`}				
+	// 			},
+	// 			order: [['updatedAt', 'DESC']]
+	// 		}).then((filter) => {
+	// 			if (filter.length == 0) {					
+	// 				return res.status(404).json({
+	// 					code: 404,
+	// 					status: 'Project NOT FOUND'
+	// 				})
+	// 			}else{									
+	// 				return res.status(201).json({
+	// 					code: 201,
+	// 					status: 'Succes Find Project',
+	// 					filter
+	// 				})
+	// 			}
+	// 		})
+	// 	} catch (error) {
+	// 		return res.status(500).json({
+	// 			code: 500,
+	// 			status: 'Internal Server Error',
+	// 			error: {
+	// 				message: error.message,
+	// 			},
+	// 		});
+	// 	}
+	// },
+	// searchProjectByCatandTool: async(req,res, next) => {
+	// 	try {
+		// 		const {cat, tool} = req.query
+	// 		await Categories.findAll({
+	// 			where: {
 					
-				}
-			})
-		} catch (error) {
-			return res.status(500).json({
-				code: 500,
-				status: 'Internal Server Error',
-				error: {
-					message: error.message,
-				},
-			});
-		}
-	}
+	// 			}
+	// 		})
+	// 	} catch (error) {
+	// 		return res.status(500).json({
+	// 			code: 500,
+	// 			status: 'Internal Server Error',
+	// 			error: {
+	// 				message: error.message,
+	// 			},
+	// 		});
+	// 	}
+	// },
 };

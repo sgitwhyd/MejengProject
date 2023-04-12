@@ -28,7 +28,7 @@ module.exports = {
 				type: Sequelize.ARRAY(Sequelize.STRING),
 			},
 			desc: {
-				type: Sequelize.STRING,
+				type: Sequelize.TEXT('long'),
 			},
 			url: {
 				type: Sequelize.STRING,

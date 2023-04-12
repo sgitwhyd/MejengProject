@@ -27,8 +27,12 @@ module.exports = (sequelize, DataTypes) => {
 				foreignKey: 'ProjectId',
 				otherId: 'ReportCategoryId',
 			});
+
 			this.hasMany(models.Comment, { as: 'comment' });
 			this.hasMany(models.ProjectView, { as: 'projectView' });
+			this.hasMany(models.ProjectReport, {
+				as: 'projectReport',
+			});
 		}
 	}
 	Project.init(
