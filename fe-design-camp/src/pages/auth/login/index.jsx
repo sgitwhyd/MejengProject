@@ -8,12 +8,14 @@ import { useDispatch } from 'react-redux';
 import { authLogin, getUserProfile } from '@/store/auth/auth.action';
 import { useSelector } from 'react-redux';
 import { selectAuth } from '@/store/auth/auth.selector';
+import { ErrorToast, SuccessToast } from '@/components/toast/alert-taost';
+import { useRouter } from 'next/router';
 
 export default function Login() {
+	const router = useRouter();
 	const dispatch = useDispatch();
 	const { token } = useSelector(selectAuth);
 
-	const [error, setError] = useState(null);
 	const [loginPayload, setLoginPayload] = useState({
 		email: '',
 		password: '',
@@ -31,10 +33,12 @@ export default function Login() {
 		e.preventDefault();
 		await dispatch(authLogin(loginPayload)).then((res) => {
 			if (res.meta.requestStatus === 'rejected') {
-				setError(res.payload.error.message);
+				ErrorToast(res.payload.error.message);
 			} else {
-				setError(null);
-				alert('Login success');
+				SuccessToast('Login success');
+				setTimeout(() => {
+					router.push('/');
+				}, 1000);
 			}
 		});
 
@@ -82,12 +86,6 @@ export default function Login() {
 							Create an account
 						</Link>
 					</h3>
-
-					{error && (
-						<div className='flex w-full flex-col items-start justify-center pb-10'>
-							<p className='pb-3 text-lg font-medium text-[#9F9F9F]'>{error}</p>
-						</div>
-					)}
 
 					<div className='flex w-full flex-col items-start justify-center pb-10'>
 						<label className='pb-3 text-lg font-medium text-[#9F9F9F]'>
