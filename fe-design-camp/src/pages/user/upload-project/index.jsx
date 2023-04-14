@@ -3,8 +3,7 @@ import { useState } from "react";
 import Headline from "./headline";
 import Details from "./details";
 import Review from "./review";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { WarningToast } from "@/components/toast/alert-taost";
 
 export default function UploadProject() {
   const [step, setStep] = useState(1);
@@ -28,18 +27,6 @@ export default function UploadProject() {
   const handlePrevStep = () => {
     setStep(step - 1);
   };
-
-  const errorNotify = () =>
-    toast.error("Fill in required fields.", {
-      position: "bottom-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-    });
 
   return (
     <section className="mx-auto max-w-[1024px]">
@@ -65,7 +52,7 @@ export default function UploadProject() {
           <button
             onClick={() => {
               title.trim() === "" || thumbnail === null
-                ? errorNotify()
+                ? WarningToast("Please fill in all required fields")
                 : setStep(2);
             }}
             className={`h-8 w-8 rounded-full text-white ${
@@ -83,7 +70,7 @@ export default function UploadProject() {
               image1 === null ||
               isCategory === "" ||
               checkedTools.length === 0
-                ? errorNotify()
+                ? WarningToast("Please fill in all required fields")
                 : setStep(3);
             }}
             className={`h-8 w-8 rounded-full text-white ${
@@ -153,7 +140,7 @@ export default function UploadProject() {
             className="w-[125px] rounded-md bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80"
             onClick={() => {
               title.trim() === "" || thumbnail === null
-                ? errorNotify()
+                ? WarningToast("Please fill in all required fields")
                 : setStep(2);
             }}
           >
@@ -175,7 +162,7 @@ export default function UploadProject() {
                 image1 === null ||
                 isCategory === "" ||
                 checkedTools.length === 0
-                  ? errorNotify()
+                  ? WarningToast("Please fill in all required fields")
                   : setStep(3);
               }}
             >
@@ -186,7 +173,7 @@ export default function UploadProject() {
         {step === 3 && (
           <div className="flex items-center justify-center gap-3">
             <button
-              className="w-[125px] rounded-md bg-slate-500 px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-slate-500/80"
+              className="w-[125px] rounded-md bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80"
               onClick={handlePrevStep}
             >
               Prev
