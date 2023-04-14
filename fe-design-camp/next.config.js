@@ -19,6 +19,12 @@ module.exports = {
         port: "",
         pathname: "/seed/**",
       },
+      {
+        protocol: "https",
+        hostname: "loremflickr.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };
