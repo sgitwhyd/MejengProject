@@ -37,7 +37,11 @@ export default function Login() {
 			} else {
 				SuccessToast('Login success');
 				setTimeout(() => {
-					router.push('/');
+					if (res.payload.role === 'admin') {
+						router.push('/admin');
+					} else {
+						router.push('/');
+					}
 				}, 1000);
 			}
 		});
@@ -49,13 +53,7 @@ export default function Login() {
 	};
 
 	useEffect(() => {
-		if (token) {
-			dispatch(
-				getUserProfile({
-					token,
-				})
-			);
-		}
+		dispatch(getUserProfile());
 	}, [token]);
 
 	return (
