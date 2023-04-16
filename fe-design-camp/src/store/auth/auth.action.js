@@ -27,8 +27,8 @@ export const authRegister = createAsyncThunk(
 
 export const getUserProfile = createAsyncThunk(
 	'auth/getUserProfile',
-	async (payload, { rejectWithValue }) => {
-		const { token } = payload;
+	async (payload, { getState, rejectWithValue }) => {
+		const { token } = getState().auth;
 		try {
 			const response = await api.get('/api/user/profile', {
 				headers: {
