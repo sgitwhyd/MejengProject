@@ -1,20 +1,17 @@
 import Head from 'next/head';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Link from 'next/link';
 import bgLogin from '@/assets/bg-login.webp';
 import Sidebar from '../sidebar';
 import { useDispatch } from 'react-redux';
 import { authLogin, getUserProfile } from '@/store/auth/auth.action';
-import { useSelector } from 'react-redux';
-import { selectAuth } from '@/store/auth/auth.selector';
 import { ErrorToast, SuccessToast } from '@/components/toast/alert-taost';
 import { useRouter } from 'next/router';
 
 export default function Login() {
 	const router = useRouter();
 	const dispatch = useDispatch();
-	const { token } = useSelector(selectAuth);
 
 	const [loginPayload, setLoginPayload] = useState({
 		email: '',
@@ -36,6 +33,7 @@ export default function Login() {
 				ErrorToast(res.payload.error.message);
 			} else {
 				SuccessToast('Login success');
+				dispatch(getUserProfile());
 				setTimeout(() => {
 					if (res.payload.role === 'admin') {
 						router.push('/admin');
@@ -51,10 +49,6 @@ export default function Login() {
 			password: '',
 		});
 	};
-
-	useEffect(() => {
-		dispatch(getUserProfile());
-	}, [token]);
 
 	return (
 		<>
