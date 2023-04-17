@@ -65,7 +65,7 @@ router.delete(
 router.post(
 	'/api/project/report-project',
 	restrict,
-	reportProjectLimiter,
+	// reportProjectLimiter,
 	con.projectController.reportProject
 );
 
@@ -149,7 +149,7 @@ router.post(
 	rbac(MODUL.AdminDashboard, true, true),
 	con.toolsController.createTool
 );
-router.post(
+router.put(
 	'/api/tools/update-tools',
 	restrict,
 	toolsIconUploadHandler,

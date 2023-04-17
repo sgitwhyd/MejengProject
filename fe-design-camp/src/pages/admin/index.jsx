@@ -1,10 +1,9 @@
 'use-client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import AdminAddFeature from './admin-add-feature';
-import AdminBanWarning from './admin-ban-waring';
+import AdminBanProject from './admin-ban-project';
 import AdminHome from './admin-home';
 import AdminProfileCreator from './admin-profile-creator';
 import { ImHome } from 'react-icons/im';
@@ -12,40 +11,11 @@ import { CgProfile } from 'react-icons/cg';
 import { BiCategory } from 'react-icons/bi';
 import { IoWarningOutline } from 'react-icons/io5';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { selectAuth } from '@/store/auth/auth.selector';
-import { selectAdmin } from '@/store/admin/admin.selector';
-import { selectCategories } from '@/store/categories/categories.selector';
-import { selectTools } from '@/store/tools/tools.selector';
-import { fetchUsers } from '@/store/admin/admin.action';
-import { fetchCategories } from '@/store/categories/categories.action';
-import { fetchTools } from '@/store/tools/tools.action';
-import { authLogout } from '@/store/auth/auth.reducer';
-
 export default function Admin() {
-	const dispatch = useDispatch();
-	const router = useRouter();
 	const [page, setPage] = useState('dashboard');
-
-	const { token, user } = useSelector(selectAuth);
 
 	const handlePage = (menu) => {
 		setPage(menu);
-	};
-
-	useEffect(() => {
-		dispatch(
-			fetchUsers({
-				token,
-			})
-		);
-		dispatch(fetchCategories());
-		dispatch(fetchTools());
-	}, []);
-
-	const handleLogout = () => {
-		dispatch(authLogout());
-		router.push('/auth/login');
 	};
 
 	const menuItems = [
@@ -65,8 +35,8 @@ export default function Admin() {
 			icons: <BiCategory size={22} />,
 		},
 		{
-			label: 'Ban or Warning',
-			value: 'banWarning',
+			label: 'Ban Project',
+			value: 'banproject',
 			icons: <IoWarningOutline size={22} />,
 		},
 	];
@@ -107,9 +77,9 @@ export default function Admin() {
 								tabIndex={0}
 								className='avatar flex cursor-pointer items-center gap-2 py-2 px-3 hover:rounded-lg hover:bg-slate-200'>
 								<div className='w-8 rounded-full'>
-									<img src={user?.profile_image} />
+									<img src='https://picsum.photos/200/300' />
 								</div>
-								<p className='font-semibold'>{user?.name}</p>
+								<p className='font-semibold'>Admin - Sigito</p>
 							</div>
 							<ul
 								tabIndex={0}
@@ -120,9 +90,9 @@ export default function Admin() {
 									</Link>
 								</li>
 								<li>
-									<button className='hover:text-black' onClick={handleLogout}>
+									<Link href='/' className='hover:text-black'>
 										Logout
-									</button>
+									</Link>
 								</li>
 							</ul>
 						</div>
@@ -133,7 +103,7 @@ export default function Admin() {
 					{page === 'dashboard' && <AdminHome />}
 					{page === 'profileCreator' && <AdminProfileCreator />}
 					{page === 'addfeature' && <AdminAddFeature />}
-					{page === 'banWarning' && <AdminBanWarning />}
+					{page === 'banproject' && <AdminBanProject />}
 					{/* <!-- Page content end --> */}
 					<div className='absolute top-5 left-0'>
 						<label

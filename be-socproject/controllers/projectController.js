@@ -292,7 +292,7 @@ module.exports = {
 		}
 	},
 	reportProject: async (req, res, next) => {
-		const { projectId, reportCategoryId } = req.body;
+		const { projectId, reportCategoryId, name } = req.body;
 
 		if (!req.body) {
 			return res.status(400).json({
@@ -311,38 +311,66 @@ module.exports = {
 				return res.status(400).json({
 					code: 400,
 					status: 'BAD_REQUEST',
-					error: { message: 'required body' },
+					error: { message: 'Project NOT FOUND' },
 				});
 			} else {
 				try {
+					console.log(req.user, projectId)					
 					const alreadyReportProject = await ProjectReport.findOne({
 						where: {
 							UserId: req.user.id,
 							ProjectId: projectId,
 						},
 					});
+					let reportCategory = await ReportCategories.findOne({
+						where: {
+							name
+						}
+					})
 
+					if (!reportCategory) {
+						reportCategory = await ReportCategories.create({
+							name: name,
+							slug: name.split(' ').join('-').toLowerCase()
+						})
+					}
+					console.log(alreadyReportProject)
 					if (!alreadyReportProject) {
 						await ProjectReport.create({
 							UserId: req.user.id,
 							ProjectId: projectId,
-							ReportCategoryId: reportCategoryId,
-						}).then(() => {
+							ReportCategoryId: reportCategory.id
+						}).then(()=>{
 							return res.status(201).json({
 								code: 201,
 								status: 'Created',
-								message: 'Report Project Created',
-							});
-						});
-					} else {
+								message: 'Report Project Created'
+							})
+						})
+					} 
+					else if (reportCategoryId){
+						await ProjectReport.update({
+							ReportCategoryId: reportCategoryId
+						},{
+							where: {
+								id: alreadyReportProject.id
+							}
+						}).then(()=>{
+							return res.status(201).json({
+								code: 201,
+								status: 'Created',
+								message: 'Report Project Created'
+							})
+						})
+					} 
+					else {						
 						return res.status(406).json({
 							code: 406,
-							status: 'Not Acceptable',
-							error: {
-								message: 'You already report this project',
-							},
-						});
+							statusb: 'Not Acceptable',
+							message: 'You already report this project'
+						})
 					}
+
 				} catch (err) {
 					return res.status(500).json({
 						code: 500,
@@ -366,7 +394,7 @@ module.exports = {
 					{
 						model: User,
 						as: 'user',
-						attributes: ['name', 'profile_image'],
+						attributes: ['id', 'name', 'profile_image'],
 					},
 					{
 						model: Tools,
@@ -420,12 +448,29 @@ module.exports = {
 				],
 			});
 
+
+			const projectByUser = await Project.findAll({
+				where: {
+					UserId : project.UserId
+				}
+			});
+
+			const projectByCategory = await Project.findAll({
+				where: {
+					CategoryId: project.CategoryId
+				}
+			});
+
 			if (project) {
 				return res.status(200).json({
 					code: 200,
 					status: 'OK',
 					message: 'Get detail project success',
-					data: project,
+					data: {
+						project,
+						projectByUser,
+						projectByCategory
+					}
 				});
 			} else {
 				return res.status(404).json({
@@ -523,6 +568,9 @@ module.exports = {
 
 			if (!req.query) {
 				await Project.findAll({
+					where :{
+						is_active : true
+					},
 					include: [
 						{
 							model: User,
@@ -586,7 +634,12 @@ module.exports = {
 							attributes:  ['slug', 'name'],
 						},
 					],
-					where: whereFilter,
+					where: {
+						[Sequelize.Op.and]: [
+							{is_active: true},
+							whereFilter
+						]
+					},
 					order: [['updatedAt', 'DESC']]
 				}).then((filter) => {
 					if (filter.length == 0) {					

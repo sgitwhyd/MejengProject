@@ -7,20 +7,20 @@ module.exports = {
 			'ReportCategories',
 			[
 				{
-					name: 'Spam',
-					slug: 'spam',
+					name: 'Plagiarism',
+					slug: 'plagiarism',
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				},
 				{
-					name: 'Porno',
-					slug: 'porno',
+					name: 'Inappropiate',
+					slug: 'inappropiate',
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				},
 				{
-					name: 'Plagiarsm',
-					slug: 'plagiarsm',
+					name: 'Sensitive',
+					slug: 'sensitive',
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				},
