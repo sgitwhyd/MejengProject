@@ -30,8 +30,12 @@ export default function ProjectCard(props) {
         {hover && (
           <div className="absolute inset-0 flex h-full w-full cursor-pointer flex-col items-end justify-between rounded-t-xl bg-gradient-to-b from-transparent via-transparent to-black/60 px-5 pb-5  font-semibold text-white">
             <div className="flex items-center justify-center gap-4 text-sm">
-              <p className="bg-orange-500 px-2 pt-8 pb-1">
-                {props.tools.join(", ")}
+              <p className="flex items-center justify-center gap-2 text-black">
+                {props.tools.map((tool, index) => (
+                  <span key={index} className="bg-white p-2">
+                    {tool}
+                  </span>
+                ))}
               </p>
             </div>
             <div className="flex w-full items-center justify-between gap-3">
