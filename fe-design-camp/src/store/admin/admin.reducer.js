@@ -1,11 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUsers } from './admin.action';
+import { fetchUsers, fetchReportedProjects, bannProject, bannUser } from './admin.action';
 
 const initialState = {
 	users: null,
 	ammount_users: null,
+	ammount_active_user: null,
+	ammount_creator_user: null,
 	loading: false,
 	error: null,
+	reportedProjects: [],
 };
 
 const adminSlice = createSlice({
@@ -16,9 +19,30 @@ const adminSlice = createSlice({
 		builder.addCase(fetchUsers.fulfilled, (state, action) => {
 			state.users = action.payload.data;
 			state.ammount_users = action.payload.amountUsers;
+			state.ammount_active_user = action.payload.totalUserActive;
+			state.ammount_creator_user = action.payload.totalUserCreator;
 			state.loading = false;
 			state.error = null;
-		});
+		}),
+			builder.addCase(fetchReportedProjects.fulfilled, (state, action) => {
+				state.loading = false;
+				state.reportedProjects = action.payload.data;
+			}),
+			builder.addCase(bannProject.pending, (state) => {
+				state.loading = true;
+			}),
+			builder.addCase(bannProject.fulfilled, (state, action) => {
+				state.loading = false
+			}),
+			builder.addCase(bannProject.rejected, (state, action) => {
+				state.loading = false
+			}),
+			builder.addCase(bannUser.pending, (state) => {
+				state.loading = true;
+			}),
+			builder.addCase(bannUser.fulfilled, (state, action) => {
+				state.loading = false
+			})
 	},
 });
 
