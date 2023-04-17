@@ -14,12 +14,13 @@ module.exports = {
 				where: {
 					is_active : true
 				}
-			})
+			});
+			const totalProject = await Project.count();
 			const totalCreator = await User.count({
 				where : {
 					is_verify : true
 				}
-			})
+			});
 			await User.findAll({
 				attributes: {
 					exclude: ['id', 'password', 'createdAt', 'updatedAt'],
@@ -78,6 +79,7 @@ module.exports = {
 						status: 'OK',
 						message: 'Success get all data user',
 						amountUsers: totalUser,
+						ammountProject: totalProject,
 						totalUserActive: userActive,
 						totalUserCreator : totalCreator,
 						data: users,

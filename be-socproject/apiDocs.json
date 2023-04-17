@@ -863,7 +863,7 @@
         }
       }
     },
-    "/api/project?reportCategory={reportCategory}": {
+    "/api/project/reported?reportProject={reportProject)": {
       "get": {
         "tags": ["Admin"],
         "summary": "Get Project by report",
@@ -878,12 +878,11 @@
         ],
         "parameters":[
           {
-            "name": "reportCategory",
+            "name": "reportProject",
             "in": "query",
             "description": "input report category to search project",
-            "required": true,
-            "type": "string",
-            "default": " "
+            "required": false,
+            "type": "string"
           }
         ],        
         "responses":{

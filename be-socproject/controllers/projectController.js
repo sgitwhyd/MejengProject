@@ -452,13 +452,15 @@ module.exports = {
 			const projectByUser = await Project.findAll({
 				where: {
 					UserId : project.UserId
-				}
+				},
+				limit: 4
 			});
 
 			const projectByCategory = await Project.findAll({
 				where: {
 					CategoryId: project.CategoryId
-				}
+				},
+				limit: 4
 			});
 
 			if (project) {
@@ -667,17 +669,8 @@ module.exports = {
 		}
 	},
 	getAllProjectByReport: async (req, res, next) => {
-		try {
-			let reportProject = "";
-
-			if (req.query.reportProject) {
-				reportProject = req.query.reportProject
-			}
-			if (!req.query) {
-				await ProjectReport.findAll({
-					where: {
-						'$project.projectReportCategories.slug$': {[Sequelize.Op.iLike]: `%${reportProject}%`}
-					},
+		try {						
+				await ProjectReport.findAll({					
 					attributes: [],
 					include: [
 						{
@@ -713,65 +706,19 @@ module.exports = {
 							total_report,
 							...item.project.dataValues,
 						};
-					});
-	
+					});	
 					return res.status(200).json({
 						code: 200,
 						status: 'OK',
 						message: 'Success get all project by report',
 						data: projects,
+					});					
+				}).catch(()=>{
+					return res.status(404).json({
+						code: 404,
+						message: 'Project NOT FOUND'
 					});
-				});
-			}else{ 			
-			await ProjectReport.findAll({
-				where: {
-					'$project.projectReportCategories.slug$': {[Sequelize.Op.iLike]: `%${reportProject}%`}
-				},
-				attributes: [],
-				include: [
-					{
-						model: Project,
-						as: 'project',
-						attributes: {
-							exclude: [, 'createdAt', 'updatedAt', 'UserId', 'CategoryId'],
-						},
-						include: [
-							{
-								model: User,
-								as: 'user',
-								attributes: ['name', 'profile_image'],
-							},
-							{
-								model: ReportCategories,
-								as: 'projectReportCategories',
-								group: ['projectReportCategories.name'],
-								attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
-								through: {
-									model: ProjectReport,
-									as: 'projectReport',
-									attributes: [],
-								},
-							},
-						],
-					},
-				],
-			}).then((result) => {
-				const projects = result.map((item) => {
-					total_report = item.project.projectReportCategories.length;
-					return {
-						total_report,
-						...item.project.dataValues,
-					};
-				});
-
-				return res.status(200).json({
-					code: 200,
-					status: 'OK',
-					message: 'Success get all project by report',
-					data: projects,
-				});
-			});
-		}
+				})					
 		} catch (error) {
 			return res.status(500).json({
 				code: 500,

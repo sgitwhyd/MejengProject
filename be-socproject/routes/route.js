@@ -65,7 +65,7 @@ router.delete(
 router.post(
 	'/api/project/report-project',
 	restrict,
-	// reportProjectLimiter,
+	reportProjectLimiter,
 	con.projectController.reportProject
 );
 
@@ -99,6 +99,7 @@ router.get(
 
 router.post(
 	'/api/project/view/:projectId',
+	restrict,
 	con.projectViewsController.addingViews
 );
 
