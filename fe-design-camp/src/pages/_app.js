@@ -14,7 +14,7 @@ export default function App({ Component, pageProps, router }) {
   return (
     <>
       <ToastContainer
-        position="bottom-right"
+        position="top-right"
         autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
