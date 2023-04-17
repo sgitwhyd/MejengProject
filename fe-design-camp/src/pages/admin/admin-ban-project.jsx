@@ -1,15 +1,34 @@
 import React, { useState } from 'react';
 import { BsSearch } from 'react-icons/bs';
 import { FaExclamationTriangle } from 'react-icons/fa';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectAdmin } from '@/store/admin/admin.selector';
+import { bannProject } from '@/store/admin/admin.action';
+import { SuccessToast, ErrorToast } from '@/components/toast/alert-taost';
 
 export default function AdminBanProject() {
 	let ammountInappropriate = 0;
 	let ammountSensitive = 0;
 	let ammountPlagiarism = 0;
+
+	const dispatch = useDispatch();
 	const [isModalBanOpen, setIsModalBanOpen] = useState(false);
 	const [isModalDetailReportOpen, setIsModalDetailReportOpen] = useState(false);
 	const [search, setSearch] = useState('');
 	const [modalData, setModalData] = useState({});
+
+	const { reportedProjects, loading } = useSelector(selectAdmin);
+
+	const handleBanProject = async (id) => {
+		await dispatch(bannProject(id)).then((res) => {
+			if (res.meta.requestStatus === 'fulfilled') {
+				SuccessToast(res.payload.message);
+			} else {
+				ErrorToast(res.payload.message);
+			}
+		});
+		setIsModalBanOpen(false);
+	};
 
 	const handleSearch = (e) => {
 		setSearch(e.target.value);
@@ -28,51 +47,13 @@ export default function AdminBanProject() {
 		'Action',
 	];
 
-	const datas = [
-		{
-			id: 1,
-			title: 'Design Logo',
-			is_active: true,
-			user: {
-				name: 'Ahmad Gito',
-			},
-			projectReportCategories: [
-				{
-					name: 'Sensitive',
-				},
-				{
-					name: 'Inappropriate',
-				},
-				{
-					name: 'Plagiarsm',
-				},
-				{
-					body: 'Plagiat Cok',
-				},
-			],
-		},
-		{
-			id: 2,
-			title: 'Design Logo 2',
-			is_active: false,
-			user: {
-				name: 'Ahmad Gito 2',
-			},
-			projectReportCategories: [
-				{
-					name: 'Sensitive',
-				},
-			],
-		},
-	];
-
-	const filteredData = datas.filter((data) => {
+	const filteredData = reportedProjects.filter((data) => {
 		return data.title.toLowerCase().includes(search.toLowerCase());
 	});
 
 	return (
 		<div>
-			<header className='text-xl font-bold'>Banned Project</header>
+			<header className='text-xl font-bold'>Reported Project</header>
 			<div
 				className={`relative mt-[55px] overflow-x-auto sm:rounded-lg ${
 					isModalBanOpen && 'blur-sm'
@@ -142,7 +123,9 @@ export default function AdminBanProject() {
 															? 'btn-error '
 															: 'btn-disabled bg-black'
 													}`}
-													onClick={() => handleModal(data)}>
+													onClick={() => {
+														handleModal(data);
+													}}>
 													<FaExclamationTriangle />
 													{data.is_active ? 'Ban Project' : 'Banned'}
 												</button>
@@ -169,7 +152,17 @@ export default function AdminBanProject() {
 								onClick={() => setIsModalBanOpen(false)}>
 								Cancel
 							</button>
-							<button className='btn-success btn-sm btn text-white'>Yes</button>
+							<button
+								className={`btn-success btn-sm btn text-white ${
+									loading ? 'loading' : ''
+								}`}
+								onClick={() => {
+									handleBanProject({
+										id: modalData.id,
+									});
+								}}>
+								Yes
+							</button>
 						</div>
 					</div>
 				</div>
@@ -180,9 +173,9 @@ export default function AdminBanProject() {
 						<h1 className='text-center text-lg font-bold'>Detail</h1>
 						<p className='my-5 w-full'>
 							{modalData.projectReportCategories.map((report) => {
-								if (report.name === 'Inappropriate') {
+								if (report.name === 'Inappropiate') {
 									ammountInappropriate += 1;
-								} else if (report.name === 'Plagiarsm') {
+								} else if (report.name === 'Plagiarism') {
 									ammountPlagiarism += 1;
 								} else if (report.name === 'Sensitive') {
 									ammountSensitive += 1;
