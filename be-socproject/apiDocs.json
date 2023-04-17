@@ -929,7 +929,7 @@
         }
       }
     },
-    "/api/project?title={title}&category={category}&tool={tool}": {
+    "/api/project": {
       "get": {
         "tags": ["Project"],
         "summary": "Get Project By Search, category, tools and also get all project",
@@ -948,25 +948,21 @@
             "in": "query",
             "description": "input title to find project",
             "required": false,
-            "type": "string",
-            "default": " "
-
+            "type": "string"            
           },
           {
             "name": "category",
             "in": "query",
             "description": "input category to find project",
             "required": false,
-            "type": "string",
-            "default": " "
+            "type": "string"            
           },
           {
             "name": "tool",
             "in": "query",
             "description": "input tool to find project",
             "required": false,
-            "type": "string",
-            "default": " "
+            "type": "string"            
           }
         ],        
         "responses":{

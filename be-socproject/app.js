@@ -12,7 +12,7 @@ const swagerrJSON = require('./apiDocs.json')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
-app.use('/images', express.static('images'))
+app.use('/uploads', express.static('uploads'))
 app.use(morgan('dev'));     
 app.use(cors())
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swagerrJSON))
