@@ -189,10 +189,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Mejeng</title>
+        <title>Inspiration - Mejeng</title>
         <meta
           name="description"
-          content="Mejeng adalah platform untuk para desain creator berbagi karya dan pamer karya!"
+          content="Find best showcase project design here"
         />
       </Head>
 
