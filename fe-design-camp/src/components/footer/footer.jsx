@@ -11,25 +11,22 @@ import Link from "next/link";
 export default function Footer() {
   const footerData = [
     {
-      title: "MEET MEJENG",
+      title: "GENERAL INFORMATION",
       links: [
-        { title: "About Us", route: "/about-us" },
-        { title: "Terms & Conditions", route: "/term-conditions" },
-        { title: "Privacy Policy", route: "/privacy-policy" },
+        { title: "About Us", route: "/information" },
+        { title: "Terms of Services", route: "/information/term-of-service" },
+        { title: "Privacy Policy", route: "/information/privacy-policy" },
       ],
     },
     {
       title: "HELP",
-      links: [
-        { title: "FAQ", route: "/faq" },
-        { title: "Help Center", route: "/help" },
-      ],
+      links: [{ title: "Help Center", route: "/information/help-center" }],
     },
     {
-      title: "CREATOR",
+      title: "SEE MEJENG",
       links: [
-        { title: "Become an Creator", route: "/become-an-creator" },
-        { title: "Creator's Guide", route: "/creators-guides" },
+        { title: "Inspiration Design", route: "/project/inspirations" },
+        { title: "Discover Awesome Design", route: "/project/discover" },
       ],
     },
   ];
