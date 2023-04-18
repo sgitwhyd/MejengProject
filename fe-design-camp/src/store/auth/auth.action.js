@@ -41,3 +41,27 @@ export const getUserProfile = createAsyncThunk(
 		}
 	}
 );
+
+export const forgotPassword = createAsyncThunk(
+	'auth/requestForgotPassword',
+	async (payload, { rejectWithValue }) => {
+		const { email, token, new_password } = payload;
+		try {
+			const response = await api.post(
+				`/api/user/forgot-password?${token ? `token=${token}` : null}`,
+				{
+					email: email ? email : null,
+					new_password
+				},
+				{
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				}
+			);
+			return response.data.data;
+		} catch (error) {
+			return rejectWithValue(error.response.data);
+		}
+	}
+);

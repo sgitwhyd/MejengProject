@@ -3,8 +3,21 @@ import Link from "next/link";
 import ProjectCard from "@/components/cards/project-card";
 import LayoutHomeSection from "@/components/layouts/layout-home-section";
 import LayoutHomeSectionReverse from "@/components/layouts/layout-home-section-reverse";
+import { useEffect } from "react";
+import { fetchCategories } from "@/store/categories/categories.action";
+import { fetchTools } from "@/store/tools/tools.action";
+import { useDispatch } from "react-redux";
 
 export default function Home() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    Promise.all([
+      dispatch(fetchCategories()),
+      dispatch(fetchTools()),
+    ])
+  }, [])
+
   const projectDatas = [
     {
       id: 1,
