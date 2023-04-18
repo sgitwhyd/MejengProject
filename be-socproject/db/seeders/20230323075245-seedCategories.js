@@ -9,6 +9,7 @@ const categoriesName = ['Website', 'Mobile', 'Game'];
 const categories = [...Array(3)].map((category, index) => ({
 	name: categoriesName[index],
 	slug: fake.helpers.slugify(categoriesName[index]).toLocaleLowerCase(),
+	desc: fake.lorem.sentence(),
 	createdAt: new Date(),
 	updatedAt: new Date(),
 }));

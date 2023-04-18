@@ -221,7 +221,7 @@ const forgot_password_email = (token, feBaseUrl) => `
 							>
 								<p style="margin: 0">
 									Someone (hopefully you) has requested a password reset for
-									your Heroku account. Follow the link below to set a new
+									your Mejeng account. Follow the link below to set a new
 									password
 									<br />
 									<br />

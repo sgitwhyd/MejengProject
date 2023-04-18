@@ -633,7 +633,7 @@ module.exports = {
 						{
 							model: Categories,
 							as: 'categories',
-							attributes:  ['slug', 'name'],
+							attributes:  ['slug', 'name', 'desc'],
 						},
 					],
 					where: {

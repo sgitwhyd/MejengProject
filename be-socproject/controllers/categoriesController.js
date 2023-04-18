@@ -2,9 +2,9 @@ const { Categories } = require('../db/models');
 
 module.exports = {
 	createCategory: async (req, res, next) => {
-		const { name } = req.body;
+		const { name, desc } = req.body;
 
-		if (!name) {
+		if (!req.body) {
 			return res.status(400).json({
 				code: 400,
 				status: 'BAD_REQUEST',
@@ -31,6 +31,7 @@ module.exports = {
 				await Categories.create({
 					name,
 					slug,
+					desc
 				});
 
 				return res.status(201).json({
@@ -82,9 +83,9 @@ module.exports = {
 	},
 	updateCategory: async (req, res, next) => {
 		try {
-			const { id, name } = req.body;
+			const { id, name, desc } = req.body;
 
-			if (!id || !name) {
+			if (!id || !name || !desc) {
 				return res.status(406).json({
 					code: 406,
 					status: 'Not Acceptable',
@@ -96,7 +97,7 @@ module.exports = {
 
 			const slug = name.toLowerCase().split(' ').join('-');
 			await Categories.update(
-				{ name, slug },
+				{ name, slug, desc },
 				{
 					where: {
 						id,
