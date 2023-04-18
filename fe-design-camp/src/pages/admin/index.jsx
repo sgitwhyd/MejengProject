@@ -1,5 +1,5 @@
 'use-client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import AdminAddFeature from './admin-add-feature';
@@ -10,9 +10,48 @@ import { ImHome } from 'react-icons/im';
 import { CgProfile } from 'react-icons/cg';
 import { BiCategory } from 'react-icons/bi';
 import { IoWarningOutline } from 'react-icons/io5';
+import { useDispatch } from 'react-redux';
+import { fetchUsers, fetchReportedProjects } from '@/store/admin/admin.action';
+import { authLogout } from '@/store/auth/auth.reducer';
+import { selectAuth } from '@/store/auth/auth.selector';
+import { fetchCategories } from '@/store/categories/categories.action';
+import { fetchTools } from '@/store/tools/tools.action';
+import { SuccessToast, ErrorToast } from '@/components/toast/alert-taost';
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 
 export default function Admin() {
+	const router = useRouter();
+	const dispatch = useDispatch();
 	const [page, setPage] = useState('dashboard');
+
+	const { user } = useSelector(selectAuth);
+
+	useEffect(() => {
+		Promise.all([
+			dispatch(fetchUsers()),
+			dispatch(fetchCategories()),
+			dispatch(fetchTools()),
+			dispatch(fetchReportedProjects()),
+		]).then((res) => {
+			res.map((item) => {
+				if (item.meta?.requestStatus === 'rejected') {
+					ErrorToast(res.payload.error.message);
+					router.push('/');
+				}
+			});
+		});
+	});
+
+	const handleLogout = () => {
+		router.push('/');
+		setTimeout(() => {
+			dispatch(authLogout());
+			SuccessToast('Logout Success');
+		}, 2000);
+
+		
+	};
 
 	const handlePage = (menu) => {
 		setPage(menu);
@@ -77,9 +116,9 @@ export default function Admin() {
 								tabIndex={0}
 								className='avatar flex cursor-pointer items-center gap-2 py-2 px-3 hover:rounded-lg hover:bg-slate-200'>
 								<div className='w-8 rounded-full'>
-									<img src='https://picsum.photos/200/300' />
+									<img src={user.profile_image} />
 								</div>
-								<p className='font-semibold'>Admin - Sigito</p>
+								<p className='font-semibold'>{user?.name}</p>
 							</div>
 							<ul
 								tabIndex={0}
@@ -90,9 +129,9 @@ export default function Admin() {
 									</Link>
 								</li>
 								<li>
-									<Link href='/' className='hover:text-black'>
+									<button onClick={handleLogout} className='hover:text-black'>
 										Logout
-									</Link>
+									</button>
 								</li>
 							</ul>
 						</div>
