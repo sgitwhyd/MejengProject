@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { BsSearch } from 'react-icons/bs';
 import { MdReportProblem } from 'react-icons/md';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectAdmin } from '@/store/admin/admin.selector';
+import { bannUser } from '@/store/admin/admin.action';
+import { SuccessToast, ErrorToast } from '@/components/toast/alert-taost';
 
 export default function AdminProfileCreator() {
+	const dispatch = useDispatch();
+
 	const [searchText, setSearchText] = useState('');
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalData, setModalData] = useState({});
 
-	const { users, ammount_users } = useSelector(selectAdmin);
+	const { users, ammount_users, loading } = useSelector(selectAdmin);
 
 	const tableHeader = [
 		'Creator Name',
@@ -21,6 +25,21 @@ export default function AdminProfileCreator() {
 		'Total Report',
 		'Action',
 	];
+
+	const handleBanUser = async (id) => {
+		await dispatch(
+			bannUser({
+				id,
+			})
+		).then((res) => {
+			if (res.meta.requestStatus === 'fulfilled') {
+				SuccessToast(res.payload.message);
+			} else {
+				ErrorToast(res.payload.error.message);
+			}
+		});
+		setIsModalOpen(false);
+	};
 
 	const handleModal = (data) => {
 		setIsModalOpen(true);
@@ -87,19 +106,25 @@ export default function AdminProfileCreator() {
 										{user.region} - {user.country}
 									</td>
 									<td className='px-6 py-4'>{user.total_project}</td>
-									<td className='px-6 py-4'>belum tersedia</td>
+									<td className='px-6 py-4'>{user.total_views_project}</td>
 									<td className='px-6 py-4'>{user.total_project_like}</td>
 									<td className='px-6 py-4'>
 										{user.is_active ? (
-											<button className='btn-success btn-xs btn'>Active</button>
+											<button className='btn-success btn-xs btn capitalize text-white'>
+												Active
+											</button>
 										) : (
-											<button className='btn-error btn-xs btn'>Disable</button>
+											<button className='btn-error btn-xs btn capitalize text-white'>
+												Disable
+											</button>
 										)}
 									</td>
 									<td className='px-6 py-4'>{user.total_project_report}</td>
 									<td className='px-6 py-4'>
 										<button
-											className='btn-error btn-sm btn gap-2'
+											className={`btn-error btn-sm btn gap-2 capitalize text-white ${
+												user.is_active ? '' : 'btn-disabled'
+											}`}
 											onClick={() => handleModal(user)}>
 											<MdReportProblem />
 											Ban Creator
@@ -119,25 +144,27 @@ export default function AdminProfileCreator() {
 				</table>
 			</div>
 			{isModalOpen && (
-				<div className='absolute inset-0 z-[99] mx-auto my-auto  h-[300px] w-[478px] rounded-2xl  border bg-white shadow-lg drop-shadow-xl'>
+				<div className='absolute inset-0 z-[99] mx-auto my-auto  h-fit w-[478px] rounded-2xl border  bg-white py-14 shadow-lg drop-shadow-xl'>
 					<div className='relative flex h-full w-full flex-col items-center justify-center'>
-						<label
-							className='btn-sm btn-circle btn absolute right-2 top-2'
-							onClick={() => setIsModalOpen(false)}>
-							✕
-						</label>
 						<h1 className='text-lg font-bold'>
 							Are you sure to ban this creator?
 						</h1>
 						<p>Creator Name : {modalData.name}</p>
-						<p>Reason Ban : Karena ...</p>
-						<div className='mt-3 flex gap-4'>
+						<div className='mt-5 flex gap-4'>
 							<button
 								className='btn-error btn-sm btn text-white'
 								onClick={() => setIsModalOpen(false)}>
 								Cancel
 							</button>
-							<button className='btn-success btn-sm btn text-white'>Yes</button>
+							<button
+								className={`btn-success btn-sm btn text-white ${
+									loading ? 'loading' : ''
+								}`}
+								onClick={() => {
+									handleBanUser(modalData.id);
+								}}>
+								Yes
+							</button>
 						</div>
 					</div>
 				</div>

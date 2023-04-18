@@ -21,11 +21,12 @@ module.exports = {
 						name,
 						slug,
 						icon: tool_icon.path,
-					}).then(() => {
+					}).then((result) => {
 						return res.status(201).json({
 							code: 201,
 							status: 'Created',
 							message: 'Tool Added Succesfully',
+							result
 						});
 					});
 				} else {
@@ -156,28 +157,42 @@ module.exports = {
 			});
 		} else {
 			try {
-				const isToolExist = await Tools.findOne({
+				await Tools.findOne({
 					where: {
 						id,
 					},
-				});
-				if (isToolExist) {
-					await Tools.destroy({ where: { id } }).then(() => {
-						return res.status(200).json({
-							code: 200,
-							status: 'OK',
-							message: 'Delete Tool Successfully',
+				}).then((result)=>{
+					if (result) {
+						try {
+							fs.unlinkSync(path.normalize(result.icon));						
+						} catch (err) {
+							return res.status(500).json({
+								code: 500,
+								status: 'Internal Server Error',
+								error: {
+									message: err.message,
+								},
+							});
+						}
+						Tools.destroy({ where: { id } }).then(() => {
+							return res.status(200).json({
+								code: 200,
+								status: 'OK',
+								message: 'Delete Tool Successfully',
+							});
 						});
-					});
-				} else {
-					return res.status(404).json({
-						code: 404,
-						status: 'Not Found',
-						error: {
-							message: "tools doesn't exist",
-						},
-					});
-				}
+					} else {
+						return res.status(404).json({
+							code: 404,
+							status: 'Not Found',
+							error: {
+								message: "tools doesn't exist",
+							},
+						});
+					}
+				})
+
+				
 			} catch (err) {
 				return res.status(500).json({
 					code: 500,

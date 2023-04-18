@@ -1,12 +1,11 @@
 import Head from 'next/head';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Link from 'next/link';
 import bgLogin from '@/assets/bg-login.webp';
 import Sidebar from '../sidebar';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { authLogin, getUserProfile } from '@/store/auth/auth.action';
-import { useSelector } from 'react-redux';
 import { selectAuth } from '@/store/auth/auth.selector';
 import { ErrorToast, SuccessToast } from '@/components/toast/alert-taost';
 import { useRouter } from 'next/router';
@@ -14,13 +13,13 @@ import { useRouter } from 'next/router';
 export default function Login() {
 	const router = useRouter();
 	const dispatch = useDispatch();
-	const { token } = useSelector(selectAuth);
 
 	const [loginPayload, setLoginPayload] = useState({
 		email: '',
 		password: '',
 	});
 	const [showPassword, setShowPassword] = useState(false);
+	const {loading} = useSelector(selectAuth);
 
 	const handleOnChange = (e) => {
 		setLoginPayload({
@@ -36,6 +35,7 @@ export default function Login() {
 				ErrorToast(res.payload.error.message);
 			} else {
 				SuccessToast('Login success');
+				dispatch(getUserProfile());
 				setTimeout(() => {
 					if (res.payload.role === 'admin') {
 						router.push('/admin');
@@ -51,10 +51,6 @@ export default function Login() {
 			password: '',
 		});
 	};
-
-	useEffect(() => {
-		dispatch(getUserProfile());
-	}, [token]);
 
 	return (
 		<>
@@ -99,11 +95,11 @@ export default function Login() {
 						/>
 					</div>
 
-					<div className='flex w-full flex-col items-start justify-center pb-24'>
+					<div className='flex w-full flex-col justify-center pb-24'>
 						<label className='pb-3 text-lg font-medium text-[#9F9F9F]'>
 							Your password
 						</label>
-						<div className='flex w-full items-center justify-between pb-1'>
+						<div className='mb-3 flex w-full items-center justify-between'>
 							<input
 								type={showPassword ? 'text' : 'password'}
 								placeholder=''
@@ -124,16 +120,18 @@ export default function Login() {
 								/>
 							)}
 						</div>
-						<Link
-							href='/auth/forgot-password'
-							className='flex w-full justify-end text-primary'>
-							Forgot your password?
-						</Link>
+						<div className='text-end'>
+							<Link
+								href='/auth/forgot-password'
+								className='float-right w-fit text-primary'>
+								Forgot your password?
+							</Link>
+						</div>
 					</div>
 					<div className='flex w-full items-center justify-center'>
 						<button
 							type='submit'
-							className='rounded-full bg-primary/60 px-[72px] py-[14px] text-xl font-bold text-white transition-all duration-200 hover:bg-primary'>
+							className={`${loading ? 'loading btn-disabled cursor-not-allowed' : ''} btn-primary btn w-52 text-xl font-bold capitalize text-white hover:bg-primary`}>
 							Login
 						</button>
 					</div>

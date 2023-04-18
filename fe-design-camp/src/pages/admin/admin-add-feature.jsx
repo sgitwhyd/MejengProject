@@ -337,6 +337,7 @@ export default function AdminAddFeature() {
 					tool={tool}
 					setTool={setTool}
 					setIsAddTool={setIsAddTool}
+					setPreviewToolIcon={setPreviewToolIcon}
 					setLogoTool={setLogoTool}
 					logoTool={previewToolIcon}
 					logoToolRef={logoToolRef}

@@ -5,8 +5,17 @@ import Link from "next/link";
 import { BsArrowRightShort } from "react-icons/bs";
 import { MdOutlineDesignServices, MdGroups } from "react-icons/md";
 import { CgDesignmodo } from "react-icons/cg";
+import { useEffect } from "react";
+import { fetchCategories } from "@/store/categories/categories.action";
+import { fetchTools } from "@/store/tools/tools.action";
+import { useDispatch } from "react-redux";
 
 export default function Home() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    Promise.all([dispatch(fetchCategories()), dispatch(fetchTools())]);
+  }, []);
   return (
     <>
       <Head>

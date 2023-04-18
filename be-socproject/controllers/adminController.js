@@ -10,6 +10,16 @@ module.exports = {
 	getAllUsers: async (req, res, next) => {
 		try {
 			const totalUser = await User.count();
+			const userActive = await User.count({
+				where: {
+					is_active : true
+				}
+			})
+			const totalCreator = await User.count({
+				where : {
+					is_verify : true
+				}
+			})
 			await User.findAll({
 				attributes: {
 					exclude: ['id', 'password', 'createdAt', 'updatedAt'],
@@ -46,13 +56,20 @@ module.exports = {
 							return acc + cur.total_likes;
 						}, 0);
 
+						const total_views_project = project.reduce((acc, cur) => {
+							return acc + cur.total_views;
+						}, 0)
+
 						const total_project = project.length;
+
 
 						return {
 							total_project_report,
 							total_project_like,
+							total_views_project,
 							total_project,
 							...user.dataValues,
+
 						};
 					});
 
@@ -61,6 +78,8 @@ module.exports = {
 						status: 'OK',
 						message: 'Success get all data user',
 						amountUsers: totalUser,
+						totalUserActive: userActive,
+						totalUserCreator : totalCreator,
 						data: users,
 					});
 				})

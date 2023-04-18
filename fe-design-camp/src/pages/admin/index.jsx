@@ -2,50 +2,59 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import AdminAddFeature from './admin-add-feature';
-import AdminBanWarning from './admin-ban-waring';
+import AdminBanProject from './admin-ban-project';
 import AdminHome from './admin-home';
 import AdminProfileCreator from './admin-profile-creator';
 import { ImHome } from 'react-icons/im';
 import { CgProfile } from 'react-icons/cg';
 import { BiCategory } from 'react-icons/bi';
 import { IoWarningOutline } from 'react-icons/io5';
-
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { fetchUsers, fetchReportedProjects } from '@/store/admin/admin.action';
+import { authLogout } from '@/store/auth/auth.reducer';
 import { selectAuth } from '@/store/auth/auth.selector';
-import { selectAdmin } from '@/store/admin/admin.selector';
-import { selectCategories } from '@/store/categories/categories.selector';
-import { selectTools } from '@/store/tools/tools.selector';
-import { fetchUsers } from '@/store/admin/admin.action';
 import { fetchCategories } from '@/store/categories/categories.action';
 import { fetchTools } from '@/store/tools/tools.action';
-import { authLogout } from '@/store/auth/auth.reducer';
+import { SuccessToast, ErrorToast } from '@/components/toast/alert-taost';
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 
 export default function Admin() {
-	const dispatch = useDispatch();
 	const router = useRouter();
+	const dispatch = useDispatch();
 	const [page, setPage] = useState('dashboard');
 
-	const { token, user } = useSelector(selectAuth);
+	const { user } = useSelector(selectAuth);
+
+	useEffect(() => {
+		Promise.all([
+			dispatch(fetchUsers()),
+			dispatch(fetchCategories()),
+			dispatch(fetchTools()),
+			dispatch(fetchReportedProjects()),
+		]).then((res) => {
+			res.map((item) => {
+				if (item.meta?.requestStatus === 'rejected') {
+					ErrorToast(res.payload.error.message);
+					router.push('/');
+				}
+			});
+		});
+	});
+
+	const handleLogout = () => {
+		router.push('/');
+		setTimeout(() => {
+			dispatch(authLogout());
+			SuccessToast('Logout Success');
+		}, 2000);
+
+		
+	};
 
 	const handlePage = (menu) => {
 		setPage(menu);
-	};
-
-	useEffect(() => {
-		dispatch(
-			fetchUsers({
-				token,
-			})
-		);
-		dispatch(fetchCategories());
-		dispatch(fetchTools());
-	}, []);
-
-	const handleLogout = () => {
-		dispatch(authLogout());
-		router.push('/auth/login');
 	};
 
 	const menuItems = [
@@ -65,8 +74,8 @@ export default function Admin() {
 			icons: <BiCategory size={22} />,
 		},
 		{
-			label: 'Ban or Warning',
-			value: 'banWarning',
+			label: 'Ban Project',
+			value: 'banproject',
 			icons: <IoWarningOutline size={22} />,
 		},
 	];
@@ -107,7 +116,7 @@ export default function Admin() {
 								tabIndex={0}
 								className='avatar flex cursor-pointer items-center gap-2 py-2 px-3 hover:rounded-lg hover:bg-slate-200'>
 								<div className='w-8 rounded-full'>
-									<img src={user?.profile_image} />
+									<img src={user.profile_image} />
 								</div>
 								<p className='font-semibold'>{user?.name}</p>
 							</div>
@@ -120,7 +129,7 @@ export default function Admin() {
 									</Link>
 								</li>
 								<li>
-									<button className='hover:text-black' onClick={handleLogout}>
+									<button onClick={handleLogout} className='hover:text-black'>
 										Logout
 									</button>
 								</li>
@@ -133,7 +142,7 @@ export default function Admin() {
 					{page === 'dashboard' && <AdminHome />}
 					{page === 'profileCreator' && <AdminProfileCreator />}
 					{page === 'addfeature' && <AdminAddFeature />}
-					{page === 'banWarning' && <AdminBanWarning />}
+					{page === 'banproject' && <AdminBanProject />}
 					{/* <!-- Page content end --> */}
 					<div className='absolute top-5 left-0'>
 						<label
