@@ -505,7 +505,7 @@ module.exports = {
 					{
 						model: User,
 						as: 'user',
-						attributes: ['name', 'profile_image'],
+						attributes: ['name', 'email', 'profile_image'],
 					},
 					{
 						model: ReportCategories,

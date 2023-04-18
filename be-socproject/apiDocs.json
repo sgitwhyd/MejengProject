@@ -161,6 +161,29 @@
         }
       }
     },
+    "/api/user/other-profile": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get Other Profile User",
+        "description": "this enpoint to get profile to other users",
+        "operationId": "get-other-profile",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succes get profile"
+          },
+          "500":{
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/api/user/update-profile": {
       "put": {
         "tags": ["User"],
@@ -357,7 +380,25 @@
         }
       }
     },
-    "/api/categories/create-category": {
+    "/api/categories": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Get All Categories",
+        "description": "this enpoint is to get all categories",
+        "operationId": "get-all-categories",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],        
+        "responses":{
+          "200":{
+            "description": "Get All Categories Successfully"
+          }
+        }
+      },
       "post": {
         "tags": ["Admin"],
         "summary": "Create Categories",
@@ -395,29 +436,7 @@
             "description": "Add category failure"
           }
         }
-      }
-    },
-    "/api/categories": {
-      "get": {
-        "tags": ["Categories"],
-        "summary": "Get All Categories",
-        "description": "this enpoint is to get all categories",
-        "operationId": "get-all-categories",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ],        
-        "responses":{
-          "200":{
-            "description": "Get All Categories Successfully"
-          }
-        }
-      }
-    },
-    "/api/categories/update-category": {
+      },
       "put": {
         "tags": ["Admin"],
         "summary": "Update Categories",
@@ -459,9 +478,7 @@
             "description": "Update category failure"
           }
         }
-      }
-    },
-    "/api/categories/delete-category": {
+      },
       "delete": {
         "tags": ["Admin"],
         "summary": "Delete Categories",
@@ -500,8 +517,29 @@
           }
         }
       }
-    },
-    "/api/tools/create-tools": {
+    },    
+    "/api/tools": {
+      "get": {
+        "tags": ["Tools"],
+        "summary": "Get All Tools",
+        "description": "this enpoint is to get tools",
+        "operationId": "get-all-tools",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Get All Tools Successfully"
+          },
+          "401": {
+            "description": "Get All Tools failure"
+          }
+        }
+      },
       "post": {
         "tags": ["Admin"],
         "summary": "Create Tools",
@@ -542,9 +580,7 @@
             "description": "Add Tools failure"
           }
         }
-      }
-    },
-    "/api/tools/update-tools": {
+      },
       "put": {
         "tags": ["Admin"],
         "summary": "Update Tools",
@@ -586,32 +622,7 @@
             "description": "Update Tools failure"
           }
         }
-      }
-    },
-    "/api/tools": {
-      "get": {
-        "tags": ["Tools"],
-        "summary": "Get All Tools",
-        "description": "this enpoint is to get tools",
-        "operationId": "get-all-tools",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "security": [
-          {
-            "Authorization": []
-          }
-        ],
-        "responses":{
-          "200":{
-            "description": "Get All Tools Successfully"
-          },
-          "401": {
-            "description": "Get All Tools failure"
-          }
-        }
-      }
-    },
-    "/api/tools/delete-tools": {
+      },
       "delete": {
         "tags": ["Admin"],
         "summary": "Delete Tools",
@@ -859,6 +870,142 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/project/report-categories": {
+      "get": {
+        "tags": ["Report Categories"],
+        "summary": "Get Report Categories",
+        "description": "this enpoint to get report categories",
+        "operationId": "get-report-categories",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succes get report categories"
+          },
+          "500":{
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Admin"],
+        "summary": "Create Report Categories",
+        "description": "this enpoint is to create report project",
+        "operationId": "create-report-project",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "name report categories",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses":{
+          "201":{
+            "description": "Report categories Created"
+          },
+          "406": {
+            "description": "project categories already exist"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Admin"],
+        "summary": "Update Report Categories",
+        "description": "this enpoint is to update report categories",
+        "operationId": "update-report-categories",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                },
+                "newName": {
+                  "type": "string",
+                  "example": "Porn"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Update Report Categories Successfully"
+          },
+          "401": {
+            "description": "Failure to Update Categories"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Admin"],
+        "summary": "Delete Report Categories",
+        "description": "this enpoint is to delete report categories",
+        "operationId": "delete-report-categories",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters":[
+          {
+            "name": "body",
+            "in": "body",
+            "description": "id report categories",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "example": "1"
+                }
+              }
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Delete Tools Successfully"
+          },
+          "401": {
+            "description": "Delete Tools failure"
           }
         }
       }

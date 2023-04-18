@@ -62,12 +62,18 @@ router.delete(
 // 	con.projectController.getProjectByCategory
 // );
 
+//REPORT PROJECT
 router.post(
 	'/api/project/report-project',
 	restrict,
 	reportProjectLimiter,
 	con.projectController.reportProject
 );
+router.post('/api/project/report-categories', restrict, con.projectReportController.createReportCategories);
+router.get('/api/project/report-categories', restrict, con.projectReportController.getReportCategories);
+router.put('/api/project/report-categories', restrict, rbac(MODUL.AdminDashboard, true, true), con.projectReportController.updateReportCategories);
+router.delete('/api/project/report-categories', restrict, rbac(MODUL.AdminDashboard, true, true),con.projectReportController.deleteReportCategories);
+// router.get('/api/project/report-project', restrict ,con.projectReportController.getProjectCategories)
 
 router.get('/api/project/detail/:id', con.projectController.getDetailProject);
 router.put(
@@ -105,6 +111,7 @@ router.post(
 
 // user profile route
 router.get('/api/user/profile', restrict, con.us.getProfile);
+router.get('/api/user/other-profile', con.us.getOtherProfile);
 
 router.put(
 	'/api/user/update-profile',
@@ -122,19 +129,19 @@ router.get('/api/categories', con.categoriesController.getAllCategories);
 
 // require admin
 router.post(
-	'/api/categories/create-category',
+	'/api/categories',
 	restrict,
 	rbac(MODUL.AdminDashboard, true, true),
 	con.categoriesController.createCategory
 );
 router.put(
-	'/api/categories/update-category',
+	'/api/categories',
 	restrict,
 	rbac(MODUL.AdminDashboard, true, true),
 	con.categoriesController.updateCategory
 );
 router.delete(
-	'/api/categories/delete-category',
+	'/api/categories',
 	restrict,
 	rbac(MODUL.AdminDashboard, true, true),
 	con.categoriesController.deleteCategory
@@ -143,7 +150,7 @@ router.delete(
 // tools require admin
 router.get('/api/tools', con.toolsController.getTools);
 router.post(
-	'/api/tools/create-tools',
+	'/api/tools',
 	restrict,
 	toolsIconUploadHandler,
 	toolIconFilter,
@@ -151,7 +158,7 @@ router.post(
 	con.toolsController.createTool
 );
 router.put(
-	'/api/tools/update-tools',
+	'/api/tools',
 	restrict,
 	toolsIconUploadHandler,
 	toolIconFilter,
@@ -159,7 +166,7 @@ router.put(
 	con.toolsController.updateTool
 );
 router.delete(
-	'/api/tools/delete-tools',
+	'/api/tools',
 	restrict,
 	rbac(MODUL.AdminDashboard, true, true),
 	con.toolsController.deleteTool
