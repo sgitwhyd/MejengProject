@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import logo from "@/assets/mejeng.webp";
 import Image from "next/image";
 import Link from "next/link";
-import { BiSearch } from "react-icons/bi";
 import { CgProfile, CgLogOff } from "react-icons/cg";
 import { RiUserSettingsLine } from "react-icons/ri";
 import { FiUpload } from "react-icons/fi";
@@ -34,18 +33,10 @@ export default function Navbar() {
           <Link href="/">
             <Image src={logo} alt="logo" height={30} />
           </Link>
-          <Link href="/inspirations">Inspirations</Link>
-          <Link href="/discover">Discover</Link>
+          <Link href="/project/inspirations">Inspirations</Link>
+          <Link href="/project/discover">Discover</Link>
         </div>
         <div className="flex items-center justify-center gap-11">
-          {/* <div className="flex h-12 w-96 items-center justify-center rounded-full bg-[#F0F1F2] px-5 text-[#9F9F9F]">
-            <input
-              type="text"
-              placeholder="Cari blog dan artikel disini ..."
-              className="w-full bg-transparent focus:outline-none"
-            />
-            <BiSearch size={20} />
-          </div> */}
           {login ? (
             <div className="relative">
               <div
@@ -82,22 +73,24 @@ export default function Navbar() {
                       <h3>Dashboard</h3>
                     </Link>
                   ) : (
-                    <Link
-                      href="/user/profile"
-                      className="flex items-center gap-2 font-medium text-gray-600 transition-all hover:text-primary"
-                    >
-                      <CgProfile size={20} />
-                      <h3>My Profile</h3>
-                    </Link>
-                  )}
-                  {user.is_verify && (
-                    <Link
-                      href="/user/upload-project"
-                      className="flex items-center gap-2 font-medium text-gray-600 transition-all hover:text-primary"
-                    >
-                      <FiUpload size={20} />
-                      <h3>Upload Project</h3>
-                    </Link>
+                    <>
+                      <Link
+                        href="/user/profile"
+                        className="flex items-center gap-2 font-medium text-gray-600 transition-all hover:text-primary"
+                      >
+                        <CgProfile size={20} />
+                        <h3>My Profile</h3>
+                      </Link>
+                      {user.is_verify && (
+                        <Link
+                          href="/user/upload-project"
+                          className="flex items-center gap-2 font-medium text-gray-600 transition-all hover:text-primary"
+                        >
+                          <FiUpload size={20} />
+                          <h3>Upload Project</h3>
+                        </Link>
+                      )}
+                    </>
                   )}
                   <button
                     onClick={handleLogout}

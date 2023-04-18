@@ -68,7 +68,7 @@ export default function Profile() {
             />
           ) : (
             <ButtonWIcon
-              route="/user/upload-project"
+              route="/user/request-creator"
               icon={<FaTelegramPlane className="h-6 w-6" />}
               name="Request as a creator"
               disabled
@@ -77,11 +77,11 @@ export default function Profile() {
         </div>
       </section>
       <div className="my-16 h-[2px] bg-slate-100"></div>
-      <section>
+      <section className="w-full">
         {user.is_verify ? (
           <>
             {user.project.length === 0 ? (
-              <div className="px-20 text-center text-2xl font-medium leading-loose text-primary/80">
+              <div className="mx-auto w-5/6 px-20 text-center text-xl font-medium leading-loose text-primary/80">
                 <h3>“Your projects is appear here”</h3>
                 <p>
                   Come on, share the project you have and start interacting with
@@ -92,25 +92,26 @@ export default function Profile() {
               <div className="grid grid-cols-4 gap-y-6">
                 {project.map((project) => {
                   return (
-                    <ProjectCard
-                      thumbnail={project.thumbnail_project_image}
-                      title={project.title}
-                      tools={project.tools.map((tool) => tool.name)}
-                      category={project.categories.name}
-                      authorImage={user.profile_image}
-                      author={user.name}
-                      likePost={project.total_likes}
-                      viewPost={project.total_views}
-                      key={project.id}
-                    />
+                    <div key={project.id} className="mx-auto">
+                      <ProjectCard
+                        thumbnail={project.thumbnail_project_image}
+                        title={project.title}
+                        tools={project.tools.map((tool) => tool.name)}
+                        category={project.categories.name}
+                        authorImage={user.profile_image}
+                        author={user.name}
+                        likePost={project.total_likes}
+                        viewPost={project.total_views}
+                      />
+                    </div>
                   );
                 })}
               </div>
             )}
           </>
         ) : (
-          <div className="px-20 text-center text-2xl font-medium leading-loose text-primary/80">
-            <h3>“Request as creator”</h3>
+          <div className="mx-auto w-5/6 px-20 text-center text-xl font-medium leading-loose text-primary/80">
+            <Link href="/user/request-creator">“Request as creator”</Link>
             <p>
               So you can share your projects that you have here, and interact
               with various creators and exchange ideas to develop your knowledge
