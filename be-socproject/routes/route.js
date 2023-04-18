@@ -30,7 +30,6 @@ router.post(
 );
 router.get(
 	'/api/creators/activate/:token',
-	restrict,
 	con.au.creatorsVerificationHandler
 );
 

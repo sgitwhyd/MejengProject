@@ -22,6 +22,11 @@ module.exports = {
 					as: 'project',
 					include: [
 						{
+							model: User,
+							as :'user',
+							attributes: ['name', 'progile_image']
+						},
+						{
 							model: Tools,
 							as: 'tools',
 							attributes: ['name'],
