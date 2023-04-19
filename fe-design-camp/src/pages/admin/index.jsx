@@ -49,8 +49,6 @@ export default function Admin() {
 			dispatch(authLogout());
 			SuccessToast('Logout Success');
 		}, 2000);
-
-		
 	};
 
 	const handlePage = (menu) => {
