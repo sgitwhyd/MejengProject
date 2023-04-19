@@ -56,7 +56,7 @@ export default function Navbar() {
               </div>
               {isHover && (
                 <div
-                  className="absolute right-0 flex -translate-x-2 flex-col items-start justify-center gap-4 rounded-lg bg-white px-5 pt-7 pb-5 drop-shadow-xl"
+                  className="absolute right-0 z-50 flex -translate-x-2 flex-col items-start justify-center gap-4 rounded-lg bg-white px-5 pt-7 pb-5 drop-shadow-xl"
                   onMouseEnter={() => {
                     setIsHover(true);
                   }}
