@@ -14,12 +14,13 @@ module.exports = {
 				where: {
 					is_active : true
 				}
-			})
+			});
+			const totalProject = await Project.count();
 			const totalCreator = await User.count({
 				where : {
 					is_verify : true
 				}
-			})
+			});
 			await User.findAll({
 				attributes: {
 					exclude: ['id', 'password', 'createdAt', 'updatedAt'],
@@ -78,6 +79,7 @@ module.exports = {
 						status: 'OK',
 						message: 'Success get all data user',
 						amountUsers: totalUser,
+						ammountProject: totalProject,
 						totalUserActive: userActive,
 						totalUserCreator : totalCreator,
 						data: users,
@@ -176,12 +178,11 @@ module.exports = {
 							id,
 						},
 					}
-				)
-					.then(() => {
+				).then(() => {
 						return res.status(200).json({
 							code: 200,
 							status: 'OK',
-							message: 'the user is no longer banned',
+							message: 'User Successfully Unbanned',
 						});
 					})
 					.catch((err) => {

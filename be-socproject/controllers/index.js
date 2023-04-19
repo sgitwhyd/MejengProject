@@ -6,6 +6,7 @@ const projectController = require('./projectController');
 const toolsController = require('./toolsController');
 const adminController = require('./adminController');
 const projectViewsController = require('./projectViewsController');
+const projectReportController = require('./projectReport')
 
 module.exports = {
 	us,
@@ -16,4 +17,5 @@ module.exports = {
 	adminController,
 	commentController,
 	projectViewsController,
+	projectReportController
 };

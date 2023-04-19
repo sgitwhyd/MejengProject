@@ -59,7 +59,7 @@ const sendBannedProjectNotification = async (res, client_url, { project }) => {
 		.catch((err) => {
 			return res.status(401).json({
 				status: false,
-				message: 'Project Banned & Send Notif Successfully ',
+				message: 'Unsuccessfully Banned Project',
 				error: err.message,
 			});
 		});
@@ -70,7 +70,7 @@ const sendEmailForgotPassword = async (res, email, token) => {
 		from: '"Mejeng 👻" <no-reply.gmail.com>',
 		to: email,
 		subject: 'Reset Your Mejeng Password',
-		html: forgot_password_email(token, process.env.FE_BASE_URL),
+		html: forgot_password_email(token, process.env.FE_BASE_URL_FORGOT_PASSWORD),
 	};
 
 	await transporter

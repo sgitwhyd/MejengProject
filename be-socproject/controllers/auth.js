@@ -150,6 +150,15 @@ module.exports = {
 					},
 				});
 			}
+			if (user.is_active == false) {
+				return res.status(404).json({
+					code: 404,
+					status: 'Not Found',
+					error: {
+						message: 'Your Account has been banned',
+					},
+				});
+			}
 			const isPassCorrect = await bcrypt.compare(password, user.password);
 			if (!isPassCorrect) {
 				return res.status(400).json({

@@ -14,6 +14,9 @@ module.exports = {
 			slug: {
 				type: Sequelize.STRING,
 			},
+			desc: {
+				type: Sequelize.STRING,
+			},
 			createdAt: {
 				allowNull: false,
 				type: Sequelize.DATE,
