@@ -178,12 +178,11 @@ module.exports = {
 							id,
 						},
 					}
-				)
-					.then(() => {
+				).then(() => {
 						return res.status(200).json({
 							code: 200,
 							status: 'OK',
-							message: 'the user is no longer banned',
+							message: 'User Successfully Unbanned',
 						});
 					})
 					.catch((err) => {
