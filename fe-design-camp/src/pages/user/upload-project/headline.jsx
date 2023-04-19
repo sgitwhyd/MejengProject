@@ -14,7 +14,10 @@ export default function Headline(props) {
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setThumbnail(URL.createObjectURL(e.target.files[0]));
+      setThumbnail({
+        preview: URL.createObjectURL(e.target.files[0]),
+        file: e.target.files[0],
+      });
     }
   };
   return (
@@ -37,7 +40,7 @@ export default function Headline(props) {
         </p>
       </div>
       <ImageUploadCard
-        image={thumbnail}
+        image={thumbnail.preview}
         title={"Upload your Project Thumbnail"}
         handleFileChange={handleFileChange}
       />
