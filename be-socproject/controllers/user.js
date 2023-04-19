@@ -22,6 +22,57 @@ module.exports = {
 					as: 'project',
 					include: [
 						{
+							model: User,
+							as :'user',
+							attributes: ['name', 'progile_image']
+						},
+						{
+							model: Tools,
+							as: 'tools',
+							attributes: ['name'],
+							through: {
+								model: ProjectTools,
+								as: 'projcetTools',
+								attributes: { exclude: ['createdAt', 'updatedAt'] },
+							},
+						},
+						{
+							model: Categories,
+							as: 'categories',
+							attributes: { exclude: ['id', 'slug', 'createdAt', 'updatedAt'] },
+						},
+					],
+				},
+			}).then((result) => {
+				return res.status(200).json({
+					code: 200,
+					status: 'OK',
+					message: 'Success get profile',
+					projectAmmount: result.project.length,
+					data: result,
+				});
+			});
+		} catch (err) {
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: err.message,
+				},
+			});
+		}
+	},
+	getOtherProfile: async (req, res, next) => {
+		try {
+			const { id } = req.body;
+			await User.findOne({
+				where: { id },
+				attributes: { exclude: ['id','password'] },
+				include: {
+					model: Project,
+					as: 'project',
+					include: [
+						{
 							model: Tools,
 							as: 'tools',
 							attributes: ['name'],
