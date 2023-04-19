@@ -9,6 +9,8 @@ import { useEffect } from "react";
 import { fetchCategories } from "@/store/categories/categories.action";
 import { fetchTools } from "@/store/tools/tools.action";
 import { useDispatch } from "react-redux";
+import banner_1 from "@/assets/banner-1.png";
+import banner_2 from "@/assets/banner-2.png";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -16,6 +18,22 @@ export default function Home() {
   useEffect(() => {
     Promise.all([dispatch(fetchCategories()), dispatch(fetchTools())]);
   }, []);
+
+  const banner = [
+    {
+      title: "FIND YOUR INSPIRATION DESIGN",
+      button: "See Inspirations Page",
+      link: "/project/inspirations",
+      image: banner_1,
+    },
+    {
+      title: "FIND THE DESIGN CATEGORY YOU WANT",
+      button: "Discover All Project",
+      link: "/project/discover",
+      image: banner_2,
+    },
+  ];
+
   return (
     <>
       <Head>
@@ -76,8 +94,12 @@ export default function Home() {
             data-aos="fade-up"
             data-aos-duration="600"
           >
-            Skilline is one powerful online software suite that combines all the
-            tools needed to run a successful school or office.
+            Mejeng is a platform designed to provide a space for Design Creators
+            to showcase their work and connect with other users. This platform
+            will provide features such as design galleries, user profiles, and
+            discussion forums to expand the creator network and inspire. This
+            platform is a useful platform for creators to build their brand and
+            new opportunities in the design industry.
           </p>
         </div>
 
@@ -92,11 +114,12 @@ export default function Home() {
               <MdOutlineDesignServices className="h-8 w-8" />
             </div>
             <h3 className="w-2/3 text-lg font-semibold">
-              Online Billing, Invoicing, & Contracts
+              Diverse Design Tools and Categories
             </h3>
             <p className="text-gray-700">
-              Simple and secure control of your organization's financial and
-              legal transactions. Send customized invoices and contracts
+              Mejeng offers a complete and varied range of Design Tools and
+              Categories, which can help Design Creators better express their
+              creativity and create more interesting and innovative works.
             </p>
           </div>
           <div
@@ -108,11 +131,12 @@ export default function Home() {
               <CgDesignmodo className="h-8 w-8" />
             </div>
             <h3 className="w-2/3 text-lg font-semibold">
-              Easy Scheduling & Attendance Tracking
+              Easy to use Platform for any Users
             </h3>
             <p className="text-gray-700">
-              Schedule and reserve classrooms at one campus or multiple
-              campuses. Keep detailed records of student attendance
+              Mejeng is designed with a user friendly interface that is easy to
+              use, even for laymen. Users can easily showcase their works and
+              explore new design ideas on the Mejeng platform.
             </p>
           </div>
           <div
@@ -124,11 +148,13 @@ export default function Home() {
               <MdGroups className="h-8 w-8" />
             </div>
             <h3 className="w-2/3 text-lg font-semibold">
-              Customer Tracking & Colaborative work
+              Discussion Forum to share Design Ideas
             </h3>
             <p className="text-gray-700">
-              Automate and track emails to individuals or groups. Skilline's
-              built-in system helps organize your organization
+              Mejeng is also a discussion forum, where Design Creators can
+              exchange ideas and provide feedback to each other to help improve
+              the quality of design work produced and strengthen the creative
+              community on the Mejeng platform.
             </p>
           </div>
         </div>
@@ -147,43 +173,37 @@ export default function Home() {
               data-aos="fade-up"
               data-aos-duration="800"
             >
-              Skilline is a platform that allows educators to create online
-              classes whereby they can store the course materials online; manage
-              assignments, quizzes and exams; monitor due dates; grade results
-              and provide students with feedback all in one place.
+              Mejeng is a platform specifically designed to give Design Creators
+              the opportunity to showcase their works and connect with other
+              users who are looking for design inspiration. With Mejeng, the
+              creativity of Design Creators can be accommodated and displayed
+              easily, so that other users can find new inspiration and explore
+              various interesting design ideas.
             </p>
           </div>
           <div className="flex items-center justify-center gap-14">
-            <div
-              className="flex h-[300px] w-[450px] flex-col items-center justify-center gap-4 rounded-2xl border bg-gray-300"
-              data-aos="fade-up"
-              data-aos-duration="1000"
-            >
-              <h3 className="text-lg font-semibold tracking-wide text-white">
-                FOR CREATOR
-              </h3>
-              <Link
-                href="/"
-                className="flex h-[55px] w-[200px] items-center justify-center rounded-full border border-white text-white transition-all duration-300 hover:border-primary hover:bg-primary hover:text-white"
+            {banner.map((item, index) => (
+              <div
+                key={index}
+                className="relative flex h-[300px] w-[450px] flex-col items-center justify-center gap-4 rounded-2xl border bg-gray-300"
+                data-aos="fade-up"
+                data-aos-duration="1000"
               >
-                See Inspirations Page
-              </Link>
-            </div>
-            <div
-              className="flex h-[300px] w-[450px] flex-col items-center justify-center gap-4 rounded-2xl border bg-gray-300"
-              data-aos="fade-up"
-              data-aos-duration="1000"
-            >
-              <h3 className="text-lg font-semibold tracking-wide text-white">
-                FOR USER
-              </h3>
-              <Link
-                href="/"
-                className="flex h-[55px] w-[200px] items-center justify-center rounded-full border border-white text-white transition-all duration-300 hover:border-primary hover:bg-primary hover:text-white"
-              >
-                Discover All Project
-              </Link>
-            </div>
+                <h3 className="relative z-30 text-lg font-semibold tracking-wide text-white">
+                  {item.title}
+                </h3>
+                <Link
+                  href={item.link}
+                  className="relative z-30 flex h-[55px] w-[200px] items-center justify-center rounded-full border border-white text-white transition-all duration-300 hover:border-primary hover:bg-primary hover:text-white"
+                >
+                  {item.button}
+                </Link>
+                <Image
+                  src={item.image}
+                  className="absolute z-0 h-[300px] w-[450px] rounded-2xl bg-clip-border"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </section>
