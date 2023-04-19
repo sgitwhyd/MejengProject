@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { authLogin, getUserProfile, forgotPassword } from './auth.action';
+import { authLogin, getUserProfile, forgotPassword, requestCreator } from './auth.action';
 
 const initialState = {
 	token: '',
@@ -42,7 +42,16 @@ const authSlice = createSlice({
 			}),
 			builder.addCase(forgotPassword.rejected, (state, action) => {
 				state.loading = false;
-			});
+			}),
+			builder.addCase(requestCreator.pending, (state, action) => {
+				state.loading = true;
+			}),
+			builder.addCase(requestCreator.fulfilled, (state, action) => {
+				state.loading = false;
+			}),
+			builder.addCase(requestCreator.rejected, (state, action) => {
+				state.loading = false;
+			})
 	},
 });
 

@@ -8,9 +8,12 @@ import { FiUpload } from "react-icons/fi";
 import { useSelector, useDispatch } from "react-redux";
 import { selectAuth } from "@/store/auth/auth.selector";
 import { authLogout } from "@/store/auth/auth.reducer";
+import { SuccessToast } from "../toast/alert-taost";
+import Router from "next/router";
 
 export default function Navbar() {
   const dispatch = useDispatch();
+  const router = Router;
   const { user, login } = useSelector(selectAuth);
   const [isHover, setIsHover] = useState(false);
 
@@ -23,7 +26,11 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
-    dispatch(authLogout());
+    router.push("/");
+    setTimeout(() => {
+      dispatch(authLogout());
+      SuccessToast("Logout Success");
+    }, 2000);
   };
 
   return (
@@ -51,12 +58,18 @@ export default function Navbar() {
                   {user.name}
                 </p>
                 <div className="w-8 rounded-full">
-                  <img src={user.profile_image} />
+                  <img
+                    src={
+                      user.profile_image?.includes("avatars")
+                        ? user.profile_image
+                        : `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${user.profile_image}`
+                    }
+                  />
                 </div>
               </div>
               {isHover && (
                 <div
-                  className="absolute right-0 z-50 flex -translate-x-2 flex-col items-start justify-center gap-4 rounded-lg bg-white px-5 pt-7 pb-5 drop-shadow-xl"
+                  className="absolute right-0 flex -translate-x-2 flex-col items-start justify-center gap-4 rounded-lg bg-white px-5 pt-7 pb-5 drop-shadow-xl"
                   onMouseEnter={() => {
                     setIsHover(true);
                   }}
