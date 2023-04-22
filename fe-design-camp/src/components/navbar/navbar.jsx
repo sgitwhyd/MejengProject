@@ -7,6 +7,7 @@ import { RiUserSettingsLine } from 'react-icons/ri';
 import { FiUpload } from 'react-icons/fi';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectAuth } from '@/store/auth/auth.selector';
+import { selectUser } from '@/store/user/user.selector';
 import { authLogout } from '@/store/auth/auth.reducer';
 import { SuccessToast } from '../toast/alert-taost';
 import Router from 'next/router';
@@ -14,7 +15,8 @@ import Router from 'next/router';
 export default function Navbar() {
 	const dispatch = useDispatch();
 	const router = Router;
-	const { user, login } = useSelector(selectAuth);
+	const { login } = useSelector(selectAuth);
+	const { user } = useSelector(selectUser);
 	const [isHover, setIsHover] = useState(false);
 
 	const handleOnMouseEnter = () => {
@@ -52,15 +54,15 @@ export default function Navbar() {
 								onMouseLeave={handleOnMouseLeave}>
 								<p
 									className='w-[150px] truncate text-right font-semibold'
-									title={user.name}>
-									{user.name}
+									title={user?.name}>
+									{user?.name}
 								</p>
 								<div className='w-8 rounded-full'>
 									<img
 										src={
-											user.profile_image?.includes('avatars')
-												? user.profile_image
-												: `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${user.profile_image}`
+											user?.profile_image?.includes('avatars')
+												? user?.profile_image
+												: `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${user?.profile_image}`
 										}
 									/>
 								</div>
@@ -74,7 +76,7 @@ export default function Navbar() {
 									onMouseLeave={() => {
 										setIsHover(false);
 									}}>
-									{user.role.toLowerCase() === 'admin' ? (
+									{user?.role.toLowerCase() === 'admin' ? (
 										<Link
 											href='/admin'
 											className='flex items-center gap-2 font-medium text-gray-600 transition-all hover:text-primary'>
@@ -89,7 +91,7 @@ export default function Navbar() {
 												<CgProfile size={20} />
 												<h3>My Profile</h3>
 											</Link>
-											{user.is_verify && (
+											{user?.is_verify && (
 												<Link
 													href='/user/upload-project'
 													className='flex items-center gap-2 font-medium text-gray-600 transition-all hover:text-primary'>

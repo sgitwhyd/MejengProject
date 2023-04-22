@@ -20,7 +20,7 @@ export const createTool = createAsyncThunk(
 		const { tool_icon, name } = payload;
 		try {
 			const response = await api.post(
-				'/api/tools/create-tools',
+				'/api/tools',
 				{
 					tool_icon,
 					name,
@@ -46,7 +46,7 @@ export const updateTool = createAsyncThunk(
 		const { id, newName, tool_icon } = payload;
 		try {
 			const response = await api.put(
-				'/api/tools/update-tools',
+				'/api/tools',
 				{
 					id,
 					newName,
@@ -72,7 +72,7 @@ export const deleteTool = createAsyncThunk(
 		const { auth } = getState();
 		const { id } = payload;
 		try {
-			const response = await api.delete(`/api/tools/delete-tools`, {
+			const response = await api.delete(`/api/tools`, {
 				headers: {
 					Authorization: auth.token,
 				},

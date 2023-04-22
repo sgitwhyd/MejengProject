@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { AiOutlineLink } from 'react-icons/ai';
 import ImageUploadCard from '@/components/cards/image-upload-card';
-import ReactQuill from 'react-quill';
+import dynamic from 'next/dynamic';
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 import 'react-quill/dist/quill.snow.css';
 import { useSelector } from 'react-redux';
 import { selectCategories } from '@/store/categories/categories.selector';
@@ -53,11 +54,17 @@ export default function Details(props) {
 	};
 
 	const handleCancel2 = () => {
-		setImage2(null);
+		setImage2({
+			file: null,
+			preview: '',
+		});
 		setMoreImage1(false);
 	};
 	const handleCancel3 = () => {
-		setImage3(null);
+		setImage3({
+			file: null,
+			preview: '',
+		});
 		setMoreImage2(false);
 	};
 
@@ -81,6 +88,7 @@ export default function Details(props) {
 			<p className='text-2xl font-medium'>Project Details</p>
 			<ImageUploadCard
 				image={image1.preview}
+				inputName='project_image'
 				title={'Upload your project image details'}
 				handleFileChange={handleFileChange1}
 			/>
@@ -96,6 +104,7 @@ export default function Details(props) {
 			{moreImage1 && (
 				<ImageUploadCard
 					image={image2.preview}
+					inputName='project_image'
 					title={'Upload more project image details'}
 					handleFileChange={handleFileChange2}
 					handleCancel={handleCancel2}
@@ -113,6 +122,7 @@ export default function Details(props) {
 			{moreImage2 && (
 				<ImageUploadCard
 					image={image3.preview}
+					inputName='project_image'
 					title={'Upload more project image details'}
 					handleFileChange={handleFileChange3}
 					handleCancel={handleCancel3}
@@ -133,6 +143,7 @@ export default function Details(props) {
 				<select
 					className='select-bordered select w-full flex-1'
 					value={isCategory}
+					name='CategoryId'
 					onChange={(e) => {
 						setIsCategory(e.target.value);
 					}}>
@@ -157,6 +168,7 @@ export default function Details(props) {
 									type='checkbox'
 									className='checkbox'
 									value={tool.id}
+									name='ToolId'
 									onChange={handleCheckboxChange}
 									checked={checkedTools.includes(tool.id)}
 								/>
@@ -187,6 +199,7 @@ export default function Details(props) {
 							placeholder='https://example.com'
 							pattern='https://.*'
 							id='url'
+							name='url'
 							className='input-bordered input w-full pl-14'
 							value={link}
 							maxLength={100}

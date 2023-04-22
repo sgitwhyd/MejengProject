@@ -5,7 +5,8 @@ import Link from 'next/link';
 import bgLogin from '@/assets/bg-login.webp';
 import Sidebar from '../sidebar';
 import { useDispatch, useSelector } from 'react-redux';
-import { authLogin, getUserProfile } from '@/store/auth/auth.action';
+import { authLogin } from '@/store/auth/auth.action';
+import { getProfile } from '@/store/user/user.action';
 import { selectAuth } from '@/store/auth/auth.selector';
 import { ErrorToast, SuccessToast } from '@/components/toast/alert-taost';
 import { useRouter } from 'next/router';
@@ -19,7 +20,7 @@ export default function Login() {
 		password: '',
 	});
 	const [showPassword, setShowPassword] = useState(false);
-	const {loading} = useSelector(selectAuth);
+	const { loading } = useSelector(selectAuth);
 
 	const handleOnChange = (e) => {
 		setLoginPayload({
@@ -35,7 +36,7 @@ export default function Login() {
 				ErrorToast(res.payload.error.message);
 			} else {
 				SuccessToast('Login success');
-				dispatch(getUserProfile());
+				dispatch(getProfile());
 				setTimeout(() => {
 					if (res.payload.role === 'admin') {
 						router.push('/admin');
@@ -131,7 +132,9 @@ export default function Login() {
 					<div className='flex w-full items-center justify-center'>
 						<button
 							type='submit'
-							className={`${loading ? 'loading btn-disabled cursor-not-allowed' : ''} btn-primary btn w-52 text-xl font-bold capitalize text-white hover:bg-primary`}>
+							className={`${
+								loading ? 'loading btn-disabled cursor-not-allowed' : ''
+							} btn-primary btn w-52 text-xl font-bold capitalize text-white hover:bg-primary`}>
 							Login
 						</button>
 					</div>

@@ -31,14 +31,14 @@ export default function Register() {
 		e.preventDefault();
 		await dispatch(authRegister(registerPayload)).then((res) => {
 			if (res.meta.requestStatus === 'rejected') {
-				ErrorToast(res.payload.error);
+				ErrorToast(res.payload.error.message);
 				setRegisterPayload({
 					email: '',
 					name: '',
 					password: '',
 				});
 			} else {
-				SuccessToast('Register success');
+				SuccessToast(res.payload.message);
 				setRegisterPayload({
 					email: '',
 					name: '',
