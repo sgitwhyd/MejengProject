@@ -20,7 +20,7 @@ export const createCategory = createAsyncThunk(
 		const { name } = payload;
 		try {
 			const response = await api.post(
-				'/api/categories/create-category',
+				'/api/categories',
 				{
 					name,
 				},
@@ -44,7 +44,7 @@ export const deleteCategory = createAsyncThunk(
 		const { auth } = getState();
 		const { id } = payload;
 		try {
-			const response = await api.delete(`/api/categories/delete-category`, {
+			const response = await api.delete(`/api/categories`, {
 				headers: {
 					'Content-Type': 'application/json',
 					Authorization: auth.token,
@@ -67,7 +67,7 @@ export const updateCategory = createAsyncThunk(
 		const { id, name } = payload;
 		try {
 			const response = await api.put(
-				'/api/categories/update-category',
+				'/api/categories',
 				{
 					id,
 					name,
