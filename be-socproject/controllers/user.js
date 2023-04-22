@@ -23,13 +23,13 @@ module.exports = {
 					include: [
 						{
 							model: User,
-							as :'user',
-							attributes: ['name', 'progile_image']
+							as: 'user',
+							attributes: ['name', 'profile_image'],
 						},
 						{
 							model: Tools,
 							as: 'tools',
-							attributes: ['name'],
+							attributes: ['name', 'icon'],
 							through: {
 								model: ProjectTools,
 								as: 'projcetTools',
@@ -67,7 +67,7 @@ module.exports = {
 			const { id } = req.body;
 			await User.findOne({
 				where: { id },
-				attributes: { exclude: ['id','password'] },
+				attributes: { exclude: ['id', 'password'] },
 				include: {
 					model: Project,
 					as: 'project',
