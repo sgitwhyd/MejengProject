@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import Image from 'next/image';
-import { AiFillEye, AiFillHeart } from 'react-icons/ai';
+import { useState } from "react";
+import Image from "next/image";
+import { AiFillEye, AiFillHeart } from "react-icons/ai";
 
 export default function ProjectCard(props) {
 	const [hover, setHover] = useState(false);
@@ -32,7 +32,8 @@ export default function ProjectCard(props) {
 				onMouseLeave={mouseLeave}>
 				<Image
 					src={
-						thumbnail_project_image?.includes('loremflickr')
+						thumbnail_project_image?.includes("loremflickr") ||
+						thumbnail_project_image?.includes("picsum")
 							? thumbnail_project_image
 							: `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${thumbnail_project_image}`
 					}
@@ -42,19 +43,28 @@ export default function ProjectCard(props) {
 					className='h-52 w-72 rounded-t-xl object-cover'
 				/>
 				{hover && (
-					<div className='absolute inset-0 flex h-full w-full cursor-pointer flex-col items-end justify-between rounded-t-xl bg-gradient-to-b from-transparent via-transparent to-black/60 px-5 pb-5  font-semibold text-white'>
-						<div className='flex items-center justify-center gap-4 text-sm'>
-							<p className='flex items-center justify-center gap-2 text-black'>
-								{tools.map((tool, index) => (
-									<span key={index} className='bg-white p-2'>
-										{tool.name}
-									</span>
-								))}
-							</p>
+					<div className='absolute inset-0 flex h-full w-full cursor-pointer flex-col items-end justify-between overflow-hidden rounded-t-xl bg-gradient-to-b from-transparent via-transparent to-black/60  pb-5 font-semibold text-white'>
+						<div className='right-0 flex items-center justify-center gap-4 text-sm'>
+							{tools.map((tool, index) => (
+								<div key={index} className='flex  items-center p-1'>
+									<img
+										src={
+											tool?.icon?.includes("lorem")
+												? tool?.icon
+												: `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${tool?.icon}`
+										}
+										className='h-8 w-8'
+										alt=''
+									/>
+									{/* <span key={index} className='bg-white text-xs text-black'>
+										{tool?.name}
+									</span> */}
+								</div>
+							))}
 						</div>
-						<div className='flex w-full items-center justify-between gap-3'>
+						<div className='flex w-full items-center justify-between gap-3 px-5'>
 							<h1 className='truncate'>
-								{categories.name} - {title}
+								{categories?.name} - {title}
 							</h1>
 							<button className='rounded-lg bg-white p-2 text-[#6E6D7A] transition-all hover:bg-gray-200'>
 								<AiFillHeart className='h-5 w-5' />
@@ -66,18 +76,18 @@ export default function ProjectCard(props) {
 			<div className='flex w-full flex-col items-center justify-between gap-2 p-3 py-4'>
 				<div className='flex w-full items-center justify-between'>
 					<div className='flex items-center justify-start gap-2 text-sm'>
-						<Image
+						<img
 							src={
-								user.profile_image?.includes('avatars')
-									? user.profile_image
-									: `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${user.profile_image}`
+								user?.profile_image?.includes("avatars")
+									? user?.profile_image
+									: `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${user?.profile_image}`
 							}
 							alt={props.author}
 							width={18}
 							height={18}
 							className='rounded-full'
 						/>
-						<h4 className='font-semibold'>{user.name}</h4>
+						<h4 className='font-semibold'>{user?.name}</h4>
 					</div>
 					<div className='flex gap-2'>
 						<div className='flex items-center justify-center gap-1 text-sm text-[#B5B5B5]'>
