@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import Head from 'next/head';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectAuth } from '@/store/auth/auth.selector';
-import { updateProfile } from '@/store/auth/auth.action';
+import { selectUser } from '@/store/user/user.selector';
+import { updateProfile } from '@/store/user/user.action';
 import { useState } from 'react';
 import { SuccessToast, ErrorToast } from '@/components/toast/alert-taost';
 import { useRouter } from 'next/router';
@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 export default function index() {
 	const dispatch = useDispatch();
 	const router = useRouter();
-	const { user } = useSelector(selectAuth);
+	const { user } = useSelector(selectUser);
 
 	const [updateProfilePayload, setUpdateProfilePayload] = useState({
 		name: user?.name,
@@ -34,19 +34,18 @@ export default function index() {
 			...updateProfilePayload,
 			user_image: file,
 		});
-	}
+	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		await dispatch(updateProfile(updateProfilePayload))
-			.then((res) => {
-				if(res.meta.requestStatus === 'fulfilled') {
-					SuccessToast('Profile updated successfully')
-					router.push('/user/profile')
-				} else {
-					ErrorToast('Failed to update profile')
-				}
-			})
+		await dispatch(updateProfile(updateProfilePayload)).then((res) => {
+			if (res.meta.requestStatus === 'fulfilled') {
+				SuccessToast('Profile updated successfully');
+				router.push('/user/profile');
+			} else {
+				ErrorToast('Failed to update profile');
+			}
+		});
 	};
 
 	return (

@@ -5,14 +5,13 @@ import Image from 'next/image';
 import SuccessCreatorHero from '@/assets/images/success-creator.png';
 import ErrorCreatorHero from '@/assets/images/error-creator.png';
 
-import { activateCreator } from '@/store/auth/auth.action';
+import { activateCreator } from '@/store/user/user.action';
 import { SuccessToast, ErrorToast } from '@/components/toast/alert-taost';
 
 const index = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
-  const { token } = router.query;
-
+	const { token } = router.query;
 
 	const [error, setError] = useState('');
 
@@ -22,17 +21,16 @@ const index = () => {
 				SuccessToast(res.payload.message);
 			} else {
 				ErrorToast(res.payload.error.message);
-        setError(res.payload.error.message)
+				setError(res.payload.error.message);
 			}
 		});
 	};
 
 	useEffect(() => {
-    if(token){
-      handleActivateCreator()
-    }
-	}, [token])
-
+		if (token) {
+			handleActivateCreator();
+		}
+	}, [token]);
 
 	return (
 		<div className='flex flex-col items-center'>
