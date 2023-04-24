@@ -1,129 +1,85 @@
-import { useState } from 'react';
-import ProjectCard from '@/components/cards/project-card';
-import { BiSearch } from 'react-icons/bi';
-import { TbFilter, TbFilterOff } from 'react-icons/tb';
-import Head from 'next/head';
+import { useState, useEffect } from "react";
+import Head from "next/head";
+import ProjectCard from "@/components/cards/project-card";
+import { CiSearch } from "react-icons/ci";
+import { TbFilter, TbFilterOff } from "react-icons/tb";
+import Image from "next/image";
+import { useRouter } from "next/router";
+
+import { useSelector, useDispatch } from "react-redux";
+import { getProjects } from "@/store/projects/projects.action";
+import { selectCategories } from "@/store/categories/categories.selector";
+import { selectTools } from "@/store/tools/tools.selector";
+import { selectProject } from "@/store/projects/projects.selector";
 
 export default function Discover() {
-	const [isPosts, setIsPosts] = useState('All');
-	const [posts, setPosts] = useState([]);
+	const router = useRouter();
+	const dispatch = useDispatch();
+
 	const [isFilter, setIsFilter] = useState(false);
+	const [error, setError] = useState(null);
+	const [search, setSearch] = useState("");
 
-	//Checkbox Tools
-	const [checkedTools, setCheckedTools] = useState([]);
-	console.log(checkedTools);
+	const { categories } = useSelector(selectCategories);
+	const { tools } = useSelector(selectTools);
+	const { projects, loading } = useSelector(selectProject);
 
-	const datasTools = [
-		{ label: 'Photoshop', value: 'Photoshop' },
-		{ label: 'Figma', value: 'Figma' },
-		{ label: 'Adobe XD', value: 'Adobe XD' },
-		{ label: 'Sketch', value: 'Sketch' },
-		{ label: 'Invision', value: 'Invision' },
-	];
-
-	const handleCheck = (event) => {
-		const toolValue = event.target.value;
-		if (event.target.checked) {
-			setCheckedTools([...checkedTools, toolValue]);
+	const handleFilterCategories = (e) => {
+		const filterValue = e.target.value;
+		if (filterValue !== "all") {
+			router.query.category = filterValue;
+			router.push(router);
 		} else {
-			setCheckedTools(checkedTools.filter((tool) => tool !== toolValue));
+			router.push("/project/discover?category=all");
 		}
 	};
 
-	const datas = [
-		'All',
-		'Mobile Design',
-		'Web Design',
-		'UI Components',
-		'Branding',
-	];
+	const handleFilterTool = (e) => {
+		const filterValue = e.target.value;
+		if (filterValue !== "all") {
+			router.query.tool = filterValue;
+			router.push(router);
+		} else {
+			router.push("/project/discover?category=all");
+		}
+	};
 
-	const project = [
+	const filteredProjects = projects.filter((project) =>
+		project.title.toLowerCase().includes(search.toLowerCase())
+	);
+
+	useEffect(() => {
+		const getFilteredProject = async () => {
+			await dispatch(
+				getProjects({
+					category:
+						router.query.category === "all" ? null : router.query.category,
+					tool: router.query.tool,
+				})
+			).then((res) => {
+				if (res.meta.requestStatus === "rejected") {
+					setError(res.payload.status);
+					setSearch("");
+				} else {
+					setError(null);
+					setSearch("");
+				}
+			});
+		};
+
+		getFilteredProject();
+	}, [router.query]);
+
+	useEffect(() => {
+		router.push("/project/discover?category=all");
+	}, []);
+
+	const filterCategories = [
 		{
-			id: 1,
-			title: 'Booking Application',
-			thumbnail_project_image: 'https://picsum.photos/seed/picsumaa/300/325',
-			categories: {
-				name: 'Web Design',
-			},
-			tools: [{ name: 'FG' }, { name: 'XD' }],
-			user: {
-				name: 'tesing',
-				profile_image: 'https://ui-avatars.com/api/?background=random',
-			},
-			altAvatarPost: 'Avatar',
-			author: 'Nicko Ilham',
-			total_likes: 100,
-			total_views: 100,
+			name: "All",
+			slug: "all",
 		},
-		{
-			id: 2,
-			title: 'Booking Application',
-			thumbnail_project_image: 'https://picsum.photos/seed/picsumaa/300/325',
-			categories: {
-				name: 'Web Design',
-			},
-			tools: [{ name: 'FG' }, { name: 'XD' }],
-			user: {
-				name: 'tesing',
-				profile_image: 'https://ui-avatars.com/api/?background=random',
-			},
-			altAvatarPost: 'Avatar',
-			author: 'Nicko Ilham',
-			total_likes: 100,
-			total_views: 100,
-		},
-		{
-			id: 3,
-			title: 'Booking Application',
-			thumbnail_project_image: 'https://picsum.photos/seed/picsumaa/300/325',
-			categories: {
-				name: 'Web Design',
-			},
-			tools: [{ name: 'FG' }, { name: 'XD' }],
-			user: {
-				name: 'tesing',
-				profile_image: 'https://ui-avatars.com/api/?background=random',
-			},
-			altAvatarPost: 'Avatar',
-			author: 'Nicko Ilham',
-			total_likes: 100,
-			total_views: 100,
-		},
-		{
-			id: 4,
-			title: 'Booking Application',
-			thumbnail_project_image: 'https://picsum.photos/seed/picsumaa/300/325',
-			categories: {
-				name: 'Web Design',
-			},
-			tools: [{ name: 'FG' }, { name: 'XD' }],
-			user: {
-				name: 'tesing',
-				profile_image: 'https://ui-avatars.com/api/?background=random',
-			},
-			altAvatarPost: 'Avatar',
-			author: 'Nicko Ilham',
-			total_likes: 100,
-			total_views: 100,
-		},
-		{
-			id: 5,
-			title: 'Booking Application',
-			thumbnail_project_image: 'https://picsum.photos/seed/picsumaa/300/325',
-			categories: {
-				name: 'Web Design',
-			},
-			tools: [{ name: 'FG' }, { name: 'XD' }],
-			user: {
-				name: 'tesing',
-				profile_image: 'https://ui-avatars.com/api/?background=random',
-			},
-			altAvatarPost: 'Avatar',
-			author: 'Nicko Ilham',
-			total_likes: 100,
-			total_views: 100,
-		},
+		...categories,
 	];
 
 	return (
@@ -137,31 +93,35 @@ export default function Discover() {
 			</Head>
 			<section className='flex flex-col items-center justify-center'>
 				<h1 className='text-3xl font-bold text-primary'>
-					Find inspiration from the{' '}
+					Find inspiration from the{" "}
 					<span className='text-secondary'>Design Category</span> for your
 					project
 				</h1>
 
-				<div className='mt-8 mb-4 flex items-center justify-center gap-8 font-medium'>
-					{datas.map((data, index) => {
+				<div
+					className={`mt-8 flex items-center justify-center gap-8 font-medium ${
+						isFilter ? "" : "mb-20"
+					}`}>
+					{filterCategories.map((category, index) => {
 						return (
 							<button
 								key={index}
-								onClick={() => setIsPosts(data)}
+								onClick={handleFilterCategories}
+								value={category.slug}
 								className={
-									isPosts === data
-										? 'rounded-lg bg-primary/10 px-3 py-2 text-primary'
-										: 'rounded-lg px-3 py-2 text-black transition-all hover:bg-primary/10 hover:text-primary'
+									router.query.category === category.slug
+										? "rounded-lg bg-primary/10 px-3 py-2 text-primary"
+										: "rounded-lg px-3 py-2 text-black transition-all hover:bg-primary/10 hover:text-primary"
 								}>
-								{data}
+								{category.name}
 							</button>
 						);
 					})}
 					<button
 						className={`tooltip tooltip-right rounded-lg border border-primary/60 p-2 text-primary/60 transition-all duration-300 hover:border-primary/0 hover:bg-primary/10 hover:text-primary ${
-							isFilter && 'border-primary/0 bg-primary/10 text-primary'
+							isFilter && "border-primary/0 bg-primary/10 text-primary"
 						}`}
-						data-tip={isFilter ? 'Remove Filters' : 'Filters'}
+						data-tip={isFilter ? "Remove Filters" : "Filters"}
 						onClick={() => (isFilter ? setIsFilter(false) : setIsFilter(true))}>
 						{isFilter ? (
 							<TbFilterOff className='h-6 w-6' />
@@ -172,40 +132,64 @@ export default function Discover() {
 				</div>
 
 				{isFilter ? (
-					<div className='flex flex-col items-center justify-center gap-5 pb-10'>
-						<div className='flex items-center justify-center gap-8'>
-							{datasTools.map((tools) => (
-								<button
-									className='flex items-center justify-center gap-1'
-									key={tools.value}>
+					<div className='mt-8 flex flex-col items-center justify-center gap-5'>
+						<div className='flex flex-wrap gap-3'>
+							{tools.map((tool) => (
+								<label
+									key={tool.id}
+									className='flex w-max cursor-pointer items-center gap-3 rounded-xl border px-3 py-3'>
 									<input
 										type='checkbox'
 										className='checkbox'
-										value={tools.value}
-										onChange={handleCheck}
+										value={tool.slug}
+										name='ToolId'
+										onChange={handleFilterTool}
+										checked={router.query.tool?.includes(tool.slug)}
 									/>
-									{tools.label}
-								</button>
+									<Image
+										src={
+											tool.icon.includes("loremflickr")
+												? tool.icon
+												: `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${tool.icon}`
+										}
+										width={20}
+										height={20}
+										alt={tool.name}
+									/>
+									{tool.name}
+								</label>
 							))}
 						</div>
 						<div>
-							<div className='flex h-12 w-96 items-center justify-between rounded-lg bg-[#F0F1F2] pl-3 pr-3 text-[#9F9F9F]'>
-								<BiSearch size={25} />
+							<div className='relative mt-9 flex h-12 w-[500px] items-center justify-between rounded-full bg-[#F0F1F2] text-[#9F9F9F]'>
+								<CiSearch size={25} className='absolute right-5' />
 								<input
 									type='text'
-									placeholder='Search'
-									className='w-full bg-transparent focus:outline-none'
+									placeholder='Search what your want here...'
+									onChange={(e) => setSearch(e.target.value)}
+									value={search}
+									className='w-full bg-transparent text-center text-xs font-medium focus:outline-none'
 								/>
 							</div>
 						</div>
 					</div>
 				) : null}
 
-				<div className='mt-10 grid grid-cols-4 gap-8 text-black'>
-					{project.map((post) => {
-						return <ProjectCard key={post.id} {...post} />;
-					})}
-				</div>
+				{loading ? (
+					"loading..."
+				) : (
+					<div className='mt-10 grid grid-cols-4 gap-8 text-black'>
+						{filteredProjects.length === 0 || error ? (
+							<h1 className='text-center text-2xl font-bold'>
+								{search} Not Found
+							</h1>
+						) : (
+							filteredProjects.map((post) => {
+								return <ProjectCard key={post.id} {...post} />;
+							})
+						)}
+					</div>
+				)}
 			</section>
 		</>
 	);
