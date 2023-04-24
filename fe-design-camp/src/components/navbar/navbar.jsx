@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import logo from '@/assets/mejeng.webp';
-import Image from 'next/image';
-import Link from 'next/link';
-import { CgProfile, CgLogOff } from 'react-icons/cg';
-import { RiUserSettingsLine } from 'react-icons/ri';
-import { FiUpload } from 'react-icons/fi';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectAuth } from '@/store/auth/auth.selector';
-import { selectUser } from '@/store/user/user.selector';
-import { authLogout } from '@/store/auth/auth.reducer';
-import { SuccessToast } from '../toast/alert-taost';
-import Router from 'next/router';
+import { useState } from "react";
+import logo from "@/assets/mejeng.webp";
+import Image from "next/image";
+import Link from "next/link";
+import { CgProfile, CgLogOff } from "react-icons/cg";
+import { RiUserSettingsLine } from "react-icons/ri";
+import { FiUpload } from "react-icons/fi";
+import { useSelector, useDispatch } from "react-redux";
+import { selectAuth } from "@/store/auth/auth.selector";
+import { selectUser } from "@/store/user/user.selector";
+import { authLogout } from "@/store/auth/auth.reducer";
+import { SuccessToast } from "../toast/alert-taost";
+import Router from "next/router";
 
 export default function Navbar() {
 	const dispatch = useDispatch();
@@ -28,10 +28,10 @@ export default function Navbar() {
 	};
 
 	const handleLogout = () => {
-		router.push('/');
+		router.push("/");
 		setTimeout(() => {
 			dispatch(authLogout());
-			SuccessToast('Logout Success');
+			SuccessToast("Logout Success");
 		}, 2000);
 	};
 
@@ -60,7 +60,7 @@ export default function Navbar() {
 								<div className='w-8 rounded-full'>
 									<img
 										src={
-											user?.profile_image?.includes('avatars')
+											user?.profile_image?.includes("avatars")
 												? user?.profile_image
 												: `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${user?.profile_image}`
 										}
@@ -69,14 +69,14 @@ export default function Navbar() {
 							</div>
 							{isHover && (
 								<div
-									className='absolute right-0 flex -translate-x-2 flex-col items-start justify-center gap-4 rounded-lg bg-white px-5 pt-7 pb-5 drop-shadow-xl'
+									className='absolute right-0 z-50 flex -translate-x-2 flex-col items-start justify-center gap-4 rounded-lg bg-white px-5 pt-7 pb-5 drop-shadow-xl'
 									onMouseEnter={() => {
 										setIsHover(true);
 									}}
 									onMouseLeave={() => {
 										setIsHover(false);
 									}}>
-									{user?.role.toLowerCase() === 'admin' ? (
+									{user?.role.toLowerCase() === "admin" ? (
 										<Link
 											href='/admin'
 											className='flex items-center gap-2 font-medium text-gray-600 transition-all hover:text-primary'>
@@ -113,12 +113,12 @@ export default function Navbar() {
 					) : (
 						<div className='flex items-center justify-center gap-3 '>
 							<Link
-								href={'/auth/login'}
+								href={"/auth/login"}
 								className='rounded-[15px] py-[14px] px-8 font-bold text-primary transition-all hover:bg-primary hover:text-white hover:shadow-primary/40 hover:drop-shadow-lg'>
 								Login
 							</Link>
 							<Link
-								href={'/auth/register'}
+								href={"/auth/register"}
 								className='rounded-[15px] bg-primary py-[14px] px-8 font-bold text-white hover:text-white'>
 								Register
 							</Link>
