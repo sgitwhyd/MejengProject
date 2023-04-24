@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { AiFillEye, AiFillHeart } from "react-icons/ai";
 
 export default function ProjectCard(props) {
@@ -43,34 +44,36 @@ export default function ProjectCard(props) {
 					className='h-52 w-72 rounded-t-xl object-cover'
 				/>
 				{hover && (
-					<div className='absolute inset-0 flex h-full w-full cursor-pointer flex-col items-end justify-between overflow-hidden rounded-t-xl bg-gradient-to-b from-transparent via-transparent to-black/60  pb-5 font-semibold text-white'>
-						<div className='right-0 flex items-center justify-center gap-4 text-sm'>
-							{tools.map((tool, index) => (
-								<div key={index} className='flex  items-center p-1'>
-									<img
-										src={
-											tool?.icon?.includes("lorem")
-												? tool?.icon
-												: `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${tool?.icon}`
-										}
-										className='h-8 w-8'
-										alt=''
-									/>
-									{/* <span key={index} className='bg-white text-xs text-black'>
+					<Link href={`/project/${slug}`}>
+						<div className='absolute inset-0 flex h-full w-full cursor-pointer flex-col items-end justify-between overflow-hidden rounded-t-xl bg-gradient-to-b from-transparent via-transparent to-black/60  pb-5 font-semibold text-white'>
+							<div className='right-0 flex items-center justify-center gap-4 text-sm'>
+								{tools.map((tool, index) => (
+									<div key={index} className='flex  items-center p-1'>
+										<img
+											src={
+												tool?.icon?.includes("lorem")
+													? tool?.icon
+													: `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${tool?.icon}`
+											}
+											className='h-8 w-8'
+											alt=''
+										/>
+										{/* <span key={index} className='bg-white text-xs text-black'>
 										{tool?.name}
 									</span> */}
-								</div>
-							))}
+									</div>
+								))}
+							</div>
+							<div className='flex w-full items-center justify-between gap-3 px-5'>
+								<h1 className='truncate'>
+									{categories?.name} - {title}
+								</h1>
+								<button className='rounded-lg bg-white p-2 text-[#6E6D7A] transition-all hover:bg-gray-200'>
+									<AiFillHeart className='h-5 w-5' />
+								</button>
+							</div>
 						</div>
-						<div className='flex w-full items-center justify-between gap-3 px-5'>
-							<h1 className='truncate'>
-								{categories?.name} - {title}
-							</h1>
-							<button className='rounded-lg bg-white p-2 text-[#6E6D7A] transition-all hover:bg-gray-200'>
-								<AiFillHeart className='h-5 w-5' />
-							</button>
-						</div>
-					</div>
+					</Link>
 				)}
 			</div>
 			<div className='flex w-full flex-col items-center justify-between gap-2 p-3 py-4'>
