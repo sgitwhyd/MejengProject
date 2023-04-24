@@ -1,17 +1,17 @@
-import Head from 'next/head';
-import { useEffect, useState } from 'react';
-import Headline from './headline';
-import Details from './details';
-import Review from './review';
+import Head from "next/head";
+import { useEffect, useState } from "react";
+import Headline from "./headline";
+import Details from "./details";
+import Review from "./review";
 import {
 	WarningToast,
 	SuccessToast,
 	ErrorToast,
-} from '@/components/toast/alert-taost';
-import { useDispatch, useSelector } from 'react-redux';
-import { createProject } from '@/store/user/user.action';
-import { selectUser } from '@/store/user/user.selector';
-import { useRouter } from 'next/router';
+} from "@/components/toast/alert-taost";
+import { useDispatch, useSelector } from "react-redux";
+import { createProject } from "@/store/user/user.action";
+import { selectUser } from "@/store/user/user.selector";
+import { useRouter } from "next/router";
 
 export default function UploadProject() {
 	const dispatch = useDispatch();
@@ -23,48 +23,48 @@ export default function UploadProject() {
 
 	const [uploadProjectPayload, setUploadProjectPayload] = useState({
 		thumbnail_project_image: null,
-		title: '',
-		desc: '',
-		CategoryId: '',
+		title: "",
+		desc: "",
+		CategoryId: "",
 		ToolId: [],
-		url: '',
+		url: "",
 		project_image: null,
 	});
 
 	// Headline
 	const [thumbnail, setThumbnail] = useState({
-		preview: '',
+		preview: "",
 		file: null,
 	});
-	const [title, setTitle] = useState('');
+	const [title, setTitle] = useState("");
 
 	// Details
 	const [isActived, setIsActived] = useState(false);
 	const [moreImage1, setMoreImage1] = useState(false);
 	const [moreImage2, setMoreImage2] = useState(false);
 	const [image1, setImage1] = useState({
-		preview: '',
+		preview: "",
 		file: null,
 	});
 	const [image2, setImage2] = useState({
-		preview: '',
+		preview: "",
 		file: null,
 	});
 	const [image3, setImage3] = useState({
-		preview: '',
+		preview: "",
 		file: null,
 	});
-	const [description, setDescription] = useState('');
-	const [isCategory, setIsCategory] = useState('');
+	const [description, setDescription] = useState("");
+	const [isCategory, setIsCategory] = useState("");
 	const [checkedTools, setCheckedTools] = useState([]);
-	const [link, setLink] = useState('');
+	const [link, setLink] = useState("");
 
 	const handlePrevStep = () => {
 		setStep(step - 1);
 	};
 
 	useEffect(() => {
-		const tools = checkedTools.join(',');
+		const tools = checkedTools.join(",");
 
 		setUploadProjectPayload({
 			thumbnail_project_image: thumbnail.file,
@@ -103,23 +103,23 @@ export default function UploadProject() {
 		}
 
 		for (let img of projectI) {
-			formData.append('project_image', img);
+			formData.append("project_image", img);
 		}
 
-		formData.append('title', uploadProjectPayload.title);
-		formData.append('desc', uploadProjectPayload.desc);
-		formData.append('CategoryId', uploadProjectPayload.CategoryId);
-		formData.append('ToolId', uploadProjectPayload.ToolId);
-		formData.append('url', uploadProjectPayload.url);
+		formData.append("title", uploadProjectPayload.title);
+		formData.append("desc", uploadProjectPayload.desc);
+		formData.append("CategoryId", uploadProjectPayload.CategoryId);
+		formData.append("ToolId", uploadProjectPayload.ToolId);
+		formData.append("url", uploadProjectPayload.url);
 		formData.append(
-			'thumbnail_project_image',
+			"thumbnail_project_image",
 			uploadProjectPayload.thumbnail_project_image
 		);
 
 		await dispatch(createProject(formData)).then((res) => {
-			if (res.meta.requestStatus === 'fulfilled') {
+			if (res.meta.requestStatus === "fulfilled") {
 				SuccessToast(res.payload.message);
-				router.push('/user/profile');
+				router.push("/user/profile");
 			} else {
 				ErrorToast(res.payload.error.message);
 			}
@@ -136,46 +136,46 @@ export default function UploadProject() {
 				<form onSubmit={handleOnSubmit}>
 					<section className='mx-auto flex max-w-[800px] items-center justify-center'>
 						<div className='flex flex-1 flex-col items-center justify-center gap-3 text-sm font-semibold'>
-							<button
+							<div
 								onClick={() => {
 									setStep(1);
 								}}
-								className={`h-8 w-8 rounded-full text-white ${
-									step >= 1 ? 'bg-primary' : 'bg-gray-300'
+								className={`flex h-8 w-8 items-center justify-center rounded-full text-white ${
+									step >= 1 ? "bg-primary" : "bg-gray-300"
 								}`}>
 								<p>1</p>
-							</button>
+							</div>
 							<p>Give a title and thumbnail image</p>
 						</div>
 						<div className='flex flex-1 flex-col items-center justify-center gap-3 text-sm font-semibold'>
-							<button
+							<div
 								onClick={() => {
-									title.trim() === '' || thumbnail === null
-										? WarningToast('Please fill in all required fields')
+									title.trim() === "" || thumbnail === null
+										? WarningToast("Please fill in all required fields")
 										: setStep(2);
 								}}
-								className={`h-8 w-8 rounded-full text-white ${
-									step >= 2 ? 'bg-primary' : 'bg-gray-300'
+								className={`flex h-8 w-8 items-center justify-center rounded-full text-white ${
+									step >= 2 ? "bg-primary" : "bg-gray-300"
 								}`}>
 								<p>2</p>
-							</button>
+							</div>
 							<p>Give some details</p>
 						</div>
 						<div className='flex flex-1 flex-col items-center justify-center gap-3 text-sm font-semibold'>
-							<button
+							<div
 								onClick={() => {
-									description.trim() === '' ||
+									description.trim() === "" ||
 									image1 === null ||
-									isCategory === '' ||
+									isCategory === "" ||
 									checkedTools.length === 0
-										? WarningToast('Please fill in all required fields')
+										? WarningToast("Please fill in all required fields")
 										: setStep(3);
 								}}
-								className={`h-8 w-8 rounded-full text-white ${
-									step >= 3 ? 'bg-primary' : 'bg-gray-300'
+								className={`flex h-8 w-8 items-center justify-center rounded-full text-white ${
+									step >= 3 ? "bg-primary" : "bg-gray-300"
 								}`}>
 								<p>3</p>
-							</button>
+							</div>
 							<p>Review your post</p>
 						</div>
 					</section>
@@ -236,8 +236,8 @@ export default function UploadProject() {
 							<button
 								className='w-[125px] rounded-md bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80'
 								onClick={() => {
-									title.trim() === '' || thumbnail === null
-										? WarningToast('Please fill in all required fields')
+									title.trim() === "" || thumbnail === null
+										? WarningToast("Please fill in all required fields")
 										: setStep(2);
 								}}>
 								Next
@@ -253,11 +253,11 @@ export default function UploadProject() {
 								<button
 									className='w-[125px] rounded-md bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80'
 									onClick={() => {
-										description.trim() === '' ||
+										description.trim() === "" ||
 										image1 === null ||
-										isCategory === '' ||
+										isCategory === "" ||
 										checkedTools.length === 0
-											? WarningToast('Please fill in all required fields')
+											? WarningToast("Please fill in all required fields")
 											: setStep(3);
 									}}>
 									Next
@@ -274,7 +274,7 @@ export default function UploadProject() {
 								<button
 									type='submit'
 									className={`${
-										loading ? 'loading' : ''
+										loading ? "loading" : ""
 									} btn w-[125px] rounded-md border-none bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80`}>
 									Publish
 								</button>
