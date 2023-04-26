@@ -4,62 +4,66 @@
 
 .menu :where(li:not(.menu-title):not(:empty)) > :where(:not(ul).active),
 .menu :where(li:not(.menu-title):not(:empty)) > :where(*:not(ul):active) {
-  @apply bg-slate-400/50;
+	@apply bg-slate-400/50;
 }
 
 .breadcrumbs > ul > li > a:hover,
 .breadcrumbs > ol > li > a:hover {
-  @apply no-underline;
+	@apply no-underline;
 }
 
 .underline-animation {
-  display: inline-block;
-  position: relative;
-  color: #213ccc;
+	display: inline-block;
+	position: relative;
+	color: #213ccc;
 }
 
 .underline-animation::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  transform: scaleX(0);
-  height: 1px;
-  bottom: 0;
-  left: 0;
-  background-color: #213ccc;
-  transform-origin: bottom right;
-  transition: transform 0.25s ease-out;
+	content: '';
+	position: absolute;
+	width: 100%;
+	transform: scaleX(0);
+	height: 1px;
+	bottom: 0;
+	left: 0;
+	background-color: #213ccc;
+	transform-origin: bottom right;
+	transition: transform 0.25s ease-out;
 }
 
 .underline-animation:hover::after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
+	transform: scaleX(1);
+	transform-origin: bottom left;
 }
 
 .underline-animation-footer {
-  display: inline-block;
-  position: relative;
-  color: #9f9f9f;
+	display: inline-block;
+	position: relative;
+	color: #9f9f9f;
 }
 
 .underline-animation-footer::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  transform: scaleX(0);
-  height: 1px;
-  bottom: 0;
-  left: 0;
-  background-color: white;
-  transform-origin: bottom right;
-  transition: transform 0.35s ease-out;
+	content: '';
+	position: absolute;
+	width: 100%;
+	transform: scaleX(0);
+	height: 1px;
+	bottom: 0;
+	left: 0;
+	background-color: white;
+	transform-origin: bottom right;
+	transition: transform 0.35s ease-out;
 }
 
 .underline-animation-footer:hover::after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
+	transform: scaleX(1);
+	transform-origin: bottom left;
 }
 
 a {
-  @apply text-primary hover:text-primary/80;
+	@apply text-primary hover:text-primary/80;
+}
+
+table td {
+	word-wrap: break-word;
 }

@@ -67,7 +67,7 @@ module.exports = {
 			const { id } = req.body;
 			await User.findOne({
 				where: { id },
-				attributes: { exclude: ['id','password'] },
+				attributes: { exclude: ['id', 'password'] },
 				include: {
 					model: Project,
 					as: 'project',

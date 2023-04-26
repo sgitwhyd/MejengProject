@@ -1,10 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { authLogin, getUserProfile, forgotPassword, requestCreator } from './auth.action';
+import { authLogin, forgotPassword } from './auth.action';
 
 const initialState = {
 	token: '',
 	login: null,
-	user: null,
+	role: null,
 	loading: false,
 };
 
@@ -15,7 +15,7 @@ const authSlice = createSlice({
 		authLogout: (state) => {
 			state.token = '';
 			state.login = null;
-			state.user = null;
+			state.role = null;
 			localStorage.removeItem('persist:root');
 		},
 	},
@@ -26,13 +26,11 @@ const authSlice = createSlice({
 		builder.addCase(authLogin.fulfilled, (state, action) => {
 			state.login = true;
 			state.loading = false;
-			state.token = action.payload.token;
+			state.role = action.payload.data.role;
+			state.token = action.payload.data.token;
 		}),
 			builder.addCase(authLogin.rejected, (state, action) => {
 				state.loading = false;
-			}),
-			builder.addCase(getUserProfile.fulfilled, (state, action) => {
-				state.user = action.payload;
 			}),
 			builder.addCase(forgotPassword.pending, (state, action) => {
 				state.loading = true;
@@ -42,16 +40,7 @@ const authSlice = createSlice({
 			}),
 			builder.addCase(forgotPassword.rejected, (state, action) => {
 				state.loading = false;
-			}),
-			builder.addCase(requestCreator.pending, (state, action) => {
-				state.loading = true;
-			}),
-			builder.addCase(requestCreator.fulfilled, (state, action) => {
-				state.loading = false;
-			}),
-			builder.addCase(requestCreator.rejected, (state, action) => {
-				state.loading = false;
-			})
+			});
 	},
 });
 

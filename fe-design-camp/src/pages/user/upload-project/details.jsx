@@ -1,11 +1,13 @@
-import Link from 'next/link';
-import { AiOutlineLink } from 'react-icons/ai';
-import ImageUploadCard from '@/components/cards/image-upload-card';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import { useSelector } from 'react-redux';
-import { selectCategories } from '@/store/categories/categories.selector';
-import { selectTools } from '@/store/tools/tools.selector';
+import Link from "next/link";
+import { AiOutlineLink } from "react-icons/ai";
+import ImageUploadCard from "@/components/cards/image-upload-card";
+import dynamic from "next/dynamic";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css";
+import { useSelector } from "react-redux";
+import { selectCategories } from "@/store/categories/categories.selector";
+import { selectTools } from "@/store/tools/tools.selector";
+import Image from "next/image";
 
 export default function Details(props) {
 	const { categories } = useSelector(selectCategories);
@@ -53,11 +55,17 @@ export default function Details(props) {
 	};
 
 	const handleCancel2 = () => {
-		setImage2(null);
+		setImage2({
+			file: null,
+			preview: "",
+		});
 		setMoreImage1(false);
 	};
 	const handleCancel3 = () => {
-		setImage3(null);
+		setImage3({
+			file: null,
+			preview: "",
+		});
 		setMoreImage2(false);
 	};
 
@@ -73,7 +81,7 @@ export default function Details(props) {
 	};
 
 	const modules = {
-		toolbar: [['bold', 'italic', 'underline'], ['link']],
+		toolbar: [["bold", "italic", "underline"], ["link"]],
 	};
 
 	return (
@@ -81,7 +89,8 @@ export default function Details(props) {
 			<p className='text-2xl font-medium'>Project Details</p>
 			<ImageUploadCard
 				image={image1.preview}
-				title={'Upload your project image details'}
+				inputName='project_image'
+				title={"Upload your project image details"}
 				handleFileChange={handleFileChange1}
 			/>
 			{image1.preview && !moreImage1 && (
@@ -96,7 +105,8 @@ export default function Details(props) {
 			{moreImage1 && (
 				<ImageUploadCard
 					image={image2.preview}
-					title={'Upload more project image details'}
+					inputName='project_image'
+					title={"Upload more project image details"}
 					handleFileChange={handleFileChange2}
 					handleCancel={handleCancel2}
 				/>
@@ -113,7 +123,8 @@ export default function Details(props) {
 			{moreImage2 && (
 				<ImageUploadCard
 					image={image3.preview}
-					title={'Upload more project image details'}
+					inputName='project_image'
+					title={"Upload more project image details"}
 					handleFileChange={handleFileChange3}
 					handleCancel={handleCancel3}
 				/>
@@ -124,15 +135,16 @@ export default function Details(props) {
 					value={description}
 					onChange={setDescription}
 					modules={modules}
-					className='w-full'
+					className='mt-3 w-full'
 				/>
 			</div>
 
 			<div className='flex w-full flex-col items-start justify-start'>
 				<label>Category</label>
 				<select
-					className='select-bordered select w-full flex-1'
+					className='select-bordered select mt-3 w-full flex-1'
 					value={isCategory}
+					name='CategoryId'
 					onChange={(e) => {
 						setIsCategory(e.target.value);
 					}}>
@@ -145,20 +157,31 @@ export default function Details(props) {
 				</select>
 			</div>
 
-			<div className='flex w-full flex-col items-start justify-start'>
+			<div className='flex w-full flex-col'>
 				<label>Tools</label>
-				<div className='grid w-full grid-cols-5 gap-3'>
+				<div className='mt-3 flex flex-wrap gap-4'>
 					{tools.map((tool) => {
 						return (
 							<label
 								key={tool.id}
-								className='flex cursor-pointer items-start justify-evenly gap-2 rounded-xl border py-2 px-1'>
+								className='flex w-max cursor-pointer items-center gap-3 rounded-xl border px-3 py-3'>
 								<input
 									type='checkbox'
 									className='checkbox'
 									value={tool.id}
+									name='ToolId'
 									onChange={handleCheckboxChange}
 									checked={checkedTools.includes(tool.id)}
+								/>
+								<Image
+									src={
+										tool.icon.includes("loremflickr")
+											? tool.icon
+											: `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${tool.icon}`
+									}
+									width={20}
+									height={20}
+									alt={tool.name}
 								/>
 								{tool.name}
 							</label>
@@ -187,6 +210,7 @@ export default function Details(props) {
 							placeholder='https://example.com'
 							pattern='https://.*'
 							id='url'
+							name='url'
 							className='input-bordered input w-full pl-14'
 							value={link}
 							maxLength={100}
