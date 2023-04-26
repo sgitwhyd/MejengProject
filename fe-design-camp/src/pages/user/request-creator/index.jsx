@@ -3,9 +3,9 @@ import Button from '@/components/button/button';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAuth } from '@/store/auth/auth.selector';
 import { useRouter } from 'next/router';
-import { requestCreator } from '@/store/auth/auth.action';
+import { requestCreator } from '@/store/user/user.action';
+import { selectUser } from '@/store/user/user.selector';
 import { SuccessToast, ErrorToast } from '@/components/toast/alert-taost';
 
 export default function RequestCreator() {
@@ -14,7 +14,7 @@ export default function RequestCreator() {
 
 	const [agree, setAgree] = useState(false);
 
-	const { loading } = useSelector(selectAuth);
+	const { loading } = useSelector(selectUser);
 
 	const handleOnChange = (e) => {
 		const { checked } = e.target;

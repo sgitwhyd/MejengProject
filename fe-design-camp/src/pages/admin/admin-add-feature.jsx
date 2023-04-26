@@ -118,6 +118,7 @@ export default function AdminAddFeature() {
 		setTool('');
 		setLogoTool(null);
 		setIsAddTool(false);
+		setPreviewToolIcon(null);
 	};
 
 	const handleUpdateTool = async (id, { newName, tool_icon }) => {
@@ -157,7 +158,7 @@ export default function AdminAddFeature() {
 		<section className='relative h-full'>
 			<header className='text-xl font-bold'>Add Feature</header>
 			<section
-				className={`mt-5 flex items-center justify-between gap-10 ${
+				className={`mt-5 grid max-h-screen grid-cols-2 justify-between gap-10 ${
 					(isAddCategory ||
 						isAddTool ||
 						isToolDelete ||
@@ -166,22 +167,30 @@ export default function AdminAddFeature() {
 					'blur-sm'
 				}`}>
 				{/* Table Categories */}
-				<div className='flex-1 overflow-x-auto'>
+				<div className=''>
 					<h1 className='font-bold'>Categories</h1>
-					<table className='table w-full'>
-						<thead>
+					<table className='mt-5 w-full'>
+						<thead className='h-12 bg-gray-200'>
 							<tr>
 								<th>No</th>
 								<th>Name</th>
+								<th>Short Desc</th>
 								<th>Action</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody className='bg-white'>
 							{categories.map((category, index) => (
-								<tr key={category.id}>
+								<tr
+									key={category.id}
+									className='h-28 border-b-[1px] text-center'>
 									<th>{index + 1}</th>
-									<td>{category.name}</td>
-									<td className='flex gap-1'>
+									<td className='w-24'>{category.name}</td>
+
+									<td className='max-w-[100px] break-words text-start'>
+										{category.desc}
+									</td>
+
+									<td className='flex h-28 items-center justify-center gap-1'>
 										<button
 											title='Edit category'
 											className='btn-info btn-sm btn-circle btn text-white'
@@ -206,7 +215,7 @@ export default function AdminAddFeature() {
 								</tr>
 							))}
 							<tr className='active'>
-								<td colSpan={3} className='text-center'>
+								<td colSpan={4} className='h-16 bg-gray-200 text-center'>
 									<button
 										className='flex w-full items-center justify-center gap-2 text-lg font-bold'
 										onClick={() => setIsAddCategory(true)}>
@@ -220,9 +229,9 @@ export default function AdminAddFeature() {
 				</div>
 
 				{/* Table Tools */}
-				<div className='flex-1 overflow-x-auto'>
+				<div className=' overflow-x-auto'>
 					<h1 className='font-bold'>Tools</h1>
-					<table className='table w-full'>
+					<table className='mt-5 table max-h-28 w-full'>
 						<thead>
 							<tr>
 								<th>No</th>
@@ -231,9 +240,9 @@ export default function AdminAddFeature() {
 								<th>Action</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody className='max-h-52 overflow-y-scroll'>
 							{tools.map((tool, index) => (
-								<tr key={tool.id}>
+								<tr key={tool.id} className='h-28'>
 									<th>{index + 1}</th>
 									<td>
 										<Image
@@ -248,7 +257,7 @@ export default function AdminAddFeature() {
 										/>
 									</td>
 									<td>{tool.name}</td>
-									<td className='flex gap-1'>
+									<td className='flex h-28 items-center gap-1'>
 										<button
 											title='Edit tool'
 											className='btn-info btn-sm btn-circle btn text-white'>

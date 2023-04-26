@@ -13,7 +13,7 @@ import { IoWarningOutline } from 'react-icons/io5';
 import { useDispatch } from 'react-redux';
 import { fetchUsers, fetchReportedProjects } from '@/store/admin/admin.action';
 import { authLogout } from '@/store/auth/auth.reducer';
-import { selectAuth } from '@/store/auth/auth.selector';
+import { selectUser } from '@/store/user/user.selector';
 import { fetchCategories } from '@/store/categories/categories.action';
 import { fetchTools } from '@/store/tools/tools.action';
 import { SuccessToast, ErrorToast } from '@/components/toast/alert-taost';
@@ -25,7 +25,7 @@ export default function Admin() {
 	const dispatch = useDispatch();
 	const [page, setPage] = useState('dashboard');
 
-	const { user } = useSelector(selectAuth);
+	const { user } = useSelector(selectUser);
 
 	useEffect(() => {
 		Promise.all([
@@ -114,7 +114,7 @@ export default function Admin() {
 								tabIndex={0}
 								className='avatar flex cursor-pointer items-center gap-2 py-2 px-3 hover:rounded-lg hover:bg-slate-200'>
 								<div className='w-8 rounded-full'>
-									<img src={user.profile_image} />
+									<img src={user?.profile_image} />
 								</div>
 								<p className='font-semibold'>{user?.name}</p>
 							</div>
