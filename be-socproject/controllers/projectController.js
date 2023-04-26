@@ -314,28 +314,52 @@ module.exports = {
 					error: { message: 'Project NOT FOUND' },
 				});
 			} else {
-				try {
-					console.log(req.user, projectId)					
+				try {									
 					const alreadyReportProject = await ProjectReport.findOne({
 						where: {
 							UserId: req.user.id,
 							ProjectId: projectId,
 						},
-					});
-					let reportCategory = await ReportCategories.findOne({
-						where: {
-							name
-						}
-					})
+					});				
 
-					if (!reportCategory) {
-						reportCategory = await ReportCategories.create({
-							name: name,
-							slug: name.split(' ').join('-').toLowerCase()
-						})
-					}
-					console.log(alreadyReportProject)
 					if (!alreadyReportProject) {
+						let reportCategory;
+
+						if (!reportCategoryId && !name) {
+							return res.status(400).json({
+								code: 400,
+								status: 'BAD_REQUEST',
+								error: { message: 'reportCategoryId or name is required' }
+							});
+						} else if (reportCategoryId) {
+							reportCategory = await ReportCategories.findOne({
+								where: {
+									id: reportCategoryId
+								}
+							})						
+						} else {							
+							if (!reportCategory) {
+								try {
+									reportCategory = await ReportCategories.create({
+										name: name,
+										slug: name.split(' ').join('-').toLowerCase()
+									});
+								} catch (err) {
+									return res.status(500).json({
+										code: 500,
+										status: 'Internal Server Error',
+										error: {
+											message: err.message,
+										},
+									});
+								}
+							}
+							reportCategory = await ReportCategories.findOne({
+								where : {
+									name
+								}
+							})
+						}													
 						await ProjectReport.create({
 							UserId: req.user.id,
 							ProjectId: projectId,
@@ -347,22 +371,7 @@ module.exports = {
 								message: 'Report Project Created'
 							})
 						})
-					} 
-					else if (reportCategoryId){
-						await ProjectReport.update({
-							ReportCategoryId: reportCategoryId
-						},{
-							where: {
-								id: alreadyReportProject.id
-							}
-						}).then(()=>{
-							return res.status(201).json({
-								code: 201,
-								status: 'Created',
-								message: 'Report Project Created'
-							})
-						})
-					} 
+					} 									 
 					else {						
 						return res.status(406).json({
 							code: 406,
@@ -370,7 +379,7 @@ module.exports = {
 							message: 'You already report this project'
 						})
 					}
-
+					
 				} catch (err) {
 					return res.status(500).json({
 						code: 500,
@@ -384,11 +393,11 @@ module.exports = {
 		}
 	},
 	getDetailProject: async (req, res, next) => {
-		const { id } = req.params;
+		const { slug } = req.params;
 		try {
 			const project = await Project.findOne({
 				where: {
-					id,
+					slug,
 				},
 				include: [
 					{
@@ -400,11 +409,11 @@ module.exports = {
 						model: Tools,
 						as: 'tools',
 						attributes: {
-							exclude: ['id', 'createdAt', 'updatedAt'],
+							exclude: ['id', 'icon', 'createdAt', 'updatedAt'],
 						},
 						through: {
 							model: ProjectTools,
-							as: 'projcetTools',
+							as: 'projectTools',
 							attributes: { exclude: ['createdAt', 'updatedAt'] },
 						},
 					},
@@ -583,11 +592,11 @@ module.exports = {
 							model: Tools,
 							as: 'tools',
 							attributes: {
-								exclude: ['id', 'createdAt', 'updatedAt'],
+								exclude: ['id', 'icon', 'createdAt', 'updatedAt'],
 							},
 							through: {
 								model: ProjectTools,
-								as: 'projcetTools',
+								as: 'projectTools',
 								attributes: { exclude: ['createdAt', 'updatedAt'] },
 							},
 						},
@@ -596,7 +605,8 @@ module.exports = {
 							as: 'categories',
 							attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
 						},
-					]
+					],
+					order: [['total_views', 'DESC'], ['createdAt', 'DESC']]
 				}).then((project) => {
 					return res.status(201).json({
 						code: 201,
@@ -613,7 +623,7 @@ module.exports = {
 				}
 				
 				if (tool.length > 0) {
-					whereFilter[Sequelize.Op.and].push({'$tools.slug$': {[Sequelize.Op.in]: tool}})
+					whereFilter['$tools.slug$'] = {[Sequelize.Op.or]: tool}	
 				}
 				
 				Project.findAll({
@@ -622,13 +632,13 @@ module.exports = {
 							model: Tools,
 							as: 'tools',
 							attributes: {
-								exclude: ['id', 'createdAt', 'updatedAt'],
+								exclude: ['id', 'icon', 'createdAt', 'updatedAt'],
 							},
 							through: {
 								model: ProjectTools,
 								as: 'projcetTools',
 								attributes: { exclude: ['createdAt', 'updatedAt'] },
-							},
+							}					
 						},
 						{
 							model: Categories,
@@ -729,55 +739,44 @@ module.exports = {
 			});
 		}
 	},
-	// getProjectByCategory: async (req, res, next) => {
-	// 	try {
-	// 		const { slug } = req.params;
-
-	// 		if (!slug) {
-	// 			return res.status(400).json({
-	// 				code: 400,
-	// 				status: 'BAD_REQUEST',
-	// 				error: 'required params',
-	// 			});
-	// 		}
-	// 		const projectCategory = await Categories.findOne({
-	// 			where: { slug },
-	// 			attributes: { exclude: ['id', 'name', 'createdAt', 'updatedAt'] },
-	// 			include: [
-	// 				{
-	// 					model: Project,
-	// 					as: 'project',
-	// 					include: [
-	// 						{
-	// 							model: Tools,
-	// 							as: 'tools',
-	// 							attributes: ['slug', 'name'],
-	// 							through: {
-	// 								model: ProjectTools,
-	// 								as: 'projcetTools',
-	// 								attributes: { exclude: ['createdAt', 'updatedAt'] },
-	// 							},
-	// 						},
-	// 					],
-	// 				},
-	// 			],
-	// 		});
-	// 		return res.status(200).json({
-	// 			code: 200,
-	// 			status: 'OK',
-	// 			message: 'Success get project by categories',
-	// 			data: projectCategory,
-	// 		});
-	// 	} catch (err) {
-	// 		return res.status(500).json({
-	// 			code: 500,
-	// 			status: 'Internal Server Error',
-	// 			error: {
-	// 				message: err.message,
-	// 			},
-	// 		});
-	// 	}
-	// },
+	getProjectByCategory: async (req, res, next) => {
+		try {			
+			await Categories.findAll({
+				attributes: [
+					'name',
+					'desc'
+				],
+				include: [{
+					model: Project,
+					as: 'project',
+					group: ['CategoryId'],
+					attributes: { exclude: ['CategoryId', 'UserId']},
+					limit: 3,
+					order: ['createdAt', 'DESC'],
+					include: [{
+						model: User,
+						as: 'user',
+						attributes: ['name', 'profile_image']
+					}]
+				}]
+			}).then(result => {
+					return res.status(200).json({
+						code: 200,
+						status: 'OK',
+						message: 'Success get project by categories',
+						data: result,
+					});
+				})			
+		} catch (err) {
+			return res.status(500).json({
+				code: 500,
+				status: 'Internal Server Error',
+				error: {
+					message: err.message,
+				},
+			});
+		}
+	},
 	// getAllProject: async (req, res, next) => {
 	// 	try {
 	// 		const projects = await Project.findAll({

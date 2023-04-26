@@ -1,3 +1,4 @@
+const { projectReportController } = require('.');
 const { ReportCategories, ProjectReport, Project} = require('../db/models')
 
 module.exports = {
@@ -77,7 +78,23 @@ module.exports = {
     },
     getReportCategories: async(req, res) => {
         try {
-            await ReportCategories.findAll().then((result) => {
+            await ReportCategories.findAll({
+                include: [
+                    {
+                        model: Project,
+                        as: 'project',
+                        attributes: [],
+                        through: {
+                            model: ProjectReport,
+                            as: 'projectReportCategories',
+                            attributes: ['UserId'],
+                        },
+                    },
+                ],
+                where: {
+                    '$project.projectReportCategories.UserId$': 1
+                }
+            }).then((result) => {
 				if (result.length > 0) {
 					return res.status(200).json({
 						code: 200,

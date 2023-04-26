@@ -65,16 +65,16 @@ router.delete(
 router.post(
 	'/api/project/report-project',
 	restrict,
-	reportProjectLimiter,
+	// reportProjectLimiter,
 	con.projectController.reportProject
 );
 router.post('/api/project/report-categories', restrict, con.projectReportController.createReportCategories);
-router.get('/api/project/report-categories', restrict, con.projectReportController.getReportCategories);
+router.get('/api/project/report-categories', con.projectReportController.getReportCategories);
 router.put('/api/project/report-categories', restrict, rbac(MODUL.AdminDashboard, true, true), con.projectReportController.updateReportCategories);
 router.delete('/api/project/report-categories', restrict, rbac(MODUL.AdminDashboard, true, true),con.projectReportController.deleteReportCategories);
 // router.get('/api/project/report-project', restrict ,con.projectReportController.getProjectCategories)
 
-router.get('/api/project/detail/:id', con.projectController.getDetailProject);
+router.get('/api/project/detail/:slug', con.projectController.getDetailProject);
 router.put(
 	'/api/project/ban-project',
 	restrict,
@@ -82,7 +82,7 @@ router.put(
 	con.projectController.banProject
 );
 
-// router.get('/api/project?', con.projectController.searchProjcet)
+router.get('/api/project-categories', con.projectController.getProjectByCategory)
 router.get('/api/project?', con.projectController.getAllProjectSearch);
 
 // comment route
@@ -192,7 +192,7 @@ router.post(
 );
 
 router.get(
-	'/api/project/reported?',
+	'/api/project/reported',
 	con.projectController.getAllProjectByReport
 );
 

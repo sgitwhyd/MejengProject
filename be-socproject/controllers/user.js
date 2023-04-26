@@ -23,8 +23,8 @@ module.exports = {
 					include: [
 						{
 							model: User,
-							as: 'user',
-							attributes: ['name', 'profile_image'],
+							as :'user',
+							attributes: ['name', 'profile_image']
 						},
 						{
 							model: Tools,
@@ -75,7 +75,7 @@ module.exports = {
 						{
 							model: Tools,
 							as: 'tools',
-							attributes: ['name'],
+							attributes: ['name', 'icon'],
 							through: {
 								model: ProjectTools,
 								as: 'projcetTools',
