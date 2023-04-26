@@ -24,12 +24,12 @@ module.exports = {
 						{
 							model: User,
 							as :'user',
-							attributes: ['name', 'progile_image']
+							attributes: ['name', 'profile_image']
 						},
 						{
 							model: Tools,
 							as: 'tools',
-							attributes: ['name'],
+							attributes: ['name', 'icon'],
 							through: {
 								model: ProjectTools,
 								as: 'projcetTools',
@@ -75,7 +75,7 @@ module.exports = {
 						{
 							model: Tools,
 							as: 'tools',
-							attributes: ['name'],
+							attributes: ['name', 'icon'],
 							through: {
 								model: ProjectTools,
 								as: 'projcetTools',
