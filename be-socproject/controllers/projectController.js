@@ -409,7 +409,7 @@ module.exports = {
 						model: Tools,
 						as: 'tools',
 						attributes: {
-							exclude: ['id', 'icon', 'createdAt', 'updatedAt'],
+							exclude: ['id', 'createdAt', 'updatedAt'],
 						},
 						through: {
 							model: ProjectTools,
@@ -578,42 +578,42 @@ module.exports = {
 			}
 
 			if (!req.query) {
-				await Project.findAll({
-					where :{
-						is_active : true
-					},
-					include: [
-						{
-							model: User,
-							as: 'user',
-							attributes: ['name', 'profile_image'],
-						},
-						{
-							model: Tools,
-							as: 'tools',
-							attributes: {
-								exclude: ['id', 'icon', 'createdAt', 'updatedAt'],
-							},
-							through: {
-								model: ProjectTools,
-								as: 'projectTools',
-								attributes: { exclude: ['createdAt', 'updatedAt'] },
-							},
-						},
-						{
-							model: Categories,
-							as: 'categories',
-							attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
-						},
-					],
-					order: [['total_views', 'DESC'], ['createdAt', 'DESC']]
-				}).then((project) => {
-					return res.status(201).json({
-						code: 201,
-						status: 'Succes Find Project',
-						project
-					})
-				})
+				// await Project.findAll({
+				// 	where :{
+				// 		is_active : true
+				// 	},
+				// 	include: [
+				// 		{
+				// 			model: User,
+				// 			as: 'user',
+				// 			attributes: ['name', 'profile_image'],
+				// 		},
+				// 		{
+				// 			model: Tools,
+				// 			as: 'tools',
+				// 			attributes: {
+				// 				exclude: ['id', 'createdAt', 'updatedAt'],
+				// 			},
+				// 			through: {
+				// 				model: ProjectTools,
+				// 				as: 'projectTools',
+				// 				attributes: { exclude: ['createdAt', 'updatedAt'] },
+				// 			},
+				// 		},
+				// 		{
+				// 			model: Categories,
+				// 			as: 'categories',
+				// 			attributes: { exclude: ['id', 'createdAt', 'updatedAt'] },
+				// 		},
+				// 	],
+				// 	order: [['total_views', 'DESC'], ['createdAt', 'DESC']]
+				// }).then((project) => {
+				// 	return res.status(201).json({
+				// 		code: 201,
+				// 		status: 'Succes Find Project',
+				// 		project
+				// 	})
+				// })
 			}else{
 				const whereFilter = {
 					[Sequelize.Op.and]: [
@@ -627,12 +627,17 @@ module.exports = {
 				}
 				
 				Project.findAll({
-					include: [					
+					include: [
+						{
+							model: User,
+							as: 'user',
+							attributes: ['name', 'profile_image'],
+						},	
 						{
 							model: Tools,
 							as: 'tools',
 							attributes: {
-								exclude: ['id', 'icon', 'createdAt', 'updatedAt'],
+								exclude: ['id', 'createdAt', 'updatedAt'],
 							},
 							through: {
 								model: ProjectTools,
@@ -652,7 +657,7 @@ module.exports = {
 							whereFilter
 						]
 					},
-					order: [['updatedAt', 'DESC']]
+					order: [['total_views', 'DESC'], ['createdAt', 'DESC']]
 				}).then((filter) => {
 					if (filter.length == 0) {					
 						return res.status(404).json({
@@ -744,6 +749,7 @@ module.exports = {
 			await Categories.findAll({
 				attributes: [
 					'name',
+					'slug',
 					'desc'
 				],
 				include: [{
@@ -751,14 +757,29 @@ module.exports = {
 					as: 'project',
 					group: ['CategoryId'],
 					attributes: { exclude: ['CategoryId', 'UserId']},
-					limit: 3,
-					order: ['createdAt', 'DESC'],
-					include: [{
+					// limit: 3,
+					order: [['createdAt', 'DESC']],									
+					include: [						
+					{
 						model: User,
 						as: 'user',
 						attributes: ['name', 'profile_image']
-					}]
-				}]
+					},
+					{
+						model: Tools,
+						as: 'tools',
+						attributes: {
+							exclude: ['id', 'createdAt', 'updatedAt'],
+						},
+						through: {
+							model: ProjectTools,
+							as: 'projcetTools',
+							attributes: { exclude: ['createdAt', 'updatedAt'] },
+						}					
+					}
+					],					
+				}],
+				limit: 4
 			}).then(result => {
 					return res.status(200).json({
 						code: 200,
