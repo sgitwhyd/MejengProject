@@ -403,7 +403,9 @@ module.exports = {
 					{
 						model: User,
 						as: 'user',
-						attributes: ['id', 'name', 'profile_image'],
+						attributes: {
+							exclude: ['createdAt', 'updatedAt', 'password'],
+						},
 					},
 					{
 						model: Tools,
@@ -435,7 +437,7 @@ module.exports = {
 					{
 						model: Comment,
 						as: 'comment',
-						attributes: ['body'],
+						attributes: ['id', 'body'],
 						include: [
 							{
 								model: User,
@@ -746,7 +748,7 @@ module.exports = {
 	},
 	getProjectByCategory: async (req, res, next) => {
 		try {			
-			await Categories.findAll({
+			await Categories.findAll({				
 				attributes: [
 					'name',
 					'slug',
@@ -758,7 +760,10 @@ module.exports = {
 					group: ['CategoryId'],
 					attributes: { exclude: ['CategoryId', 'UserId']},
 					// limit: 3,
-					order: [['createdAt', 'DESC']],									
+					order: [['createdAt', 'DESC']],
+					where: {
+						id : { [Sequelize.Op.ne]: null } // memfilter categories yang memiliki project saja
+					},									
 					include: [						
 					{
 						model: User,
@@ -778,7 +783,7 @@ module.exports = {
 						}					
 					}
 					],					
-				}],
+				}],				
 				limit: 4
 			}).then(result => {
 					return res.status(200).json({
