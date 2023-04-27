@@ -44,7 +44,7 @@ export default function ProjectCard(props) {
 					className='h-52 w-72 rounded-t-xl object-cover'
 				/>
 				{hover && (
-					<Link href={`/project/${slug}`}>
+					<Link href={`/project/detail-project/${slug}`}>
 						<div className='rounded-t-xlpb-5 absolute inset-0 flex h-full w-full cursor-pointer flex-col items-end justify-between overflow-hidden font-semibold text-white'>
 							<div className='right-0 flex items-center justify-center gap-4 text-sm'>
 								{tools.map((tool, index) => (
