@@ -403,7 +403,9 @@ module.exports = {
 					{
 						model: User,
 						as: 'user',
-						attributes: ['id', 'name', 'profile_image'],
+						attributes: {
+							exclude: ['createdAt', 'updatedAt', 'password'],
+						},
 					},
 					{
 						model: Tools,
@@ -435,7 +437,7 @@ module.exports = {
 					{
 						model: Comment,
 						as: 'comment',
-						attributes: ['body'],
+						attributes: ['id', 'body'],
 						include: [
 							{
 								model: User,
