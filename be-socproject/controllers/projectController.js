@@ -746,7 +746,7 @@ module.exports = {
 	},
 	getProjectByCategory: async (req, res, next) => {
 		try {			
-			await Categories.findAll({
+			await Categories.findAll({				
 				attributes: [
 					'name',
 					'slug',
@@ -758,7 +758,10 @@ module.exports = {
 					group: ['CategoryId'],
 					attributes: { exclude: ['CategoryId', 'UserId']},
 					// limit: 3,
-					order: [['createdAt', 'DESC']],									
+					order: [['createdAt', 'DESC']],
+					where: {
+						id : { [Sequelize.Op.ne]: null } // memfilter categories yang memiliki project saja
+					},									
 					include: [						
 					{
 						model: User,
@@ -778,7 +781,7 @@ module.exports = {
 						}					
 					}
 					],					
-				}],
+				}],				
 				limit: 4
 			}).then(result => {
 					return res.status(200).json({
