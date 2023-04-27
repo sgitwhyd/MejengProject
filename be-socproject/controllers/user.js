@@ -42,6 +42,7 @@ module.exports = {
 							attributes: { exclude: ['id', 'slug', 'createdAt', 'updatedAt'] },
 						},
 					],
+					order: ['createdAt', 'DESC']
 				},
 			}).then((result) => {
 				return res.status(200).json({
