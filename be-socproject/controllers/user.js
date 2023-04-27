@@ -41,9 +41,9 @@ module.exports = {
 							as: 'categories',
 							attributes: { exclude: ['id', 'slug', 'createdAt', 'updatedAt'] },
 						},
-					],
-					order: ['createdAt', 'DESC']
+					],					
 				},
+				order: [[{ model: Project, as: 'project' }, 'createdAt', 'DESC']]
 			}).then((result) => {
 				return res.status(200).json({
 					code: 200,
