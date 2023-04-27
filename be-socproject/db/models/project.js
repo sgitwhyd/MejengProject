@@ -30,9 +30,9 @@ module.exports = (sequelize, DataTypes) => {
 
 			this.hasMany(models.Comment, { as: 'comment' });
 			this.hasMany(models.ProjectView, { as: 'projectView' });
-			this.hasMany(models.ProjectReport, {
-				as: 'projectReport',
-			});
+			// this.hasMany(models.ProjectReport, {
+			// 	as: 'projectReport',
+			// });
 		}
 	}
 	Project.init(

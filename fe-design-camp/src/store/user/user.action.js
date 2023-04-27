@@ -1,15 +1,15 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import api from '@/utils/api';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import api from "@/utils/api";
 
 export const createProject = createAsyncThunk(
-	'project/create',
+	"project/create",
 	async (payload, { getState, rejectWithValue }) => {
 		const { token } = getState().auth;
 
 		try {
-			const response = await api.post('/api/project/create-project', payload, {
+			const response = await api.post("/api/project/create-project", payload, {
 				headers: {
-					'Content-Type': 'multipart/form-data',
+					"Content-Type": "multipart/form-data",
 					Authorization: token,
 				},
 			});
@@ -21,11 +21,11 @@ export const createProject = createAsyncThunk(
 );
 
 export const getProfile = createAsyncThunk(
-	'user/getProfile',
+	"user/getProfile",
 	async (payload, { getState, rejectWithValue }) => {
 		const { token } = getState().auth;
 		try {
-			const response = await api.get('/api/user/profile', {
+			const response = await api.get("/api/user/profile", {
 				headers: {
 					Authorization: token,
 				},
@@ -38,13 +38,13 @@ export const getProfile = createAsyncThunk(
 );
 
 export const updateProfile = createAsyncThunk(
-	'user/updateProfile',
+	"user/updateProfile",
 	async (payload, { getState, rejectWithValue }) => {
 		const { token } = getState().auth;
 		const { name, region, country, desc, user_image } = payload;
 		try {
 			const response = await api.put(
-				'/api/user/update-profile',
+				"/api/user/update-profile",
 				{
 					name,
 					region,
@@ -54,7 +54,7 @@ export const updateProfile = createAsyncThunk(
 				},
 				{
 					headers: {
-						'Content-Type': 'multipart/form-data',
+						"Content-Type": "multipart/form-data",
 						Authorization: token,
 					},
 				}
@@ -67,16 +67,16 @@ export const updateProfile = createAsyncThunk(
 );
 
 export const requestCreator = createAsyncThunk(
-	'auth/requestCreator',
+	"auth/requestCreator",
 	async (payload, { getState, rejectWithValue }) => {
 		const { token } = getState().auth;
 		try {
 			const response = await api.post(
-				'/api/creators/request',
+				"/api/creators/request",
 				{},
 				{
 					headers: {
-						'Content-Type': 'application/json',
+						"Content-Type": "application/json",
 						Authorization: token,
 					},
 				}
@@ -89,13 +89,13 @@ export const requestCreator = createAsyncThunk(
 );
 
 export const activateCreator = createAsyncThunk(
-	'auth/activateCreator',
+	"auth/activateCreator",
 	async (payload, { rejectWithValue }) => {
 		const { token } = payload;
 		try {
 			const response = await api.get(`/api/creators/activate/${token}`, {
 				headers: {
-					'Content-Type': 'application/json',
+					"Content-Type": "application/json",
 				},
 			});
 			return response.data;
@@ -106,10 +106,64 @@ export const activateCreator = createAsyncThunk(
 );
 
 export const getIpAddress = createAsyncThunk(
-	'auth/getIpAddress',
+	"auth/getIpAddress",
 	async (payload, { rejectWithValue }) => {
 		try {
-			const response = await api.get('https://api.ipify.org?format=json');
+			const response = await api.get("https://api.ipify.org?format=json");
+			return response.data;
+		} catch (error) {
+			return rejectWithValue(error.response.data);
+		}
+	}
+);
+
+export const postComment = createAsyncThunk(
+	"project/commentProject",
+	async (payload, { getState, rejectWithValue }) => {
+		const { token } = getState().auth;
+		const { projectId, body } = payload;
+
+		try {
+			const response = await api.post(
+				`/api/comment/post-comment`,
+				{
+					projectId,
+					body,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: token,
+					},
+				}
+			);
+			return response.data;
+		} catch (error) {
+			return rejectWithValue(error.response.data);
+		}
+	}
+);
+
+export const replyComment = createAsyncThunk(
+	"project/replyComment",
+	async (payload, { getState, rejectWithValue }) => {
+		const { token } = getState().auth;
+		const { commentId, body } = payload;
+
+		try {
+			const response = await api.post(
+				`/api/comment/reply-comment`,
+				{
+					commentId,
+					body,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: token,
+					},
+				}
+			);
 			return response.data;
 		} catch (error) {
 			return rejectWithValue(error.response.data);

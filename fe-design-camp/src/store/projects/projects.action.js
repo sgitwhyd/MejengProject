@@ -17,3 +17,28 @@ export const getProjects = createAsyncThunk(
 		}
 	}
 );
+
+export const getInspirationProjects = createAsyncThunk(
+	"project/getInspirationProjects",
+	async (payload, thunkAPI) => {
+		try {
+			const response = await api.get(`/api/project-categories`);
+			return response.data;
+		} catch (error) {
+			return thunkAPI.rejectWithValue(error.response.data);
+		}
+	}
+);
+
+export const getDetail = createAsyncThunk(
+	"project/getDetail",
+	async (payload, thunkAPI) => {
+		const { slug } = payload;
+		try {
+			const response = await api.get(`/api/project/detail/${slug}`);
+			return response.data;
+		} catch (error) {
+			return thunkAPI.rejectWithValue(error.response.data);
+		}
+	}
+);

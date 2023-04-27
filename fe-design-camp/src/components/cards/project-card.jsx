@@ -44,8 +44,8 @@ export default function ProjectCard(props) {
 					className='h-52 w-72 rounded-t-xl object-cover'
 				/>
 				{hover && (
-					<Link href={`/project/${slug}`}>
-						<div className='absolute inset-0 flex h-full w-full cursor-pointer flex-col items-end justify-between overflow-hidden rounded-t-xl bg-gradient-to-b from-transparent via-transparent to-black/60  pb-5 font-semibold text-white'>
+					<Link href={`/project/detail-project/${slug}`}>
+						<div className='rounded-t-xlpb-5 absolute inset-0 flex h-full w-full cursor-pointer flex-col items-end justify-between overflow-hidden font-semibold text-white'>
 							<div className='right-0 flex items-center justify-center gap-4 text-sm'>
 								{tools.map((tool, index) => (
 									<div key={index} className='flex  items-center p-1'>
@@ -58,19 +58,8 @@ export default function ProjectCard(props) {
 											className='h-8 w-8'
 											alt=''
 										/>
-										{/* <span key={index} className='bg-white text-xs text-black'>
-										{tool?.name}
-									</span> */}
 									</div>
 								))}
-							</div>
-							<div className='flex w-full items-center justify-between gap-3 px-5'>
-								<h1 className='truncate'>
-									{categories?.name} - {title}
-								</h1>
-								<button className='rounded-lg bg-white p-2 text-[#6E6D7A] transition-all hover:bg-gray-200'>
-									<AiFillHeart className='h-5 w-5' />
-								</button>
 							</div>
 						</div>
 					</Link>

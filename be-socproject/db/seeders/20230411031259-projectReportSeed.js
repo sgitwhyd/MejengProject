@@ -6,7 +6,7 @@ const fake = faker.faker;
 const projectReports = [...Array(10)].map((projectReport, index) => ({
 	UserId: fake.mersenne.rand(2, 1),
 	ProjectId: index + 1,
-	ReportCategoryId: fake.mersenne.rand(3, 1),
+	ReportCategoryId: fake.mersenne.rand(4, 1),
 	createdAt: new Date(),
 	updatedAt: new Date(),
 }));
