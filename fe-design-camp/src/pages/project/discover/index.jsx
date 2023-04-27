@@ -45,7 +45,7 @@ export default function Discover() {
 	};
 
 	const filteredProjects = projects.filter((project) =>
-		project.title.toLowerCase().includes(search.toLowerCase())
+		project?.title?.toLowerCase().includes(search.toLowerCase())
 	);
 
 	useEffect(() => {
@@ -69,10 +69,6 @@ export default function Discover() {
 
 		getFilteredProject();
 	}, [router.query]);
-
-	useEffect(() => {
-		router.push("/project/discover?category=all");
-	}, []);
 
 	const filterCategories = [
 		{
