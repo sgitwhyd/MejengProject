@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getProjects } from "./projects.action";
+import { getProjects, getInspirationProjects } from "./projects.action";
 
 const initialState = {
 	projects: [],
@@ -21,6 +21,9 @@ const projectsSlice = createSlice({
 		builder.addCase(getProjects.rejected, (state, action) => {
 			state.loading = false;
 			state.projects = [];
+		});
+		builder.addCase(getInspirationProjects.fulfilled, (state, action) => {
+			state.projects = action.payload.data;
 		});
 	},
 });
