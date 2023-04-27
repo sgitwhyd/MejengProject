@@ -423,6 +423,10 @@
                 "name": {
                   "type": "string",
                   "example": "UI/UX"
+                },
+                "desc": {
+                  "type": "string",
+                  "example": "lorem isum sisw ahuyyy ahayy"
                 }
               }
             }
@@ -465,6 +469,10 @@
                 "name": {
                   "type": "string",
                   "example": "UI/UX"
+                },
+                "desc": {
+                  "type": "string",
+                  "example": "lorem isum sisw ahuyyy ahayy"
                 }
               }
             }
@@ -1010,7 +1018,7 @@
         }
       }
     },
-    "/api/project/reported?reportProject={reportProject)": {
+    "/api/project/reported": {
       "get": {
         "tags": ["Admin"],
         "summary": "Get Project by report",
@@ -1042,7 +1050,7 @@
         }
       }
     },
-    "/api/project/detail/{id}": {
+    "/api/project/detail/{slug}": {
       "get": {
         "tags": ["Project"],
         "summary": "Get Detail Project",
@@ -1057,11 +1065,11 @@
         ],
         "parameters":[
           {
-            "name": "id",
+            "name": "slug",
             "in": "path",
-            "description": "Get id project",
+            "description": "Get slug project",
             "required": true,
-            "type": "integer"
+            "type": "string"
 
           }
         ],        
@@ -1117,6 +1125,29 @@
           },
           "404": {
             "description": "Project not found"
+          }
+        }
+      }
+    },
+    "/api/project-categories": {
+      "get": {
+        "tags": ["Project"],
+        "summary": "Get Project by Category",
+        "description": "this enpoint to get Project by Category",
+        "operationId": "get-project-by-category",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succes get project by category"
+          },
+          "500":{
+            "description": "Internal Server Error"
           }
         }
       }
