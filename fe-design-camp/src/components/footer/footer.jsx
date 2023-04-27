@@ -36,11 +36,13 @@ export default function Footer() {
       <div className="mx-auto flex max-w-screen-2xl flex-col items-start px-[47px] pb-[20px] pt-[70px]">
         <div className="flex w-full items-start justify-between ">
           <div className="flex flex-col text-white">
-            <Image
-              src={mejengLogoWhite}
-              alt="mejeng-logo-white"
-              className="mb-10 h-14"
-            />
+            <Link href="/">
+              <Image
+                src={mejengLogoWhite}
+                alt="mejeng-logo-white"
+                className="mb-10 h-14"
+              />
+            </Link>
             <h4 className="pb-7 text-lg font-medium text-[#9F9F9F]">
               Send tips, trends, updates & offers
               <br />
