@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   AiFillLike,
+  AiFillDislike,
   AiFillHeart,
   AiFillEye,
   AiOutlineArrowRight,
@@ -19,7 +20,7 @@ import { useEffect } from "react";
 import { getDetail } from "@/store/projects/projects.action";
 import { selectAuth } from "@/store/auth/auth.selector";
 import ProjectCard from "@/components/cards/project-card";
-import { viewProject, likeProject } from "@/store/user/user.action";
+import { viewProject, likeProject, getProfile } from "@/store/user/user.action";
 import { selectUser } from "@/store/user/user.selector";
 import { SuccessToast, ErrorToast } from "@/components/toast/alert-taost";
 
@@ -31,7 +32,7 @@ export default function ProjectDetails() {
   const { projectDetail, projectByUser, projectByCategory, loading } =
     useSelector(selectProject);
   const { login } = useSelector(selectAuth);
-  const { ip_address } = useSelector(selectUser);
+  const { ip_address, userProjectsLiked } = useSelector(selectUser);
 
   useEffect(() => {
     if (slug) {
@@ -62,6 +63,8 @@ export default function ProjectDetails() {
         return ErrorToast(res.payload.error.message);
       }
     });
+
+    dispatch(getProfile());
   };
 
   return (
@@ -137,24 +140,36 @@ export default function ProjectDetails() {
               <h3 className="text-2xl font-semibold capitalize">
                 {projectDetail?.title}
               </h3>
-              <button
-                className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80"
-                onClick={handleOnUserLike}
-              >
-                <AiFillLike size={18} /> Appreciate
-              </button>
+              <div className="flex gap-8">
+                <button
+                  className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80"
+                  onClick={handleOnUserLike}
+                >
+                  {userProjectsLiked.includes(projectDetail?.id) ? (
+                    <>
+                      <AiFillDislike size={18} />
+                      Unppreciate
+                    </>
+                  ) : (
+                    <>
+                      <AiFillLike size={18} />
+                      Appreciate
+                    </>
+                  )}
+                </button>
+                <div className="flex gap-8">
+                  <div className="flex items-center justify-center gap-1 text-sm text-white">
+                    <AiFillHeart className="h-5 w-5 transition-all duration-300 hover:text-gray-300" />
+                    <p>{projectDetail?.total_likes}</p>
+                  </div>
+                  <div className="flex items-center justify-center gap-1 text-sm text-white">
+                    <AiFillEye className="h-5 w-5 transition-all duration-300 hover:text-gray-300" />
+                    <p>{projectDetail?.total_views}</p>
+                  </div>
+                </div>
+              </div>
               <div className="flex items-center justify-center gap-2 font-medium">
                 <p className="pr-5">Published : {projectDetail?.createdAt}</p>
-                <div className="flex items-center justify-center gap-1 text-sm text-white">
-                  <button>
-                    <AiFillHeart className="h-5 w-5 transition-all duration-300 hover:text-gray-300" />
-                  </button>
-                  <p>{projectDetail?.total_likes}</p>
-                </div>
-                <div className="flex items-center justify-center gap-1 text-sm text-white">
-                  <AiFillEye className="h-5 w-5 transition-all duration-300 hover:text-gray-300" />
-                  <p>{projectDetail?.total_views}</p>
-                </div>
               </div>
             </div>
           </div>
