@@ -45,6 +45,9 @@ export default function ProjectDetails() {
 					projectId: projectDetail?.id,
 				})
 			);
+			setTimeout(() => {
+				dispatch(getDetail({ slug }));
+			}, 1000);
 		}
 	}, [projectDetail?.id]);
 
@@ -55,6 +58,7 @@ export default function ProjectDetails() {
 			})
 		).then((res) => {
 			if (res.meta.requestStatus === "fulfilled") {
+				dispatch(getDetail({ slug }));
 				return SuccessToast(res.payload.message);
 			} else {
 				return ErrorToast(res.payload.error.message);
