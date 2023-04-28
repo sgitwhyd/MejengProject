@@ -245,7 +245,7 @@ export default function ProjectDetails() {
             <div className="flex w-full flex-col items-start justify-center gap-4 border p-4">
               <h1 className="text-sm font-bold text-[#656470]">OWNER</h1>
               <div className="flex items-center justify-center gap-2">
-                <Image
+                <img
                   width={50}
                   height={50}
                   src={
