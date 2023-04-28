@@ -4,17 +4,19 @@ const {
 	Tools,
 	ProjectTools,
 	Categories,
+	productLikes
 } = require('../db/models');
 const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const { sendEmailForgotPassword } = require('../utils/sendEmail');
 const bcrypt = require('bcrypt');
+const project = require('../db/models/project');
 
 module.exports = {
 	getProfile: async (req, res, next) => {
 		try {
-			await User.findOne({
+			const profile = await User.findOne({
 				where: { id: req.user.id },
 				attributes: { exclude: ['password'] },
 				include: {
@@ -44,15 +46,24 @@ module.exports = {
 					],					
 				},
 				order: [[{ model: Project, as: 'project' }, 'createdAt', 'DESC']]
-			}).then((result) => {
-				return res.status(200).json({
-					code: 200,
-					status: 'OK',
-					message: 'Success get profile',
-					projectAmmount: result.project.length,
-					data: result,
-				});
-			});
+			})
+
+			const userLike = await productLikes.findAll({
+				where: {
+					UserId : req.user.id
+				},
+				attributes: ['ProjectId']
+			})			
+			return res.status(200).json({
+				code: 200,
+				status: 'OK',
+				message: 'Success get profile',
+				projectAmmount: profile.project.length,
+				data: {
+					profile,
+					userLike
+				}
+			});			
 		} catch (err) {
 			return res.status(500).json({
 				code: 500,

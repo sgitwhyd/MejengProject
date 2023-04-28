@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@/utils/api";
+import axios from "axios";
 
 export const createProject = createAsyncThunk(
 	"project/create",
@@ -109,7 +110,7 @@ export const getIpAddress = createAsyncThunk(
 	"auth/getIpAddress",
 	async (payload, { rejectWithValue }) => {
 		try {
-			const response = await api.get("https://api.ipify.org?format=json");
+			const response = await axios.get("https://api.ipify.org?format=json");
 			return response.data;
 		} catch (error) {
 			return rejectWithValue(error.response.data);
@@ -161,6 +162,80 @@ export const replyComment = createAsyncThunk(
 					headers: {
 						"Content-Type": "application/json",
 						Authorization: token,
+					},
+				}
+			);
+			return response.data;
+		} catch (error) {
+			return rejectWithValue(error.response.data);
+		}
+	}
+);
+
+export const viewProject = createAsyncThunk(
+	"project/view",
+	async (payload, { rejectWithValue }) => {
+		const { projectId, ip_address } = payload;
+		try {
+			const response = await api.post(
+				`/api/project/view/${projectId}`,
+				{
+					ip_address,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+
+			return response.data;
+		} catch (error) {
+			return rejectWithValue(error.response.data);
+		}
+	}
+);
+
+export const likeProject = createAsyncThunk(
+	"project/like",
+	async (payload, { getState, rejectWithValue }) => {
+		const { token } = getState().auth;
+		const { projectId } = payload;
+
+		try {
+			const response = await api.post(
+				"/api/project/like-project",
+				{
+					projectId,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: token,
+					},
+				}
+			);
+
+			return response.data;
+		} catch (error) {
+			return rejectWithValue(error.response.data);
+		}
+	}
+);
+
+export const viewProfile = createAsyncThunk(
+	"view/profile",
+	async (payload, { rejectWithValue }) => {
+		const { id } = payload;
+		try {
+			const response = await api.get(
+				"/api/user/other-profile",
+				{
+					id,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
 					},
 				}
 			);

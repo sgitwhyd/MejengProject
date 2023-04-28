@@ -128,7 +128,7 @@ module.exports = {
 				await productLikes
 					.findOne({
 						where: {
-							ProductId: projectId,
+							ProjectId: projectId,
 							UserId: userId,
 						},
 					})
@@ -136,7 +136,7 @@ module.exports = {
 						if (!product_like) {
 							await productLikes
 								.create({
-									ProductId: projectId,
+									ProjectId: projectId,
 									UserId: userId,
 								})
 								.then(async () => {
@@ -235,7 +235,7 @@ module.exports = {
 							}),
 							productLikes.destroy({
 								where: {
-									ProductId: id,
+									ProjectId: id,
 								},
 							}),
 							ProjectView.destroy({
@@ -464,6 +464,32 @@ module.exports = {
 				where: {
 					UserId : project.UserId
 				},
+				include: [
+					{
+						model: User,
+						as: 'user',
+						attributes: {
+							exclude: ['createdAt', 'updatedAt', 'password'],
+						},
+					},
+					{
+						model: Tools,
+						as: 'tools',
+						attributes: {
+							exclude: ['id', 'createdAt', 'updatedAt'],
+						},
+						through: {
+							model: ProjectTools,
+							as: 'projectTools',
+							attributes: { exclude: ['createdAt', 'updatedAt'] },
+						},
+					},
+					{
+						model: Categories,
+						as: 'categories',
+						attributes: { exclude: ['id',  'createdAt', 'updatedAt'] },
+					}
+				],
 				limit: 4
 			});
 
@@ -471,6 +497,32 @@ module.exports = {
 				where: {
 					CategoryId: project.CategoryId
 				},
+				include : [
+					{
+						model: User,
+						as: 'user',
+						attributes: {
+							exclude: ['createdAt', 'updatedAt', 'password'],
+						},
+					},
+					{
+						model: Tools,
+						as: 'tools',
+						attributes: {
+							exclude: ['id', 'createdAt', 'updatedAt'],
+						},
+						through: {
+							model: ProjectTools,
+							as: 'projectTools',
+							attributes: { exclude: ['createdAt', 'updatedAt'] },
+						},
+					},
+					{
+						model: Categories,
+						as: 'categories',
+						attributes: { exclude: ['id',  'createdAt', 'updatedAt'] },
+					}
+				],
 				limit: 4
 			});
 

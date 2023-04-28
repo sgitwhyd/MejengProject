@@ -8,6 +8,8 @@ import { CgDesignmodo } from "react-icons/cg";
 import { useEffect } from "react";
 import { fetchCategories } from "@/store/categories/categories.action";
 import { fetchTools } from "@/store/tools/tools.action";
+import { getIpAddress } from "@/store/user/user.action";
+import { fetchReportCategory } from "@/store/report/report.action";
 import { useDispatch } from "react-redux";
 import banner_1 from "@/assets/banner-1.png";
 import banner_2 from "@/assets/banner-2.png";
@@ -16,7 +18,12 @@ export default function Home() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    Promise.all([dispatch(fetchCategories()), dispatch(fetchTools())]);
+    Promise.all([
+      dispatch(fetchCategories()),
+      dispatch(fetchTools()),
+      dispatch(getIpAddress()),
+      dispatch(fetchReportCategory()),
+    ]);
   }, []);
 
   const banner = [
@@ -48,7 +55,7 @@ export default function Home() {
         <div className="flex h-[60vh] items-center justify-center gap-10 pt-12">
           <div className="flex flex-col items-start justify-center gap-8">
             <h1
-              className="text-5xl font-bold leading-snug text-primary"
+              className="text-4xl font-bold leading-snug text-primary xl:text-5xl"
               data-aos="fade-up"
             >
               Share and discover your design <br /> creativity{" "}
@@ -78,6 +85,7 @@ export default function Home() {
             height={465}
             data-aos="fade-up"
             data-aos-duration="600"
+            className="hidden lg:block"
           />
         </div>
 
@@ -90,7 +98,7 @@ export default function Home() {
             <span className="text-secondary">Showcase Project Design</span>
           </h2>
           <p
-            className="mx-auto w-2/3 text-lg text-gray-700"
+            className="mx-auto w-3/4 text-lg text-gray-700 xl:w-2/3"
             data-aos="fade-up"
             data-aos-duration="600"
           >
@@ -104,16 +112,16 @@ export default function Home() {
         </div>
 
         {/* Card Services */}
-        <div className="flex items-center justify-center gap-14">
+        <div className="flex flex-col items-center justify-center gap-10 lg:flex-row xl:gap-14">
           <div
-            className="relative flex h-[320px] w-[350px] cursor-pointer flex-col items-center justify-center gap-6 rounded-2xl border border-gray-100 bg-white px-8 text-center shadow-sm drop-shadow-lg transition-all duration-300 hover:-translate-y-2 hover:bg-[#5B72EE]/10"
+            className="relative flex h-[370px] w-[310px] cursor-pointer flex-col items-center justify-center gap-4 rounded-2xl border border-gray-100 bg-white px-8 text-center shadow-sm drop-shadow-lg transition-all duration-300 hover:-translate-y-2 hover:bg-[#5B72EE]/10 xl:h-[320px] xl:w-[350px] xl:gap-6"
             data-aos="fade-up"
             data-aos-duration="800"
           >
             <div className="absolute top-0 flex h-14 w-14 -translate-y-7 items-center justify-center rounded-full border-2 border-white bg-[#5B72EE] p-3 text-white">
               <MdOutlineDesignServices className="h-8 w-8" />
             </div>
-            <h3 className="w-2/3 text-lg font-semibold">
+            <h3 className="w-3/4 text-lg font-semibold xl:w-2/3">
               Diverse Design Tools and Categories
             </h3>
             <p className="text-gray-700">
@@ -123,14 +131,14 @@ export default function Home() {
             </p>
           </div>
           <div
-            className="relative flex h-[320px] w-[350px] cursor-pointer flex-col items-center justify-center gap-6 rounded-2xl border border-gray-100 bg-white px-8 text-center shadow-sm drop-shadow-lg transition-all duration-300 hover:-translate-y-2 hover:bg-purple-500/10"
+            className="relative flex h-[370px] w-[310px] cursor-pointer flex-col items-center justify-center gap-4 rounded-2xl border border-gray-100 bg-white px-8 text-center shadow-sm drop-shadow-lg transition-all duration-300 hover:-translate-y-2 hover:bg-purple-500/10 xl:h-[320px] xl:w-[350px] xl:gap-6"
             data-aos="fade-up"
             data-aos-duration="1000"
           >
             <div className="absolute top-0 flex h-14 w-14 -translate-y-7 items-center justify-center rounded-full bg-purple-500 p-3 text-white">
               <CgDesignmodo className="h-8 w-8" />
             </div>
-            <h3 className="w-2/3 text-lg font-semibold">
+            <h3 className="w-3/4 text-lg font-semibold xl:w-2/3">
               Easy to use Platform for any Users
             </h3>
             <p className="text-gray-700">
@@ -140,14 +148,14 @@ export default function Home() {
             </p>
           </div>
           <div
-            className="relative flex h-[320px] w-[350px] cursor-pointer flex-col items-center justify-center gap-6 rounded-2xl border border-gray-100 bg-white px-8 text-center shadow-sm drop-shadow-lg transition-all duration-300 hover:-translate-y-2 hover:bg-blue-400/10"
+            className="relative flex h-[370px] w-[310px] cursor-pointer flex-col items-center justify-center gap-4 rounded-2xl border border-gray-100 bg-white px-8 text-center shadow-sm drop-shadow-lg transition-all duration-300 hover:-translate-y-2 hover:bg-blue-400/10 xl:h-[320px] xl:w-[350px] xl:gap-6"
             data-aos="fade-up"
             data-aos-duration="1200"
           >
             <div className="absolute top-0 flex h-14 w-14 -translate-y-7 items-center justify-center rounded-full bg-blue-400 p-3 text-white">
               <MdGroups className="h-8 w-8" />
             </div>
-            <h3 className="w-2/3 text-lg font-semibold">
+            <h3 className="w-3/4 text-lg font-semibold xl:w-2/3">
               Discussion Forum to share Design Ideas
             </h3>
             <p className="text-gray-700">
@@ -160,7 +168,7 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col items-center justify-center gap-20">
-          <div className="w-7/12 text-center">
+          <div className="w-9/12 text-center xl:w-7/12">
             <h1
               className="pb-5 text-2xl font-bold text-primary"
               data-aos="fade-up"
@@ -181,7 +189,7 @@ export default function Home() {
               various interesting design ideas.
             </p>
           </div>
-          <div className="flex items-center justify-center gap-14">
+          <div className="flex flex-col items-center justify-center gap-10 lg:flex-row xl:gap-14">
             {banner.map((item, index) => (
               <div
                 key={index}
@@ -200,6 +208,7 @@ export default function Home() {
                 </Link>
                 <Image
                   src={item.image}
+                  alt={item.title}
                   className="absolute z-0 h-[300px] w-[450px] rounded-2xl bg-clip-border"
                 />
               </div>

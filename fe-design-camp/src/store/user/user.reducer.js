@@ -1,21 +1,29 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 import {
 	createProject,
 	getProfile,
 	requestCreator,
 	getIpAddress,
-} from './user.action';
+} from "./user.action";
 
 const initialState = {
 	ip_address: null,
 	loading: false,
 	user: null,
+	userProjectsLiked: null,
 };
 
 const userSlice = createSlice({
-	name: 'user',
+	name: "user",
 	initialState,
-	reducers: {},
+	reducers: {
+		userLogout: (state) => {
+			(state.ip_address = null),
+				(state.loading = false),
+				(state.user = null),
+				(state.userProjectsLiked = null);
+		},
+	},
 	extraReducers: (builder) => {
 		builder.addCase(createProject.pending, (state, action) => {
 			state.loading = true;
@@ -27,7 +35,8 @@ const userSlice = createSlice({
 				state.loading = false;
 			}),
 			builder.addCase(getProfile.fulfilled, (state, action) => {
-				state.user = action.payload.data;
+				state.user = action.payload.data.profile;
+				state.userProjectsLiked = action.payload.data.userLike;
 			}),
 			builder.addCase(requestCreator.pending, (state, action) => {
 				state.loading = true;
@@ -45,3 +54,4 @@ const userSlice = createSlice({
 });
 
 export const userReducer = userSlice.reducer;
+export const { userLogout } = userSlice.actions;

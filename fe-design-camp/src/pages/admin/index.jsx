@@ -1,29 +1,33 @@
-'use-client';
-import React, { useState, useEffect } from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
-import AdminAddFeature from './admin-add-feature';
-import AdminBanProject from './admin-ban-project';
-import AdminHome from './admin-home';
-import AdminProfileCreator from './admin-profile-creator';
-import { ImHome } from 'react-icons/im';
-import { CgProfile } from 'react-icons/cg';
-import { BiCategory } from 'react-icons/bi';
-import { IoWarningOutline } from 'react-icons/io5';
-import { useDispatch } from 'react-redux';
-import { fetchUsers, fetchReportedProjects } from '@/store/admin/admin.action';
-import { authLogout } from '@/store/auth/auth.reducer';
-import { selectUser } from '@/store/user/user.selector';
-import { fetchCategories } from '@/store/categories/categories.action';
-import { fetchTools } from '@/store/tools/tools.action';
-import { SuccessToast, ErrorToast } from '@/components/toast/alert-taost';
-import { useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
+"use-client";
+import React, { useState, useEffect } from "react";
+import Head from "next/head";
+import Link from "next/link";
+import AdminAddFeature from "./admin-add-feature";
+import AdminBanProject from "./admin-ban-project";
+import AdminHome from "./admin-home";
+import AdminProfileCreator from "./admin-profile-creator";
+import AdminProjectList from "./admin-project-list";
+import { ImHome } from "react-icons/im";
+import { CgProfile } from "react-icons/cg";
+import { BiCategory } from "react-icons/bi";
+import { IoWarningOutline } from "react-icons/io5";
+import { FaListOl } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { fetchUsers, fetchReportedProjects } from "@/store/admin/admin.action";
+import { authLogout } from "@/store/auth/auth.reducer";
+import { selectUser } from "@/store/user/user.selector";
+import { fetchCategories } from "@/store/categories/categories.action";
+import { fetchTools } from "@/store/tools/tools.action";
+import { SuccessToast, ErrorToast } from "@/components/toast/alert-taost";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
+import { userLogout } from "@/store/user/user.reducer";
+import { adminLogout } from "@/store/admin/admin.reducer";
 
 export default function Admin() {
 	const router = useRouter();
 	const dispatch = useDispatch();
-	const [page, setPage] = useState('dashboard');
+	const [page, setPage] = useState("dashboard");
 
 	const { user } = useSelector(selectUser);
 
@@ -35,19 +39,23 @@ export default function Admin() {
 			dispatch(fetchReportedProjects()),
 		]).then((res) => {
 			res.map((item) => {
-				if (item.meta?.requestStatus === 'rejected') {
+				if (item.meta?.requestStatus === "rejected") {
 					ErrorToast(res.payload.error.message);
-					router.push('/');
+					router.push("/");
 				}
 			});
 		});
 	});
 
 	const handleLogout = () => {
-		router.push('/');
+		router.push("/");
 		setTimeout(() => {
-			dispatch(authLogout());
-			SuccessToast('Logout Success');
+			Promise.all([
+				dispatch(authLogout()),
+				dispatch(userLogout()),
+				dispatch(adminLogout()),
+			]);
+			SuccessToast("Logout Success");
 		}, 2000);
 	};
 
@@ -57,23 +65,28 @@ export default function Admin() {
 
 	const menuItems = [
 		{
-			label: 'Dashboard',
-			value: 'dashboard',
+			label: "Dashboard",
+			value: "dashboard",
 			icons: <ImHome size={22} />,
 		},
 		{
-			label: 'Profile Creator',
-			value: 'profileCreator',
+			label: "Profile Creator",
+			value: "profileCreator",
 			icons: <CgProfile size={22} />,
 		},
 		{
-			label: 'Add Feature',
-			value: 'addfeature',
+			label: "Project List",
+			value: "projectList",
+			icons: <FaListOl size={22} />,
+		},
+		{
+			label: "Add Feature",
+			value: "addfeature",
 			icons: <BiCategory size={22} />,
 		},
 		{
-			label: 'Ban Project',
-			value: 'banproject',
+			label: "Ban Project",
+			value: "banproject",
 			icons: <IoWarningOutline size={22} />,
 		},
 	];
@@ -96,7 +109,7 @@ export default function Admin() {
 									<p className='no-underline'>Dashboard</p>
 								</li>
 								{menuItems.map((item) => {
-									if (page === item.value && page !== 'dashboard') {
+									if (page === item.value && page !== "dashboard") {
 										return (
 											<li key={item.value}>
 												<span>{item.label}</span>
@@ -137,10 +150,11 @@ export default function Admin() {
 					{/* User Menu End */}
 
 					{/* <!-- Page content Start --> */}
-					{page === 'dashboard' && <AdminHome />}
-					{page === 'profileCreator' && <AdminProfileCreator />}
-					{page === 'addfeature' && <AdminAddFeature />}
-					{page === 'banproject' && <AdminBanProject />}
+					{page === "dashboard" && <AdminHome />}
+					{page === "profileCreator" && <AdminProfileCreator />}
+					{page === "projectList" && <AdminProjectList />}
+					{page === "addfeature" && <AdminAddFeature />}
+					{page === "banproject" && <AdminBanProject />}
 					{/* <!-- Page content end --> */}
 					<div className='absolute top-5 left-0'>
 						<label
@@ -165,8 +179,8 @@ export default function Admin() {
 											onClick={() => handlePage(item.value)}
 											className={
 												page === item.value
-													? 'flex bg-gradient-to-tr from-sky-600 to-sky-400 text-white hover:text-white'
-													: 'from-sky-600 to-sky-400 hover:bg-gradient-to-tr hover:text-white'
+													? "flex bg-gradient-to-tr from-sky-600 to-sky-400 text-white hover:text-white"
+													: "from-sky-600 to-sky-400 hover:bg-gradient-to-tr hover:text-white"
 											}>
 											{item.icons}
 											<span className='pl-3 text-lg'>{item.label}</span>
