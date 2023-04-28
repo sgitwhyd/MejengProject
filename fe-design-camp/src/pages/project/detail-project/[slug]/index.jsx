@@ -146,6 +146,20 @@ export default function ProjectDetails() {
               <h3 className="text-2xl font-semibold capitalize">
                 {projectDetail?.title}
               </h3>
+              {projectDetail?.url !== "" && (
+                <p className="text-sm font-medium">
+                  If you want to explore a project with all its intricate
+                  details,{" "}
+                  <Link
+                    href={`${projectDetail?.url}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white hover:text-white/80"
+                  >
+                    click here.
+                  </Link>
+                </p>
+              )}
               <div className="flex gap-8">
                 <button
                   className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80"
