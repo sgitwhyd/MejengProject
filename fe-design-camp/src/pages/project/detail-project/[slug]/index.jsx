@@ -145,7 +145,7 @@ export default function ProjectDetails() {
                   className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80"
                   onClick={handleOnUserLike}
                 >
-                  {userProjectsLiked.includes(projectDetail?.id) ? (
+                  {userProjectsLiked?.includes(projectDetail?.id) ? (
                     <>
                       <AiFillDislike size={18} />
                       Unppreciate
