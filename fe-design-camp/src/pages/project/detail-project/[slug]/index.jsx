@@ -16,7 +16,7 @@ import CommentInput from "./comment-input";
 import CommentList from "./comment-list";
 import { useDispatch, useSelector } from "react-redux";
 import { selectProject } from "@/store/projects/projects.selector";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getDetail } from "@/store/projects/projects.action";
 import { selectAuth } from "@/store/auth/auth.selector";
 import ProjectCard from "@/components/cards/project-card";
@@ -28,6 +28,8 @@ export default function ProjectDetails() {
   const dispatch = useDispatch();
   const router = useRouter();
   const slug = router.query.slug;
+
+  const [isChoise, setIsChoise] = useState(false);
 
   const { projectDetail, projectByUser, projectByCategory, loading } =
     useSelector(selectProject);
@@ -267,13 +269,13 @@ export default function ProjectDetails() {
               <p className="text-sm text-[#B5B5B5]">
                 Published {projectDetail?.createdAt}
               </p>
-              <Link
-                href="/user/profile"
-                className="flex w-full items-center justify-center gap-2 rounded-full border border-primary bg-primary/10 p-2 transition-all duration-300 hover:bg-primary hover:text-white"
+              <label
+                htmlFor="my-modal-3"
+                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-primary bg-primary/10 p-2 transition-all duration-300 hover:bg-primary hover:text-white"
               >
                 <FiAlertCircle className="h-4 w-4" />
                 Report This Project
-              </Link>
+              </label>
             </div>
 
             <div className="flex w-full flex-col items-start justify-center gap-5 border p-4">
@@ -346,6 +348,47 @@ export default function ProjectDetails() {
             {projectByCategory?.map((item, index) => (
               <ProjectCard key={index} {...item} />
             ))}
+          </div>
+        </div>
+
+        {/* Modal Report */}
+        <input type="checkbox" id="my-modal-3" className="modal-toggle" />
+        <div className="modal">
+          <div className="modal-box relative">
+            <label
+              htmlFor="my-modal-3"
+              className="btn-sm btn-circle btn absolute right-2 top-2"
+            >
+              ✕
+            </label>
+            <h3 className="pb-2 text-lg font-bold">
+              Why are you reporting this project?
+            </h3>
+
+            <div className="flex w-full flex-col items-center justify-center bg-gray-100">
+              <button
+                onClick={() => setIsChoise(true)}
+                className="mt-2 flex w-full items-center gap-3 rounded-lg px-4 py-3"
+              >
+                This content is sensitive to some parties{" "}
+                <AiOutlineArrowRight
+                  className={`h-[15px] w-[15px] transition-all ${
+                    isChoise && "rotate-90"
+                  }`}
+                />
+              </button>
+              {isChoise && (
+                <div className="flex items-center justify-center gap-3">
+                  <button
+                    onClick={() => setIsChoise(false)}
+                    className="btn-error btn-sm btn"
+                  >
+                    Cancel
+                  </button>
+                  <button className="btn-info btn-sm btn">Process</button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>
