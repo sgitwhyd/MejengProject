@@ -52,7 +52,7 @@ module.exports = {
 				where: {
 					UserId : req.user.id
 				},
-				attributes: ['id']
+				attributes: ['ProjectId']
 			})			
 			return res.status(200).json({
 				code: 200,

@@ -128,7 +128,7 @@ module.exports = {
 				await productLikes
 					.findOne({
 						where: {
-							ProductId: projectId,
+							ProjectId: projectId,
 							UserId: userId,
 						},
 					})
@@ -136,7 +136,7 @@ module.exports = {
 						if (!product_like) {
 							await productLikes
 								.create({
-									ProductId: projectId,
+									ProjectId: projectId,
 									UserId: userId,
 								})
 								.then(async () => {
@@ -235,7 +235,7 @@ module.exports = {
 							}),
 							productLikes.destroy({
 								where: {
-									ProductId: id,
+									ProjectId: id,
 								},
 							}),
 							ProjectView.destroy({
