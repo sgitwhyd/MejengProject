@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { fetchCategories } from "@/store/categories/categories.action";
 import { fetchTools } from "@/store/tools/tools.action";
 import { getIpAddress } from "@/store/user/user.action";
+import { fetchReportCategory } from "@/store/report/report.action";
 import { useDispatch } from "react-redux";
 import banner_1 from "@/assets/banner-1.png";
 import banner_2 from "@/assets/banner-2.png";
@@ -21,6 +22,7 @@ export default function Home() {
 			dispatch(fetchCategories()),
 			dispatch(fetchTools()),
 			dispatch(getIpAddress()),
+			dispatch(fetchReportCategory()),
 		]);
 	}, []);
 
