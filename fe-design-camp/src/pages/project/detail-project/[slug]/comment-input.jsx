@@ -5,6 +5,7 @@ import { selectUser } from "@/store/user/user.selector";
 import { selectProject } from "@/store/projects/projects.selector";
 import { postComment, replyComment } from "@/store/user/user.action";
 import { SuccessToast, ErrorToast } from "@/components/toast/alert-taost";
+import { getDetail } from "@/store/projects/projects.action";
 
 export default function CommentInput(props) {
 	const dispatch = useDispatch();
@@ -26,6 +27,11 @@ export default function CommentInput(props) {
 				ErrorToast(res.payload.error.message);
 			}
 		});
+		dispatch(
+			getDetail({
+				slug: projectDetail?.slug,
+			})
+		);
 		setComment("");
 	};
 
@@ -40,7 +46,11 @@ export default function CommentInput(props) {
 				ErrorToast(res.payload.error.message);
 			}
 		});
-
+		dispatch(
+			getDetail({
+				slug: projectDetail?.slug,
+			})
+		);
 		setComment("");
 	};
 
