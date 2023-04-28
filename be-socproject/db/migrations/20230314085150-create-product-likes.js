@@ -11,7 +11,7 @@ module.exports = {
       UserId: {
         type: Sequelize.INTEGER
       },
-      ProductId: {
+      ProjectId: {
         type: Sequelize.INTEGER
       },
       createdAt: {
