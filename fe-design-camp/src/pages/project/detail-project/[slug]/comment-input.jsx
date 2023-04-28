@@ -46,7 +46,10 @@ export default function CommentInput(props) {
 
 	return (
 		<>
-			<div className='flex w-full items-start justify-center gap-5 pb-3'>
+			<div
+				className={`flex w-full items-start justify-center gap-5 pb-3 ${
+					type === "child" ? "ml-16" : null
+				}`}>
 				<img
 					width={50}
 					height={50}
@@ -69,7 +72,7 @@ export default function CommentInput(props) {
 				<button
 					onClick={type === "child" ? handleReplyComment : handlePostComment}
 					className=' w-[200px] rounded-full border border-primary bg-primary p-2 text-white transition-all duration-300 hover:border-primary/80 hover:bg-primary/80 hover:text-white'>
-					Reply Comment
+					{type === "child" ? "	Reply Comment" : "Post Comment"}
 				</button>
 			</div>
 		</>
