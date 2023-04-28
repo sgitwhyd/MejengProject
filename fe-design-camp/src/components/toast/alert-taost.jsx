@@ -3,7 +3,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 export const ErrorToast = (massage) =>
   toast.error(massage, {
-    position: "top-right",
+    position: "bottom-right",
     autoClose: 3000,
     hideProgressBar: false,
     closeOnClick: true,
@@ -15,7 +15,7 @@ export const ErrorToast = (massage) =>
 
 export const SuccessToast = (massage) =>
   toast.success(massage, {
-    position: "top-right",
+    position: "bottom-right",
     autoClose: 3000,
     hideProgressBar: false,
     closeOnClick: true,
@@ -27,7 +27,7 @@ export const SuccessToast = (massage) =>
 
 export const InfoToast = (massage) =>
   toast.info(massage, {
-    position: "top-right",
+    position: "bottom-right",
     autoClose: 3000,
     hideProgressBar: false,
     closeOnClick: true,
@@ -39,7 +39,7 @@ export const InfoToast = (massage) =>
 
 export const WarningToast = (massage) =>
   toast.warn(massage, {
-    position: "top-right",
+    position: "bottom-right",
     autoClose: 3000,
     hideProgressBar: false,
     closeOnClick: true,
