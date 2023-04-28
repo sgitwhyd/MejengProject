@@ -1,31 +1,35 @@
-import React from 'react';
-import { MdPostAdd } from 'react-icons/md';
-import { FaUserFriends, FaUserCheck } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
-import { selectAdmin } from '@/store/admin/admin.selector';
+import React from "react";
+import { MdPostAdd } from "react-icons/md";
+import { FaUserFriends, FaUserCheck } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { selectAdmin } from "@/store/admin/admin.selector";
 
 export default function AdminHome() {
-	const { ammount_users, ammount_active_user, ammount_creator_user } =
-		useSelector(selectAdmin);
+	const {
+		ammount_users,
+		ammount_active_user,
+		ammount_creator_user,
+		ammount_project,
+	} = useSelector(selectAdmin);
 
 	const datas = [
 		{
-			name: 'All Post',
+			name: "All Post",
 			icon: <MdPostAdd size={40} />,
-			total: ammount_users,
-			bg: 'from-blue-600 to-blue-400',
+			total: ammount_project,
+			bg: "from-blue-600 to-blue-400",
 		},
 		{
-			name: 'Active User',
+			name: "Active User",
 			icon: <FaUserFriends size={40} />,
 			total: ammount_active_user,
-			bg: 'from-pink-600 to-pink-400',
+			bg: "from-pink-600 to-pink-400",
 		},
 		{
-			name: 'Total Creator',
+			name: "Total Creator",
 			icon: <FaUserCheck size={40} />,
 			total: ammount_creator_user,
-			bg: 'from-green-600 to-green-400',
+			bg: "from-green-600 to-green-400",
 		},
 	];
 

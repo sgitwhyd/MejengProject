@@ -1,23 +1,23 @@
-import Head from 'next/head';
-import { useState } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import Link from 'next/link';
-import bgLogin from '@/assets/bg-login.webp';
-import Sidebar from '../sidebar';
-import { useDispatch, useSelector } from 'react-redux';
-import { authLogin } from '@/store/auth/auth.action';
-import { getProfile } from '@/store/user/user.action';
-import { selectAuth } from '@/store/auth/auth.selector';
-import { ErrorToast, SuccessToast } from '@/components/toast/alert-taost';
-import { useRouter } from 'next/router';
+import Head from "next/head";
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Link from "next/link";
+import bgLogin from "@/assets/bg-login.webp";
+import Sidebar from "../sidebar";
+import { useDispatch, useSelector } from "react-redux";
+import { authLogin } from "@/store/auth/auth.action";
+import { getProfile } from "@/store/user/user.action";
+import { selectAuth } from "@/store/auth/auth.selector";
+import { ErrorToast, SuccessToast } from "@/components/toast/alert-taost";
+import { useRouter } from "next/router";
 
 export default function Login() {
 	const router = useRouter();
 	const dispatch = useDispatch();
 
 	const [loginPayload, setLoginPayload] = useState({
-		email: '',
-		password: '',
+		email: "",
+		password: "",
 	});
 	const [showPassword, setShowPassword] = useState(false);
 	const { loading } = useSelector(selectAuth);
@@ -32,24 +32,24 @@ export default function Login() {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		await dispatch(authLogin(loginPayload)).then((res) => {
-			if (res.meta.requestStatus === 'rejected') {
+			if (res.meta.requestStatus === "rejected") {
 				ErrorToast(res.payload.error.message);
 			} else {
-				SuccessToast('Login success');
+				SuccessToast("Login success");
 				dispatch(getProfile());
 				setTimeout(() => {
-					if (res.payload.role === 'admin') {
-						router.push('/admin');
+					if (res.payload.data.role === "admin") {
+						router.push("/admin");
 					} else {
-						router.push('/');
+						router.push("/");
 					}
 				}, 1000);
 			}
 		});
 
 		setLoginPayload({
-			email: '',
-			password: '',
+			email: "",
+			password: "",
 		});
 	};
 
@@ -65,7 +65,7 @@ export default function Login() {
 					title='Welcome back to'
 					image={{
 						src: bgLogin,
-						alt: 'bg-image-register',
+						alt: "bg-image-register",
 					}}
 				/>
 
@@ -74,7 +74,7 @@ export default function Login() {
 					onSubmit={handleSubmit}>
 					<h2 className='pb-2 text-[44px] font-extrabold'>Login</h2>
 					<h3 className='pb-24 text-xl'>
-						New user?{' '}
+						New user?{" "}
 						<Link
 							href='/auth/register'
 							className='underline-animation text-primary hover:text-primary'>
@@ -102,7 +102,7 @@ export default function Login() {
 						</label>
 						<div className='mb-3 flex w-full items-center justify-between'>
 							<input
-								type={showPassword ? 'text' : 'password'}
+								type={showPassword ? "text" : "password"}
 								placeholder=''
 								name='password'
 								value={loginPayload.password}
@@ -133,7 +133,7 @@ export default function Login() {
 						<button
 							type='submit'
 							className={`${
-								loading ? 'loading btn-disabled cursor-not-allowed' : ''
+								loading ? "btn-disabled loading cursor-not-allowed" : ""
 							} btn-primary btn w-52 text-xl font-bold capitalize text-white hover:bg-primary`}>
 							Login
 						</button>
