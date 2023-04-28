@@ -11,6 +11,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const { sendEmailForgotPassword } = require('../utils/sendEmail');
 const bcrypt = require('bcrypt');
+const project = require('../db/models/project');
 
 module.exports = {
 	getProfile: async (req, res, next) => {
@@ -51,19 +52,18 @@ module.exports = {
 				where: {
 					UserId : req.user.id
 				},
-				attributes: ['id']
-			})
+				attributes: ['ProjectId']
+			})			
 			return res.status(200).json({
 				code: 200,
 				status: 'OK',
 				message: 'Success get profile',
 				projectAmmount: profile.project.length,
 				data: {
-				profile,
-				userLike
+					profile,
+					userLike
 				}
-			});
-			
+			});			
 		} catch (err) {
 			return res.status(500).json({
 				code: 500,

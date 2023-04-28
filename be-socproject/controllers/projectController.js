@@ -128,7 +128,7 @@ module.exports = {
 				await productLikes
 					.findOne({
 						where: {
-							ProductId: projectId,
+							ProjectId: projectId,
 							UserId: userId,
 						},
 					})
@@ -136,7 +136,7 @@ module.exports = {
 						if (!product_like) {
 							await productLikes
 								.create({
-									ProductId: projectId,
+									ProjectId: projectId,
 									UserId: userId,
 								})
 								.then(async () => {
@@ -235,7 +235,7 @@ module.exports = {
 							}),
 							productLikes.destroy({
 								where: {
-									ProductId: id,
+									ProjectId: id,
 								},
 							}),
 							ProjectView.destroy({
@@ -466,6 +466,13 @@ module.exports = {
 				},
 				include: [
 					{
+						model: User,
+						as: 'user',
+						attributes: {
+							exclude: ['createdAt', 'updatedAt', 'password'],
+						},
+					},
+					{
 						model: Tools,
 						as: 'tools',
 						attributes: {
@@ -491,6 +498,13 @@ module.exports = {
 					CategoryId: project.CategoryId
 				},
 				include : [
+					{
+						model: User,
+						as: 'user',
+						attributes: {
+							exclude: ['createdAt', 'updatedAt', 'password'],
+						},
+					},
 					{
 						model: Tools,
 						as: 'tools',

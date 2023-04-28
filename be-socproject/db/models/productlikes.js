@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   productLikes.init({
     UserId: DataTypes.INTEGER,
-    ProductId: DataTypes.INTEGER
+    ProjectId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'productLikes',

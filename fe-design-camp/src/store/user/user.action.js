@@ -222,3 +222,26 @@ export const likeProject = createAsyncThunk(
 		}
 	}
 );
+
+export const viewProfile = createAsyncThunk(
+	"view/profile",
+	async (payload, { rejectWithValue }) => {
+		const { id } = payload;
+		try {
+			const response = await api.get(
+				"/api/user/other-profile",
+				{
+					id,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+			return response.data;
+		} catch (error) {
+			return rejectWithValue(error.response.data);
+		}
+	}
+);
