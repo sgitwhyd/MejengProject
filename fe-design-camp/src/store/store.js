@@ -1,8 +1,8 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { rootReducer } from './root-reducer';
-const { logger } = require('redux-logger');
-import { persistStore, persistReducer } from 'redux-persist';
-import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
+import { configureStore } from "@reduxjs/toolkit";
+import { rootReducer } from "./root-reducer";
+const { logger } = require("redux-logger");
+import { persistStore, persistReducer } from "redux-persist";
+import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 const createNoopStorage = () => {
 	return {
 		getItem(_key) {
@@ -18,21 +18,21 @@ const createNoopStorage = () => {
 };
 
 const storage =
-	typeof window !== 'undefined'
-		? createWebStorage('local')
+	typeof window !== "undefined"
+		? createWebStorage("local")
 		: createNoopStorage();
 
 const persistConfig = {
-	key: 'root',
+	key: "root",
 	storage,
-	whitelist: ['auth', 'user', 'categories', 'tools'],
+	whitelist: ["auth", "user", "categories", "tools", "reportCategories"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const middlewares = [];
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
 	middlewares.push(logger);
 }
 
@@ -42,7 +42,7 @@ export const store = configureStore({
 		getDefaultMiddleware({
 			serializableCheck: false,
 		}).concat(middlewares),
-	devTools: process.env.NODE_ENV !== 'production',
+	devTools: process.env.NODE_ENV !== "production",
 });
 
 export const persistor = persistStore(store);
