@@ -464,6 +464,25 @@ module.exports = {
 				where: {
 					UserId : project.UserId
 				},
+				include: [
+					{
+						model: Tools,
+						as: 'tools',
+						attributes: {
+							exclude: ['id', 'createdAt', 'updatedAt'],
+						},
+						through: {
+							model: ProjectTools,
+							as: 'projectTools',
+							attributes: { exclude: ['createdAt', 'updatedAt'] },
+						},
+					},
+					{
+						model: Categories,
+						as: 'categories',
+						attributes: { exclude: ['id',  'createdAt', 'updatedAt'] },
+					}
+				],
 				limit: 4
 			});
 
@@ -471,6 +490,25 @@ module.exports = {
 				where: {
 					CategoryId: project.CategoryId
 				},
+				include : [
+					{
+						model: Tools,
+						as: 'tools',
+						attributes: {
+							exclude: ['id', 'createdAt', 'updatedAt'],
+						},
+						through: {
+							model: ProjectTools,
+							as: 'projectTools',
+							attributes: { exclude: ['createdAt', 'updatedAt'] },
+						},
+					},
+					{
+						model: Categories,
+						as: 'categories',
+						attributes: { exclude: ['id',  'createdAt', 'updatedAt'] },
+					}
+				],
 				limit: 4
 			});
 
