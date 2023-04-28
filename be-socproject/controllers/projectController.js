@@ -466,6 +466,13 @@ module.exports = {
 				},
 				include: [
 					{
+						model: User,
+						as: 'user',
+						attributes: {
+							exclude: ['createdAt', 'updatedAt', 'password'],
+						},
+					},
+					{
 						model: Tools,
 						as: 'tools',
 						attributes: {
@@ -491,6 +498,13 @@ module.exports = {
 					CategoryId: project.CategoryId
 				},
 				include : [
+					{
+						model: User,
+						as: 'user',
+						attributes: {
+							exclude: ['createdAt', 'updatedAt', 'password'],
+						},
+					},
 					{
 						model: Tools,
 						as: 'tools',
