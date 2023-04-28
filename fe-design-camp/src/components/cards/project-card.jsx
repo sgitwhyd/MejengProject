@@ -2,11 +2,16 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AiFillEye, AiFillHeart } from "react-icons/ai";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/user/user.selector";
 
 export default function ProjectCard(props) {
 	const [hover, setHover] = useState(false);
 
+	const { userProjectsLiked } = useSelector(selectUser);
+
 	const {
+		id,
 		title,
 		slug,
 		categories,
@@ -83,9 +88,17 @@ export default function ProjectCard(props) {
 					</div>
 					<div className='flex gap-2'>
 						<div className='flex items-center justify-center gap-1 text-sm text-[#B5B5B5]'>
-							<button>
-								<AiFillHeart className='h-4 w-4 transition-all duration-300 hover:text-secondary' />
-							</button>
+							<div>
+								<AiFillHeart
+									className={`h-4 w-4 transition-all duration-300 ${
+										userProjectsLiked
+											?.map((item) => item.ProjectId)
+											.includes(id)
+											? "text-secondary"
+											: ""
+									}`}
+								/>
+							</div>
 							<p className='font-medium'>{total_likes}</p>
 						</div>
 						<div className='flex items-center justify-center gap-1 text-sm text-[#B5B5B5]'>
