@@ -5,6 +5,7 @@ import { categoriesReducer } from "./categories/categories.reducer";
 import { toolsReducer } from "./tools/tools.reducer";
 import { userReducer } from "./user/user.reducer";
 import { projectsReducer } from "./projects/projects.reducer";
+import { reportCategoriesReducer } from "./report/report.reducer";
 
 export const rootReducer = combineReducers({
 	auth: authReducer,
@@ -13,4 +14,5 @@ export const rootReducer = combineReducers({
 	tools: toolsReducer,
 	user: userReducer,
 	projects: projectsReducer,
+	reportCategories: reportCategoriesReducer,
 });
