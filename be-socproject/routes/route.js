@@ -104,7 +104,6 @@ router.get(
 
 router.post(
 	'/api/project/view/:projectId',
-	restrict,
 	con.projectViewsController.addingViews
 );
 

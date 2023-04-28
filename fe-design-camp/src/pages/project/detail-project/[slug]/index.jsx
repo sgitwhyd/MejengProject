@@ -19,6 +19,9 @@ import { useEffect } from "react";
 import { getDetail } from "@/store/projects/projects.action";
 import { selectAuth } from "@/store/auth/auth.selector";
 import ProjectCard from "@/components/cards/project-card";
+import { viewProject, likeProject } from "@/store/user/user.action";
+import { selectUser } from "@/store/user/user.selector";
+import { SuccessToast, ErrorToast } from "@/components/toast/alert-taost";
 
 export default function ProjectDetails() {
   const dispatch = useDispatch();
@@ -28,12 +31,38 @@ export default function ProjectDetails() {
   const { projectDetail, projectByUser, projectByCategory, loading } =
     useSelector(selectProject);
   const { login } = useSelector(selectAuth);
+  const { ip_address } = useSelector(selectUser);
 
   useEffect(() => {
     if (slug) {
       dispatch(getDetail({ slug }));
     }
   }, [slug]);
+
+  useEffect(() => {
+    if (ip_address) {
+      dispatch(
+        viewProject({
+          ip_address,
+          projectId: projectDetail?.id,
+        })
+      );
+    }
+  }, [projectDetail?.id]);
+
+  const handleOnUserLike = async () => {
+    await dispatch(
+      likeProject({
+        projectId: projectDetail?.id,
+      })
+    ).then((res) => {
+      if (res.meta.requestStatus === "fulfilled") {
+        return SuccessToast(res.payload.message);
+      } else {
+        return ErrorToast(res.payload.error.message);
+      }
+    });
+  };
 
   return (
     <>
@@ -91,13 +120,13 @@ export default function ProjectDetails() {
           <div className="flex w-full flex-col items-center justify-center gap-10">
             {projectDetail?.project_image?.map((image, index) => (
               <Image
-                key={index}
                 src={
                   image?.includes("lorem")
                     ? image
                     : `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${image}`
                 }
                 alt="Uploaded file"
+                key={index}
                 width={500}
                 height={500}
                 className="h-full w-full rounded-xl object-cover"
@@ -108,7 +137,10 @@ export default function ProjectDetails() {
               <h3 className="text-2xl font-semibold capitalize">
                 {projectDetail?.title}
               </h3>
-              <button className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80">
+              <button
+                className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80"
+                onClick={handleOnUserLike}
+              >
                 <AiFillLike size={18} /> Appreciate
               </button>
               <div className="flex items-center justify-center gap-2 font-medium">
