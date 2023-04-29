@@ -85,6 +85,11 @@ module.exports = {
 					as: 'project',
 					include: [
 						{
+							model: User,
+							as :'user',
+							attributes: ['name', 'profile_image']
+						},
+						{
 							model: Tools,
 							as: 'tools',
 							attributes: ['name', 'icon'],

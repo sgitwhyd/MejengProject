@@ -397,7 +397,10 @@ module.exports = {
 		try {
 			const project = await Project.findOne({
 				where: {
-					slug,
+					[Sequelize.Op.and]: [
+						slug,
+						is_active = false
+					]
 				},
 				include: [
 					{
@@ -442,7 +445,7 @@ module.exports = {
 							{
 								model: User,
 								as: 'user',
-								attributes: ['name', 'profile_image'],
+								attributes: ['name', 'profile_image', 'createdAt', 'updatedAt'],
 							},
 							{
 								model: RepliesComment,
@@ -451,7 +454,7 @@ module.exports = {
 								include: {
 									model: User,
 									as: 'user',
-									attributes: ['name', 'profile_image'],
+									attributes: ['name', 'profile_image', 'createdAt', 'updatedAt'],
 								},
 							},
 						],
@@ -681,6 +684,9 @@ module.exports = {
 				}
 				
 				Project.findAll({
+					where:{
+						is_active: true
+					},
 					include: [
 						{
 							model: User,
