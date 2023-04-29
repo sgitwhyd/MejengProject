@@ -399,7 +399,7 @@ module.exports = {
 				where: {
 					[Sequelize.Op.and]: [
 						slug,
-						is_active = false
+						is_active = true
 					]
 				},
 				include: [
