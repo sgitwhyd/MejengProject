@@ -16,7 +16,14 @@ const initialState = {
 const userSlice = createSlice({
 	name: "user",
 	initialState,
-	reducers: {},
+	reducers: {
+		userLogout: (state) => {
+			(state.ip_address = null),
+				(state.loading = false),
+				(state.user = null),
+				(state.userProjectsLiked = null);
+		},
+	},
 	extraReducers: (builder) => {
 		builder.addCase(createProject.pending, (state, action) => {
 			state.loading = true;
@@ -47,3 +54,4 @@ const userSlice = createSlice({
 });
 
 export const userReducer = userSlice.reducer;
+export const { userLogout } = userSlice.actions;

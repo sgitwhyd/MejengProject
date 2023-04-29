@@ -236,7 +236,7 @@ export default function AdminProjectList() {
                   <span className="label-text">URL Post</span>
                 </label>
                 <Link
-                  href={modalData.url}
+                  href={`/project/detail-project/${modalData.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 rounded-md bg-primary p-1 text-white hover:text-white"

@@ -25,7 +25,7 @@ export default function App({ Component, pageProps, router }) {
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <ToastContainer
-          position="top-right"
+          position="bottom-right"
           autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}
