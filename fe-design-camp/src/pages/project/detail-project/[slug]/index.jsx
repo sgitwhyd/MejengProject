@@ -154,7 +154,7 @@ export default function ProjectDetails() {
           </p>
         </div>
 
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center px-10">
           <Image
             src={
               projectDetail?.thumbnail_project_image?.includes("lorem")
@@ -162,8 +162,8 @@ export default function ProjectDetails() {
                 : `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${projectDetail?.thumbnail_project_image}`
             }
             alt="Uploaded file"
-            width={500}
-            height={500}
+            width={1400}
+            height={1400}
             className="h-full w-full rounded-xl object-cover"
           />
           <div className="px-12 py-5 text-xl ">
@@ -183,71 +183,71 @@ export default function ProjectDetails() {
                 }
                 alt="Uploaded file"
                 key={index}
-                width={500}
-                height={500}
+                width={1400}
+                height={1400}
                 className="h-full w-full rounded-xl object-cover"
               />
             ))}
+          </div>
+        </div>
 
-            <div className="flex w-full flex-col items-center justify-center gap-8 bg-[#122341] p-16 text-white">
-              <h3 className="text-2xl font-semibold capitalize">
-                {projectDetail?.title}
-              </h3>
-              {projectDetail?.url !== "" && (
-                <p className="text-sm font-medium">
-                  If you want to explore a project with all its intricate
-                  details,{" "}
-                  <Link
-                    href={`${projectDetail?.url}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white hover:text-white/80"
-                  >
-                    click here.
-                  </Link>
-                </p>
+        <div className="my-7 flex w-full flex-col items-center justify-center gap-8 bg-[#122341] p-16 text-white">
+          <h3 className="text-2xl font-semibold capitalize">
+            {projectDetail?.title}
+          </h3>
+          {projectDetail?.url !== "" && (
+            <p className="text-sm font-medium">
+              If you want to explore a {projectDetail?.title} with all its
+              intricate details,{" "}
+              <Link
+                href={`${projectDetail?.url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white hover:text-white/80"
+              >
+                click here.
+              </Link>
+            </p>
+          )}
+          <div className="flex gap-8">
+            <button
+              className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80"
+              onClick={handleOnUserLike}
+            >
+              {userProjectsLiked
+                ?.map((item) => item.ProjectId)
+                .includes(projectDetail?.id) ? (
+                <>
+                  <AiFillDislike size={18} />
+                  Unppreciate
+                </>
+              ) : (
+                <>
+                  <AiFillLike size={18} />
+                  Appreciate
+                </>
               )}
-              <div className="flex gap-8">
-                <button
-                  className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-primary/80"
-                  onClick={handleOnUserLike}
-                >
-                  {userProjectsLiked
-                    ?.map((item) => item.ProjectId)
-                    .includes(projectDetail?.id) ? (
-                    <>
-                      <AiFillDislike size={18} />
-                      Unppreciate
-                    </>
-                  ) : (
-                    <>
-                      <AiFillLike size={18} />
-                      Appreciate
-                    </>
-                  )}
-                </button>
-                <div className="flex gap-8">
-                  <div className="flex items-center justify-center gap-1 text-sm text-white">
-                    <AiFillHeart className="h-5 w-5 transition-all duration-300 hover:text-gray-300" />
-                    <p>{projectDetail?.total_likes}</p>
-                  </div>
-                  <div className="flex items-center justify-center gap-1 text-sm text-white">
-                    <AiFillEye className="h-5 w-5 transition-all duration-300 hover:text-gray-300" />
-                    <p>{projectDetail?.total_views}</p>
-                  </div>
-                </div>
+            </button>
+            <div className="flex gap-8">
+              <div className="flex items-center justify-center gap-1 text-sm text-white">
+                <AiFillHeart className="h-5 w-5 transition-all duration-300 hover:text-gray-300" />
+                <p>{projectDetail?.total_likes}</p>
               </div>
-              <div className="flex items-center justify-center gap-2 font-medium">
-                <p className="pr-5">
-                  Published : {formatedHours(projectDetail?.createdAt)}
-                </p>
+              <div className="flex items-center justify-center gap-1 text-sm text-white">
+                <AiFillEye className="h-5 w-5 transition-all duration-300 hover:text-gray-300" />
+                <p>{projectDetail?.total_views}</p>
               </div>
             </div>
+          </div>
+          <div className="flex items-center justify-center gap-2 font-medium">
+            <p className="pr-5">
+              Published : {formatedHours(projectDetail?.createdAt)}
+            </p>
           </div>
         </div>
 
         {/* Comment Section */}
-        <div className="flex w-full items-start justify-center gap-4 pt-7">
+        <div className="flex w-full items-start justify-center gap-4">
           {/* Comment Field */}
           <div className="w-full border p-10">
             {!login ? (
