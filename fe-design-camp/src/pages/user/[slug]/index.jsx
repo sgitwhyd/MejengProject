@@ -94,13 +94,13 @@ export default function UserId({ data }) {
 }
 
 export const getServerSideProps = async ({ query }) => {
-	const { id } = query;
+	const { slug } = query;
 	const response = await api.get("/api/user/other-profile", {
 		headers: {
 			"Content-Type": "application/json",
 		},
 		data: {
-			id,
+			slug,
 		},
 	});
 	const data = response.data.data;
