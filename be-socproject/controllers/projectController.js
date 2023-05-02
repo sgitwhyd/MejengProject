@@ -396,8 +396,9 @@ module.exports = {
 		const { slug } = req.params;
 		try {
 			const project = await Project.findOne({
-				where: {
+				where: {					
 					slug,
+					is_active : true					
 				},
 				include: [
 					{
@@ -437,7 +438,7 @@ module.exports = {
 					{
 						model: Comment,
 						as: 'comment',
-						attributes: ['id', 'body'],
+						attributes: ['id', 'body', 'createdAt', 'updatedAt'],
 						include: [
 							{
 								model: User,
@@ -447,7 +448,7 @@ module.exports = {
 							{
 								model: RepliesComment,
 								as: 'repliesComment',
-								attributes: ['body'],
+								attributes: ['body','createdAt', 'updatedAt'],
 								include: {
 									model: User,
 									as: 'user',
@@ -681,6 +682,9 @@ module.exports = {
 				}
 				
 				Project.findAll({
+					where:{
+						is_active: true
+					},
 					include: [
 						{
 							model: User,
