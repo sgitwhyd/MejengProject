@@ -5,6 +5,7 @@ var { Module, User, RoleAccess } = require('../models');
 var dummyAdmin = {
 	name: 'admin',
 	email: 'admin',
+	slug: 'admin',
 	password: 'admin',
 	is_verify: true,
 	profile_image: 'https://ui-avatars.com/api/?name=admin',
@@ -12,6 +13,7 @@ var dummyAdmin = {
 var dummyUser = {
 	name: 'user',
 	email: 'user',
+	slug: 'user',
 	password: '123',
 	profile_image: 'https://ui-avatars.com/api/?name=user',
 };
@@ -31,6 +33,7 @@ module.exports = {
 			admin = await User.create({
 				name: dummyAdmin.name,
 				email: dummyAdmin.email,
+				slug: dummyAdmin.slug,
 				password: password,
 				is_verify: dummyAdmin.is_verify,
 				profile_image: dummyAdmin.profile_image,
@@ -44,6 +47,7 @@ module.exports = {
 			user = await User.create({
 				name: dummyUser.name,
 				email: dummyUser.email,
+				slug: dummyUser.slug,
 				password: password,
 				role: 'User',
 				profile_image: dummyUser.profile_image,
