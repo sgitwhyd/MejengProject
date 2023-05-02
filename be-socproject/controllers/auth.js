@@ -175,8 +175,7 @@ module.exports = {
 			payload = {
 				id: user.id,
 				email: user.email,
-				name: user.name,
-				slug: user.slug,
+				name: user.name,				
 				role: user.role,
 				is_verify: user.is_verify,
 			};

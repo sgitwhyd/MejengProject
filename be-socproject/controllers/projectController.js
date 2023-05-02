@@ -396,11 +396,9 @@ module.exports = {
 		const { slug } = req.params;
 		try {
 			const project = await Project.findOne({
-				where: {
-					[Sequelize.Op.and]: [
-						slug,
-						is_active = true
-					]
+				where: {					
+					slug,
+					is_active : true					
 				},
 				include: [
 					{
