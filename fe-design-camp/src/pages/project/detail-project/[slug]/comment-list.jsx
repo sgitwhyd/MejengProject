@@ -5,11 +5,12 @@ import CommentInput from "./comment-input";
 import { useSelector } from "react-redux";
 import { selectAuth } from "@/store/auth/auth.selector";
 import Link from "next/link";
+import { formatedHours } from "@/utils/formated-date";
 
 export default function CommentList(props) {
 	const [isReply, setIsReply] = useState(false);
 
-	const { user, body, id, repliesComment } = props;
+	const { user, body, id, repliesComment, createdAt } = props;
 	const { login } = useSelector(selectAuth);
 
 	return (
@@ -29,11 +30,14 @@ export default function CommentList(props) {
 					/>
 				</div>
 				<div className='ml-6'>
-					<p
-						className='mb-2 w-[150px] truncate text-left font-semibold'
-						title={user.name}>
-						{user.name}
-					</p>
+					<div className='mb-2 flex flex-col'>
+						<p
+							className='w-[150px] truncate text-left font-semibold'
+							title={user.name}>
+							{user.name}
+						</p>
+						<p className=' text-xs text-gray-400'>{formatedHours(createdAt)}</p>
+					</div>
 					<p className='mb-1 text-sm'>{body}</p>
 					{login ? (
 						<button
@@ -66,11 +70,16 @@ export default function CommentList(props) {
 									/>
 								</div>
 								<div className='ml-6'>
-									<p
-										className='mb-2 w-[150px] truncate text-left font-semibold'
-										title={reply.user.name}>
-										{reply.user.name}
-									</p>
+									<div className='mb-2 flex flex-col'>
+										<p
+											className='w-[150px] truncate text-left font-semibold'
+											title={reply.user.name}>
+											{reply.user.name}
+										</p>
+										<p className=' text-xs text-gray-400'>
+											{formatedHours(reply.createdAt)}
+										</p>
+									</div>
 									<p className='mb-1 text-sm'>{reply.body}</p>
 								</div>
 							</div>

@@ -1,29 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { BsSearch } from 'react-icons/bs';
-import { MdReportProblem } from 'react-icons/md';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectAdmin } from '@/store/admin/admin.selector';
-import { bannUser } from '@/store/admin/admin.action';
-import { SuccessToast, ErrorToast } from '@/components/toast/alert-taost';
+import React, { useState, useEffect } from "react";
+import { BsSearch } from "react-icons/bs";
+import { MdReportProblem } from "react-icons/md";
+import { useSelector, useDispatch } from "react-redux";
+import { selectAdmin } from "@/store/admin/admin.selector";
+import { bannUser } from "@/store/admin/admin.action";
+import { fetchUsers } from "@/store/admin/admin.action";
+import { SuccessToast, ErrorToast } from "@/components/toast/alert-taost";
 
 export default function AdminProfileCreator() {
 	const dispatch = useDispatch();
 
-	const [searchText, setSearchText] = useState('');
+	const [searchText, setSearchText] = useState("");
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalData, setModalData] = useState({});
 
 	const { users, ammount_users, loading } = useSelector(selectAdmin);
 
 	const tableHeader = [
-		'Creator Name',
-		'Region & Country',
-		'Post Project',
-		'Total View',
-		'Total Like',
-		'Status',
-		'Total Report',
-		'Action',
+		"Creator Name",
+		"Region & Country",
+		"Post Project",
+		"Total View",
+		"Total Like",
+		"Status",
+		"Total Report",
+		"Action",
 	];
 
 	const handleBanUser = async (id) => {
@@ -32,12 +33,13 @@ export default function AdminProfileCreator() {
 				id,
 			})
 		).then((res) => {
-			if (res.meta.requestStatus === 'fulfilled') {
+			if (res.meta.requestStatus === "fulfilled") {
 				SuccessToast(res.payload.message);
 			} else {
 				ErrorToast(res.payload.error.message);
 			}
 		});
+		dispatch(fetchUsers());
 		setIsModalOpen(false);
 	};
 
@@ -59,7 +61,7 @@ export default function AdminProfileCreator() {
 			<header className='text-xl font-bold'>Profile Creator</header>
 			<div
 				className={`mt-6 mb-2 flex items-center justify-end ${
-					isModalOpen && 'blur-sm'
+					isModalOpen && "blur-sm"
 				}`}>
 				<div className='relative w-full max-w-xs'>
 					<input
@@ -76,7 +78,7 @@ export default function AdminProfileCreator() {
 			</div>
 			<div
 				className={`relative overflow-x-auto shadow-md sm:rounded-lg ${
-					isModalOpen && 'blur-sm'
+					isModalOpen && "blur-sm"
 				}`}>
 				<table className='w-full text-left text-sm text-gray-500 '>
 					<thead className='bg-gray-50 text-xs uppercase text-gray-700 '>
@@ -94,9 +96,9 @@ export default function AdminProfileCreator() {
 						</tr>
 					</thead>
 					<tbody>
-						{filteredData.map((user) => {
+						{filteredData.map((user, index) => {
 							return (
-								<tr key={user.id} className='border-b bg-white'>
+								<tr key={index} className='border-b bg-white'>
 									<th
 										scope='row'
 										className='whitespace-nowrap px-6 py-4 font-medium text-gray-900'>
@@ -123,7 +125,7 @@ export default function AdminProfileCreator() {
 									<td className='px-6 py-4'>
 										<button
 											className={`btn-error btn-sm btn gap-2 capitalize text-white ${
-												user.is_active ? '' : 'btn-disabled'
+												user.is_active ? "" : "btn-disabled"
 											}`}
 											onClick={() => handleModal(user)}>
 											<MdReportProblem />
@@ -158,7 +160,7 @@ export default function AdminProfileCreator() {
 							</button>
 							<button
 								className={`btn-success btn-sm btn text-white ${
-									loading ? 'loading' : ''
+									loading ? "loading" : ""
 								}`}
 								onClick={() => {
 									handleBanUser(modalData.id);
