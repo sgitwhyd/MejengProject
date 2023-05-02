@@ -7,6 +7,7 @@ import AdminBanProject from "./admin-ban-project";
 import AdminHome from "./admin-home";
 import AdminProfileCreator from "./admin-profile-creator";
 import AdminProjectList from "./admin-project-list";
+import ReportCategories from "./admin-report-categories";
 import { ImHome } from "react-icons/im";
 import { CgProfile } from "react-icons/cg";
 import { BiCategory } from "react-icons/bi";
@@ -23,6 +24,8 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { userLogout } from "@/store/user/user.reducer";
 import { adminLogout } from "@/store/admin/admin.reducer";
+import { fetchReportCategory } from "@/store/report/report.action";
+import { getProjects } from "@/store/projects/projects.action";
 
 export default function Admin() {
   const router = useRouter();
@@ -37,6 +40,13 @@ export default function Admin() {
       dispatch(fetchCategories()),
       dispatch(fetchTools()),
       dispatch(fetchReportedProjects()),
+      dispatch(fetchReportCategory()),
+      dispatch(
+        getProjects({
+          category: null,
+          tool: null,
+        })
+      ),
     ]).then((res) => {
       res.map((item) => {
         if (item.meta?.requestStatus === "rejected") {
@@ -82,6 +92,11 @@ export default function Admin() {
     {
       label: "Add Feature",
       value: "addfeature",
+      icons: <BiCategory size={22} />,
+    },
+    {
+      label: "Report Categories",
+      value: "reportCategories",
       icons: <BiCategory size={22} />,
     },
     {
@@ -163,6 +178,7 @@ export default function Admin() {
           {page === "projectList" && <AdminProjectList />}
           {page === "addfeature" && <AdminAddFeature />}
           {page === "banproject" && <AdminBanProject />}
+          {page === "reportCategories" && <ReportCategories />}
           {/* <!-- Page content end --> */}
           <div className="absolute top-5 left-0">
             <label

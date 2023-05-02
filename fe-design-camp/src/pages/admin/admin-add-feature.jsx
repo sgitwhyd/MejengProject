@@ -1,32 +1,44 @@
-import { useState, useRef } from 'react';
-import { TiPlus } from 'react-icons/ti';
-import { FiEdit3, FiTrash2 } from 'react-icons/fi';
-import DeleteModal from '@/components/modal/delete-modal';
-import AdminCategoryModal from '@/components/modal/admin-category-modal';
-import AdminToolModal from '@/components/modal/admin-tool-modal';
-import Image from 'next/image';
+import { useState, useRef, useEffect } from "react";
+import { TiPlus } from "react-icons/ti";
+import { FiEdit3, FiTrash2 } from "react-icons/fi";
+import DeleteModal from "@/components/modal/delete-modal";
+import AdminCategoryModal from "@/components/modal/admin-category-modal";
+import AdminToolModal from "@/components/modal/admin-tool-modal";
+import Image from "next/image";
 
-import { SuccessToast, ErrorToast } from '@/components/toast/alert-taost';
+import { SuccessToast, ErrorToast } from "@/components/toast/alert-taost";
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import {
 	createCategory,
 	deleteCategory,
 	updateCategory,
-} from '@/store/categories/categories.action';
-import { createTool, updateTool, deleteTool } from '@/store/tools/tools.action';
-import { selectCategories } from '@/store/categories/categories.selector';
-import { selectTools } from '@/store/tools/tools.selector';
+} from "@/store/categories/categories.action";
+import { createTool, updateTool, deleteTool } from "@/store/tools/tools.action";
+import { selectCategories } from "@/store/categories/categories.selector";
+import { selectTools } from "@/store/tools/tools.selector";
+import { fetchCategories } from "@/store/categories/categories.action";
+import { fetchTools } from "@/store/tools/tools.action";
 
 export default function AdminAddFeature() {
-	const BE_BASE_URL = 'http://localhost:3000';
+	const BE_BASE_URL = "http://localhost:3000";
 	const dispatch = useDispatch();
+
+	const [status, setStatus] = useState(null);
 
 	const { total_category, categories } = useSelector(selectCategories);
 	const { total_tool, tools } = useSelector(selectTools);
 
+	useEffect(() => {
+		dispatch(fetchCategories());
+		dispatch(fetchTools());
+	}, [status]);
+
 	//Category
-	const [category, setCategory] = useState('');
+	const [category, setCategory] = useState({
+		name: "",
+		desc: "",
+	});
 	const [isAddCategory, setIsAddCategory] = useState(false);
 	const [isEditCategory, setIsEditCategory] = useState(false);
 
@@ -36,11 +48,12 @@ export default function AdminAddFeature() {
 				id,
 			})
 		).then((res) => {
-			if (res.meta.requestStatus === 'fulfilled') {
+			if (res.meta.requestStatus === "fulfilled") {
 				SuccessToast(res.payload.message);
 			} else {
 				ErrorToast(res.payload.error.message);
 			}
+			setStatus(res.meta.requestId);
 		});
 		setIsCategoryDelete(false);
 	};
@@ -48,31 +61,36 @@ export default function AdminAddFeature() {
 	const handleCreateCategory = async () => {
 		await dispatch(
 			createCategory({
-				name: category,
+				name: category.name,
+				desc: category.desc,
 			})
 		).then((res) => {
-			if (res.meta.requestStatus === 'fulfilled') {
+			if (res.meta.requestStatus === "fulfilled") {
 				SuccessToast(res.payload.message);
 			} else {
 				ErrorToast(res.payload.error.message);
 			}
+			setStatus(res.meta.requestId);
 		});
-		setCategory('');
+
+		setCategory("");
 		setIsAddCategory(false);
 	};
 
-	const handleOnEditCategory = async (id, name) => {
+	const handleOnEditCategory = async (id) => {
 		await dispatch(
 			updateCategory({
 				id,
-				name,
+				name: category.name,
+				desc: category.desc,
 			})
 		).then((res) => {
-			if (res.meta.requestStatus === 'fulfilled') {
+			if (res.meta.requestStatus === "fulfilled") {
 				SuccessToast(res.payload.message);
 			} else {
 				ErrorToast(res.payload.error.message);
 			}
+			setStatus(res.meta.requestId);
 		});
 		setIsEditCategory(false);
 	};
@@ -86,7 +104,7 @@ export default function AdminAddFeature() {
 	const [isToolDelete, setIsToolDelete] = useState(false);
 	const [isEditTool, setIsEditTool] = useState(false);
 	const [previewToolIcon, setPreviewToolIcon] = useState(null);
-	const [tool, setTool] = useState('');
+	const [tool, setTool] = useState("");
 	const [isAddTool, setIsAddTool] = useState(false);
 	const [logoTool, setLogoTool] = useState(null);
 	const logoToolRef = useRef(null);
@@ -109,13 +127,14 @@ export default function AdminAddFeature() {
 				name: tool,
 			})
 		).then((res) => {
-			if (res.meta.requestStatus === 'fulfilled') {
+			if (res.meta.requestStatus === "fulfilled") {
 				SuccessToast(res.payload.message);
 			} else {
 				ErrorToast(res.payload.error.message);
 			}
+			setStatus(res.meta.requestId);
 		});
-		setTool('');
+		setTool("");
 		setLogoTool(null);
 		setIsAddTool(false);
 		setPreviewToolIcon(null);
@@ -129,11 +148,12 @@ export default function AdminAddFeature() {
 				tool_icon,
 			})
 		).then((res) => {
-			if (res.meta.requestStatus === 'fulfilled') {
+			if (res.meta.requestStatus === "fulfilled") {
 				SuccessToast(res.payload.message);
 			} else {
 				ErrorToast(res.payload.error.message);
 			}
+			setStatus(res.meta.requestId);
 		});
 
 		setIsEditTool(false);
@@ -145,11 +165,12 @@ export default function AdminAddFeature() {
 				id,
 			})
 		).then((res) => {
-			if (res.meta.requestStatus === 'fulfilled') {
+			if (res.meta.requestStatus === "fulfilled") {
 				SuccessToast(res.payload.message);
 			} else {
 				ErrorToast(res.payload.error.message);
 			}
+			setStatus(res.meta.requestId);
 		});
 		setIsToolDelete(false);
 	};
@@ -164,7 +185,7 @@ export default function AdminAddFeature() {
 						isToolDelete ||
 						isEditCategory ||
 						isCategoryDelete) &&
-					'blur-sm'
+					"blur-sm"
 				}`}>
 				{/* Table Categories */}
 				<div className=''>
@@ -196,7 +217,10 @@ export default function AdminAddFeature() {
 											className='btn-info btn-sm btn-circle btn text-white'
 											onClick={() => {
 												setIsEditCategory(true);
-												setCategory(category.name);
+												setCategory({
+													name: category.name,
+													desc: category.desc,
+												});
 												setId(category.id);
 											}}>
 											<FiEdit3 size={18} />
@@ -247,7 +271,7 @@ export default function AdminAddFeature() {
 									<td>
 										<Image
 											src={
-												tool.icon.includes('uploads')
+												tool.icon.includes("uploads")
 													? `${BE_BASE_URL}/${tool.icon}`
 													: tool.icon
 											}
@@ -334,7 +358,7 @@ export default function AdminAddFeature() {
 					title='Edit nama category'
 					category={category}
 					setCategory={setCategory}
-					handleOnConfirm={() => handleOnEditCategory(id, category)}
+					handleOnConfirm={() => handleOnEditCategory(id)}
 				/>
 			)}
 
