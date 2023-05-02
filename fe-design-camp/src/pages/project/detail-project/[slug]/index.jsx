@@ -311,7 +311,7 @@ export default function ProjectDetails() {
 								</div>
 							</div>
 							<Link
-								href={`/user/${projectDetail?.UserId}`}
+								href={`/user/${projectDetail?.user?.slug}`}
 								className='flex w-full items-center justify-center gap-2 rounded-full border border-primary bg-primary p-2 text-white transition-all duration-300 hover:border-primary/80 hover:bg-primary/80 hover:text-white'>
 								<CgProfile className='h-4 w-4' />
 								View Profile
