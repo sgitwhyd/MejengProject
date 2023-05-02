@@ -11,7 +11,6 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const { sendEmailForgotPassword } = require('../utils/sendEmail');
 const bcrypt = require('bcrypt');
-const project = require('../db/models/project');
 
 module.exports = {
 	getProfile: async (req, res, next) => {
@@ -76,9 +75,9 @@ module.exports = {
 	},
 	getOtherProfile: async (req, res, next) => {
 		try {
-			const { id } = req.body;
+			const { slug } = req.body;
 			await User.findOne({
-				where: { id },
+				where: { slug },
 				attributes: { exclude: ['id', 'password'] },
 				include: {
 					model: Project,
@@ -141,6 +140,7 @@ module.exports = {
 					await User.update(
 						{
 							name,
+							slug: name.split(' ').join('-').toLowerCase(),
 							description: desc,
 							region,
 							country,
@@ -153,6 +153,7 @@ module.exports = {
 					await User.update(
 						{
 							name,
+							slug: name.split(' ').join('-').toLowerCase(),
 							description: desc,
 							region,
 							country,
@@ -165,6 +166,7 @@ module.exports = {
 				await User.update(
 					{
 						name,
+						slug: name.split(' ').join('-').toLowerCase(),
 						description: desc,
 						region,
 						country,

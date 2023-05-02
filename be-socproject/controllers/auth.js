@@ -10,6 +10,7 @@ module.exports = {
 	register: async (req, res, next) => {
 		try {
 			const { email, password, name } = req.body;
+			let slug = name.split(' ').join('-').toLowerCase()
 
 			const existUser = await User.findOne({ where: { email: email } });
 			if (existUser) {
@@ -40,7 +41,8 @@ module.exports = {
 				email: email,
 				password: encryptPassword,
 				name: name,
-				profile_image: `https://ui-avatars.com/api/?name=${name}`,
+				slug,
+				profile_image: `https://ui-avatars.com/api/?name=${slug}`,
 			})
 				.then(() => {
 					return res.status(201).json({
@@ -174,6 +176,7 @@ module.exports = {
 				id: user.id,
 				email: user.email,
 				name: user.name,
+				slug: user.slug,
 				role: user.role,
 				is_verify: user.is_verify,
 			};

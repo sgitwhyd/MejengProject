@@ -18,6 +18,10 @@ module.exports = {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
+			slug: {
+				type: Sequelize.STRING,
+				allowNull: false,
+			},
 			profile_image: {
 				allowNull: true,
 				type: Sequelize.STRING,
