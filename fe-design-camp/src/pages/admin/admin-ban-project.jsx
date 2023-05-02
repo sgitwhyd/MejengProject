@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { BsSearch } from 'react-icons/bs';
-import { FaExclamationTriangle } from 'react-icons/fa';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectAdmin } from '@/store/admin/admin.selector';
-import { bannProject } from '@/store/admin/admin.action';
-import { SuccessToast, ErrorToast } from '@/components/toast/alert-taost';
+import React, { useState } from "react";
+import { BsSearch } from "react-icons/bs";
+import { FaExclamationTriangle } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { selectAdmin } from "@/store/admin/admin.selector";
+import { bannProject } from "@/store/admin/admin.action";
+import { fetchReportedProjects } from "@/store/admin/admin.action";
+
+import { SuccessToast, ErrorToast } from "@/components/toast/alert-taost";
 
 export default function AdminBanProject() {
 	let ammountInappropriate = 0;
@@ -14,18 +16,19 @@ export default function AdminBanProject() {
 	const dispatch = useDispatch();
 	const [isModalBanOpen, setIsModalBanOpen] = useState(false);
 	const [isModalDetailReportOpen, setIsModalDetailReportOpen] = useState(false);
-	const [search, setSearch] = useState('');
+	const [search, setSearch] = useState("");
 	const [modalData, setModalData] = useState({});
 
 	const { reportedProjects, loading } = useSelector(selectAdmin);
 
 	const handleBanProject = async (id) => {
 		await dispatch(bannProject(id)).then((res) => {
-			if (res.meta.requestStatus === 'fulfilled') {
+			if (res.meta.requestStatus === "fulfilled") {
 				SuccessToast(res.payload.message);
 			} else {
 				ErrorToast(res.payload.message);
 			}
+			dispatch(fetchReportedProjects());
 		});
 		setIsModalBanOpen(false);
 	};
@@ -40,11 +43,11 @@ export default function AdminBanProject() {
 	};
 
 	const tableHeader = [
-		'No',
-		'Title',
-		'Creator Name',
-		'Report Reason',
-		'Action',
+		"No",
+		"Title",
+		"Creator Name",
+		"Report Reason",
+		"Action",
 	];
 
 	const filteredData = reportedProjects.filter((data) => {
@@ -56,7 +59,7 @@ export default function AdminBanProject() {
 			<header className='text-xl font-bold'>Reported Project</header>
 			<div
 				className={`relative mt-[55px] overflow-x-auto sm:rounded-lg ${
-					isModalBanOpen && 'blur-sm'
+					isModalBanOpen && "blur-sm"
 				}`}>
 				<div className='relative float-right w-full max-w-xs'>
 					<input
@@ -120,14 +123,14 @@ export default function AdminBanProject() {
 												<button
 													className={`btn-sm btn gap-2 capitalize text-white ${
 														data.is_active
-															? 'btn-error '
-															: 'btn-disabled bg-black'
+															? "btn-error "
+															: "btn-disabled bg-black"
 													}`}
 													onClick={() => {
 														handleModal(data);
 													}}>
 													<FaExclamationTriangle />
-													{data.is_active ? 'Ban Project' : 'Banned'}
+													{data.is_active ? "Ban Project" : "Banned"}
 												</button>
 											</td>
 										</tr>
@@ -154,7 +157,7 @@ export default function AdminBanProject() {
 							</button>
 							<button
 								className={`btn-success btn-sm btn text-white ${
-									loading ? 'loading' : ''
+									loading ? "loading" : ""
 								}`}
 								onClick={() => {
 									handleBanProject({
@@ -173,11 +176,11 @@ export default function AdminBanProject() {
 						<h1 className='text-center text-lg font-bold'>Detail</h1>
 						<p className='my-5 w-full'>
 							{modalData.projectReportCategories.map((report) => {
-								if (report.name === 'Inappropiate') {
+								if (report.name === "Inappropiate") {
 									ammountInappropriate += 1;
-								} else if (report.name === 'Plagiarism') {
+								} else if (report.name === "Plagiarism") {
 									ammountPlagiarism += 1;
-								} else if (report.name === 'Sensitive') {
+								} else if (report.name === "Sensitive") {
 									ammountSensitive += 1;
 								}
 							})}
@@ -200,7 +203,7 @@ export default function AdminBanProject() {
 								</tr>
 							</table>
 							<h4 className='my-5 text-center'>
-								Others{' '}
+								Others{" "}
 								{modalData.projectReportCategories.length -
 									(ammountInappropriate + ammountPlagiarism + ammountSensitive)}
 							</h4>
@@ -211,8 +214,8 @@ export default function AdminBanProject() {
 											ammountPlagiarism +
 											ammountSensitive) <
 									10
-										? 'h-fit'
-										: 'h-[200px]'
+										? "h-fit"
+										: "h-[200px]"
 								}`}>
 								{modalData.projectReportCategories.map((report, index) => (
 									<ol type='1' key={index}>

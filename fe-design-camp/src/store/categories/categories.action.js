@@ -1,11 +1,11 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import api from '@/utils/api';
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import api from "@/utils/api";
 
 export const fetchCategories = createAsyncThunk(
-	'categories/fetchCategories',
+	"categories/fetchCategories",
 	async (payload, { rejectWithValue }) => {
 		try {
-			const response = await api.get('/api/categories');
+			const response = await api.get("/api/categories");
 			return response.data;
 		} catch (error) {
 			return rejectWithValue(error.response.data);
@@ -14,19 +14,20 @@ export const fetchCategories = createAsyncThunk(
 );
 
 export const createCategory = createAsyncThunk(
-	'categories/createCategory',
+	"categories/createCategory",
 	async (payload, { getState, rejectWithValue }) => {
 		const { auth } = getState();
-		const { name } = payload;
+		const { name, desc } = payload;
 		try {
 			const response = await api.post(
-				'/api/categories',
+				"/api/categories",
 				{
 					name,
+					desc,
 				},
 				{
 					headers: {
-						'Content-Type': 'application/json',
+						"Content-Type": "application/json",
 						Authorization: auth.token,
 					},
 				}
@@ -39,14 +40,14 @@ export const createCategory = createAsyncThunk(
 );
 
 export const deleteCategory = createAsyncThunk(
-	'categories/deleteCategory',
+	"categories/deleteCategory",
 	async (payload, { getState, rejectWithValue }) => {
 		const { auth } = getState();
 		const { id } = payload;
 		try {
 			const response = await api.delete(`/api/categories`, {
 				headers: {
-					'Content-Type': 'application/json',
+					"Content-Type": "application/json",
 					Authorization: auth.token,
 				},
 				data: {
@@ -61,20 +62,21 @@ export const deleteCategory = createAsyncThunk(
 );
 
 export const updateCategory = createAsyncThunk(
-	'categories/updateCategory',
+	"categories/updateCategory",
 	async (payload, { getState, rejectWithValue }) => {
 		const { auth } = getState();
-		const { id, name } = payload;
+		const { id, name, desc } = payload;
 		try {
 			const response = await api.put(
-				'/api/categories',
+				"/api/categories",
 				{
 					id,
 					name,
+					desc,
 				},
 				{
 					headers: {
-						'Content-Type': 'application/json',
+						"Content-Type": "application/json",
 						Authorization: auth.token,
 					},
 				}
