@@ -89,17 +89,18 @@ export default function ProjectDetails() {
         </h1>
 
         <div className="flex items-center justify-start gap-2 pt-3 pb-5">
-          <img
-            width={32}
-            height={32}
-            src={
-              projectDetail?.user?.profile_image?.includes("avatars")
-                ? projectDetail?.user?.profile_image
-                : `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${projectDetail?.user?.profile_image}`
-            }
-            className="rounded-full"
-            alt={projectDetail?.user?.name}
-          />
+          <div className="avatar">
+            <div className="w-[34px] rounded-full">
+              <img
+                src={
+                  projectDetail?.user?.profile_image?.includes("avatars")
+                    ? projectDetail?.user?.profile_image
+                    : `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${projectDetail?.user?.profile_image}`
+                }
+                alt={projectDetail?.user?.name}
+              />
+            </div>
+          </div>
           <p
             className="w-[150px] truncate text-left font-semibold"
             title={projectDetail?.user?.name}
@@ -245,17 +246,18 @@ export default function ProjectDetails() {
             <div className="flex w-full flex-col items-start justify-center gap-4 border p-4">
               <h1 className="text-sm font-bold text-[#656470]">OWNER</h1>
               <div className="flex items-center justify-center gap-2">
-                <img
-                  width={50}
-                  height={50}
-                  src={
-                    projectDetail?.user.profile_image.includes("avatars")
-                      ? projectDetail?.user.profile_image
-                      : `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${projectDetail?.user.profile_image}`
-                  }
-                  className="rounded-full"
-                  alt={projectDetail?.user.name}
-                />
+                <div className="avatar">
+                  <div className="w-[50px] rounded-full">
+                    <img
+                      src={
+                        projectDetail?.user.profile_image.includes("avatars")
+                          ? projectDetail?.user.profile_image
+                          : `${process.env.NEXT_PUBLIC_BE_BASE_URL}/${projectDetail?.user.profile_image}`
+                      }
+                      alt={projectDetail?.user.name}
+                    />
+                  </div>
+                </div>
                 <div>
                   <p
                     className="w-[150px] truncate text-left text-lg font-semibold"
