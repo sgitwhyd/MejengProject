@@ -438,21 +438,21 @@ module.exports = {
 					{
 						model: Comment,
 						as: 'comment',
-						attributes: ['id', 'body'],
+						attributes: ['id', 'body', 'createdAt', 'updatedAt'],
 						include: [
 							{
 								model: User,
 								as: 'user',
-								attributes: ['name', 'profile_image', 'createdAt', 'updatedAt'],
+								attributes: ['name', 'profile_image'],
 							},
 							{
 								model: RepliesComment,
 								as: 'repliesComment',
-								attributes: ['body'],
+								attributes: ['body','createdAt', 'updatedAt'],
 								include: {
 									model: User,
 									as: 'user',
-									attributes: ['name', 'profile_image', 'createdAt', 'updatedAt'],
+									attributes: ['name', 'profile_image'],
 								},
 							},
 						],
