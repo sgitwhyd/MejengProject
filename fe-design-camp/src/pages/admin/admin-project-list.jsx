@@ -4,8 +4,8 @@ import Link from "next/link";
 import { AiOutlineLink } from "react-icons/ai";
 
 import { useSelector } from "react-redux";
-import { selectProject } from "@/store/projects/projects.selector";
 import { selectCategories } from "@/store/categories/categories.selector";
+import { selectAdmin } from "@/store/admin/admin.selector";
 
 export default function AdminProjectList() {
 	const [filterCategory, setFilterCategory] = useState("All");
@@ -13,7 +13,7 @@ export default function AdminProjectList() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [modalData, setModalData] = useState({});
 
-	const { projects } = useSelector(selectProject);
+	const { projects } = useSelector(selectAdmin);
 	const { categories } = useSelector(selectCategories);
 
 	const tableHeader = [

@@ -1,4 +1,4 @@
-const { Tools } = require('../db/models');
+const { Tools, ProjectTools } = require('../db/models');
 const fs = require('fs');
 const path = require('path');
 
@@ -157,30 +157,40 @@ module.exports = {
 			});
 		} else {
 			try {
+				const isToolHaveProject = await ProjectTools.findOne({
+					where: {ToolId : id}
+				})
 				await Tools.findOne({
 					where: {
 						id,
 					},
 				}).then((result)=>{
 					if (result) {
-						try {
-							fs.unlinkSync(path.normalize(result.icon));						
-						} catch (err) {
-							return res.status(500).json({
-								code: 500,
-								status: 'Internal Server Error',
-								error: {
-									message: err.message,
-								},
+						if (isToolHaveProject) {
+							return res.status(406).json({
+								code: 406,
+								message: 'Cannot delete this tools because tool has projects!'
+							})
+						} else {							
+							try {
+								fs.unlinkSync(path.normalize(result.icon));						
+							} catch (err) {
+								return res.status(500).json({
+									code: 500,
+									status: 'Internal Server Error',
+									error: {
+										message: err.message,
+									},
+								});
+							}
+							Tools.destroy({ where: { id } }).then(() => {
+								return res.status(200).json({
+									code: 200,
+									status: 'OK',
+									message: 'Delete Tool Successfully',
+								});
 							});
 						}
-						Tools.destroy({ where: { id } }).then(() => {
-							return res.status(200).json({
-								code: 200,
-								status: 'OK',
-								message: 'Delete Tool Successfully',
-							});
-						});
 					} else {
 						return res.status(404).json({
 							code: 404,

@@ -1,4 +1,4 @@
-const { Categories } = require('../db/models');
+const { Categories, Project } = require('../db/models');
 
 module.exports = {
 	createCategory: async (req, res, next) => {
@@ -134,22 +134,32 @@ module.exports = {
 		}
 
 		try {
+			const isCategoryHaveProject = await Project.findOne({
+				where: {CategoryId : id}
+			})
 			const isCategoryExist = await Categories.findOne({
 				where: { id },
 			});
 
 			if (isCategoryExist) {
-				await Categories.destroy({
-					where: {
-						id,
-					},
-				}).then(() => {
-					return res.status(200).json({
-						code: 200,
-						status: 'OK',
-						message: 'Delete Category Succesfully',
+				if (isCategoryHaveProject) {
+					return res.status(406).json({
+						code: 406,
+						message: 'Cannot delete this categories because category has projects!'
+					})
+				} else {
+					await Categories.destroy({
+						where: {
+							id,
+						},
+					}).then(() => {
+						return res.status(200).json({
+							code: 200,
+							status: 'OK',
+							message: 'Delete Category Succesfully',
+						});
 					});
-				});
+				}
 			} else {
 				return res.status(404).json({
 					code: 404,
