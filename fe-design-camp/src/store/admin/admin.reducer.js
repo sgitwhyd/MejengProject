@@ -4,6 +4,7 @@ import {
 	fetchReportedProjects,
 	bannProject,
 	bannUser,
+	getProjects,
 } from "./admin.action";
 
 const initialState = {
@@ -15,6 +16,7 @@ const initialState = {
 	loading: false,
 	error: null,
 	reportedProjects: [],
+	projects: [],
 };
 
 const adminSlice = createSlice({
@@ -61,6 +63,9 @@ const adminSlice = createSlice({
 			builder.addCase(bannUser.fulfilled, (state, action) => {
 				state.loading = false;
 			});
+		builder.addCase(getProjects.fulfilled, (state, action) => {
+			state.projects = action.payload.filter;
+		});
 	},
 });
 
