@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { BsSearch } from "react-icons/bs";
 import Link from "next/link";
 import { AiOutlineLink } from "react-icons/ai";
+import Table from "@/components/table";
 
 import { useSelector } from "react-redux";
 import { selectCategories } from "@/store/categories/categories.selector";
@@ -15,14 +16,6 @@ export default function AdminProjectList() {
 
 	const { projects } = useSelector(selectAdmin);
 	const { categories } = useSelector(selectCategories);
-
-	const tableHeader = [
-		"Title Project",
-		"Creator Name",
-		"Categories",
-		"Status",
-		"Detail Project",
-	];
 
 	const handleModal = (data) => {
 		setIsModalOpen(true);
@@ -45,6 +38,61 @@ export default function AdminProjectList() {
 			project?.title.toLowerCase().includes(searchText.toLowerCase())
 		);
 	});
+
+	const TABLE_HEADER = useMemo(
+		() => [
+			{
+				Header: "Title Project",
+				accessor: "title",
+			},
+			{
+				Header: "Creator Name",
+				accessor: "creator",
+			},
+			{
+				Header: "Category",
+				accessor: "category",
+			},
+			{
+				Header: "Status",
+				accessor: "status",
+			},
+			{
+				Header: "Detail Project",
+				accessor: "detail",
+			},
+		],
+		[]
+	);
+
+	const TABLE_DATA = useMemo(
+		() => [
+			...filteredData.map((project) => ({
+				title: project.title,
+				creator: project.user.name,
+				category: project.categories.name,
+				status: project.is_active ? (
+					<button className='btn btn-success btn-xs capitalize text-white'>
+						Active
+					</button>
+				) : (
+					<button className='btn btn-error btn-xs capitalize text-white'>
+						Disable
+					</button>
+				),
+				detail: (
+					<button
+						onClick={() => {
+							handleModal(project);
+						}}
+						className='rounded-md bg-[#38B9F3] px-2 py-1 capitalize text-white'>
+						See Details
+					</button>
+				),
+			})),
+		],
+		[filteredData]
+	);
 
 	return (
 		<section className='relative h-full'>
@@ -85,64 +133,7 @@ export default function AdminProjectList() {
 				className={`relative mt-5 overflow-x-auto shadow-md sm:rounded-lg ${
 					isModalOpen && "blur-sm"
 				}`}>
-				<table className='w-full text-left text-sm text-gray-500 '>
-					<thead className='bg-gray-50 text-xs uppercase text-gray-700 '>
-						<tr>
-							{tableHeader.map((header, index) => {
-								return (
-									<th
-										key={index}
-										scope='col'
-										className='whitespace-nowrap px-6 py-3'>
-										{header}
-									</th>
-								);
-							})}
-						</tr>
-					</thead>
-					<tbody>
-						{filteredData.map((post) => {
-							return (
-								<tr key={post.id} className='border-b bg-white'>
-									<th
-										scope='row'
-										className='whitespace-nowrap px-6 py-4 font-medium text-gray-900'>
-										{post.title}
-									</th>
-									<td className='px-6 py-4'>{post.user.name}</td>
-									<td className='px-6 py-4'>{post.categories.name}</td>
-									<td className='px-6 py-4 font-semibold'>
-										{post.is_active ? (
-											<button className='btn-success btn-xs btn capitalize text-white'>
-												Active
-											</button>
-										) : (
-											<button className='btn-error btn-xs btn capitalize text-white'>
-												Disable
-											</button>
-										)}
-									</td>
-									<td className='px-6 py-4'>
-										<button
-											onClick={() => {
-												handleModal(post);
-											}}
-											className='rounded-md bg-[#38B9F3] px-2 py-1 capitalize text-white'>
-											See Details
-										</button>
-									</td>
-								</tr>
-							);
-						})}
-						{filteredData.length === 0 && (
-							<tr className='border-b bg-white'>
-								<td colSpan='5' className='px-6 py-4 text-center'>
-									No data found
-								</td>
-							</tr>
-						)}
-					</tbody>
-				</table>
+				<Table columns={TABLE_HEADER} data={TABLE_DATA} numberToShow={6} />
 			</div>
 
 			{/*<-- Modal -->*/}
@@ -150,7 +141,7 @@ export default function AdminProjectList() {
 				<div className='absolute inset-0 z-[99] mx-auto my-auto h-[440px] w-[478px] rounded-2xl border bg-white p-6 shadow-lg drop-shadow-xl'>
 					<div className='relative flex h-full w-full flex-col items-center justify-center'>
 						<label
-							className='btn-sm btn-circle btn absolute -right-2 -top-2'
+							className='btn btn-sm btn-circle absolute -right-2 -top-2'
 							onClick={() => {
 								setIsModalOpen(false);
 							}}>
@@ -200,11 +191,11 @@ export default function AdminProjectList() {
 									<span className='label-text'>Status Project</span>
 								</label>
 								{modalData.is_active ? (
-									<button className='btn-success btn-sm btn capitalize text-white'>
+									<button className='btn btn-success btn-sm capitalize text-white'>
 										Active
 									</button>
 								) : (
-									<button className='btn-error btn-sm btn capitalize text-white'>
+									<button className='btn btn-error btn-sm capitalize text-white'>
 										Disable
 									</button>
 								)}

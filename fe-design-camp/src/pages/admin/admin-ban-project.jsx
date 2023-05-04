@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { FaExclamationTriangle } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,6 +7,7 @@ import { bannProject } from "@/store/admin/admin.action";
 import { fetchReportedProjects } from "@/store/admin/admin.action";
 
 import { SuccessToast, ErrorToast } from "@/components/toast/alert-taost";
+import Table from "@/components/table";
 
 export default function AdminBanProject() {
 	let ammountInappropriate = 0;
@@ -42,17 +43,68 @@ export default function AdminBanProject() {
 		setModalData(data);
 	};
 
-	const tableHeader = [
-		"No",
-		"Title",
-		"Creator Name",
-		"Report Reason",
-		"Action",
-	];
-
 	const filteredData = reportedProjects.filter((data) => {
 		return data.title.toLowerCase().includes(search.toLowerCase());
 	});
+
+	const TABLE_HEADER = useMemo(
+		() => [
+			{
+				Header: "No",
+				accessor: "no",
+			},
+			{
+				Header: "Title",
+				accessor: "title",
+			},
+			{
+				Header: "Creator Name",
+				accessor: "creator",
+			},
+			{
+				Header: "Report Reason",
+				accessor: "reportReason",
+			},
+			{
+				Header: "Action",
+				accessor: "action",
+			},
+		],
+		[]
+	);
+
+	const TABLE_DATA = useMemo(
+		() => [
+			...filteredData.map((data, index) => ({
+				no: index + 1,
+				title: data.title,
+				creator: data.user.name,
+				reportReason: (
+					<div
+						className='btn btn-warning btn-sm capitalize text-white'
+						onClick={() => {
+							setIsModalDetailReportOpen(!isModalDetailReportOpen);
+							setModalData(data);
+						}}>
+						See Detail
+					</div>
+				),
+				action: (
+					<button
+						className={`btn btn-sm gap-2 capitalize text-white ${
+							data.is_active ? "btn-error " : "btn-disabled bg-black"
+						}`}
+						onClick={() => {
+							handleModal(data);
+						}}>
+						<FaExclamationTriangle />
+						{data.is_active ? "Ban Project" : "Banned"}
+					</button>
+				),
+			})),
+		],
+		[filteredData]
+	);
 
 	return (
 		<div>
@@ -74,71 +126,7 @@ export default function AdminBanProject() {
 					</div>
 				</div>
 				<div className='mt-14 shadow-sm '>
-					<table className='w-full text-left text-sm  text-gray-500 '>
-						<thead className='bg-gray-50 text-xs uppercase text-gray-700 '>
-							<tr>
-								{tableHeader.map((header) => {
-									return (
-										<th
-											key={header}
-											scope='col'
-											className='whitespace-nowrap px-6 py-3'>
-											{header}
-										</th>
-									);
-								})}
-							</tr>
-						</thead>
-						<tbody>
-							{filteredData.length === 0 ? (
-								<tr className='border-b bg-white'>
-									<td colSpan='5' className='px-6 py-4 text-center'>
-										No data found
-									</td>
-								</tr>
-							) : (
-								filteredData.map((data, index) => {
-									return (
-										<tr key={data.id} className='border-b bg-white'>
-											<th
-												scope='row'
-												className='whitespace-nowrap px-6 py-4 font-medium text-gray-900'>
-												{index + 1}
-											</th>
-											<td className='px-6 py-4'>{data.title}</td>
-											<td className='px-6 py-4'>{data.user.name}</td>
-											<td className='px-6 py-4'>
-												<div
-													className='btn-warning btn-sm btn capitalize text-white'
-													onClick={() => {
-														setIsModalDetailReportOpen(
-															!isModalDetailReportOpen
-														);
-														setModalData(data);
-													}}>
-													See Detail
-												</div>
-											</td>
-											<td className='px-6 py-4'>
-												<button
-													className={`btn-sm btn gap-2 capitalize text-white ${
-														data.is_active
-															? "btn-error "
-															: "btn-disabled bg-black"
-													}`}
-													onClick={() => {
-														handleModal(data);
-													}}>
-													<FaExclamationTriangle />
-													{data.is_active ? "Ban Project" : "Banned"}
-												</button>
-											</td>
-										</tr>
-									);
-								})
-							)}
-						</tbody>
-					</table>
+					<Table columns={TABLE_HEADER} data={TABLE_DATA} numberToShow={6} />
 				</div>
 			</div>
 			{isModalBanOpen && (
@@ -151,12 +139,12 @@ export default function AdminBanProject() {
 						<p className='my-5'>Creator Name : {modalData.user.name}</p>
 						<div className='mt-3 flex gap-4'>
 							<button
-								className='btn-error btn-sm btn text-white'
+								className='btn btn-error btn-sm text-white'
 								onClick={() => setIsModalBanOpen(false)}>
 								Cancel
 							</button>
 							<button
-								className={`btn-success btn-sm btn text-white ${
+								className={`btn btn-success btn-sm text-white ${
 									loading ? "loading" : ""
 								}`}
 								onClick={() => {
@@ -226,7 +214,7 @@ export default function AdminBanProject() {
 						</p>
 						<div className='mt-3 flex gap-4'>
 							<button
-								className='btn-error btn-sm btn text-white'
+								className='btn btn-error btn-sm text-white'
 								onClick={() =>
 									setIsModalDetailReportOpen(!isModalDetailReportOpen)
 								}>

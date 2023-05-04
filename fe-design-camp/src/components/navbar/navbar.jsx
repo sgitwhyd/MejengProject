@@ -49,7 +49,7 @@ export default function Navbar() {
 						<Image src={logo} alt='logo' height={30} />
 					</Link>
 					<Link href='/project/inspirations'>Inspirations</Link>
-					<Link href='/project/discover'>Discover</Link>
+					<Link href='/project/discover?category=all'>Discover</Link>
 				</div>
 				<div className='flex items-center justify-center gap-11'>
 					{login ? (

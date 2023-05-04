@@ -1,4 +1,4 @@
-const formatedDate = (date) => {
+export const formatedDate = (date) => {
 	const dateObject = new Date(date);
 	const options = {
 		weekday: "long",
