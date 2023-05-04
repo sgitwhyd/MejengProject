@@ -177,6 +177,12 @@ router.get(
 	rbac(MODUL.AdminDashboard, true, true),
 	con.adminController.getAllUsers
 );
+router.get(
+	'/api/admin/get-all-project',
+	restrict,
+	rbac(MODUL.AdminDashboard, true, true),
+	con.adminController.getAllProjects
+);
 router.post(
 	'/api/admin/user/ban-user',
 	restrict,
