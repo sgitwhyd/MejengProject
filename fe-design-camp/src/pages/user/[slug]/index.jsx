@@ -1,13 +1,16 @@
 import Head from "next/head";
-import Link from "next/link";
 import { HiOutlineGlobeAsiaAustralia } from "react-icons/hi2";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import ProjectCard from "@/components/cards/project-card";
 import api from "@/utils/api";
 
-export default function UserId({ data }) {
+export default function UserId({ data, notFound }) {
 	const user = data;
 	const project = data.project;
+
+	if (notFound) {
+		return "not found";
+	}
 
 	return (
 		<>
@@ -56,38 +59,15 @@ export default function UserId({ data }) {
 			</section>
 			<div className='my-16 h-[2px] bg-slate-100'></div>
 			<section className='w-full'>
-				{user?.is_verify ? (
-					<>
-						{user?.project.length === 0 ? (
-							<div className='mx-auto w-5/6 px-20 text-center text-xl font-medium leading-loose text-primary/80'>
-								<h3>“Your projects is appear here”</h3>
-								<p>
-									Come on, share the project you have and start interacting with
-									other users and creators with the results of your project...
-								</p>
+				<div className='grid grid-cols-4 gap-y-6'>
+					{project.map((project) => {
+						return (
+							<div key={project.id} className='mx-auto'>
+								<ProjectCard {...project} />
 							</div>
-						) : (
-							<div className='grid grid-cols-4 gap-y-6'>
-								{project.map((project) => {
-									return (
-										<div key={project.id} className='mx-auto'>
-											<ProjectCard {...project} />
-										</div>
-									);
-								})}
-							</div>
-						)}
-					</>
-				) : (
-					<div className='mx-auto w-5/6 px-20 text-center text-xl font-medium leading-loose text-primary/80'>
-						<Link href='/user/request-creator'>“Request as creator”</Link>
-						<p>
-							So you can share your projects that you have here, and interact
-							with various creators and exchange ideas to develop your knowledge
-							and skills...
-						</p>
-					</div>
-				)}
+						);
+					})}
+				</div>
 			</section>
 		</>
 	);
@@ -95,18 +75,24 @@ export default function UserId({ data }) {
 
 export const getServerSideProps = async ({ query }) => {
 	const { slug } = query;
-	const response = await api.get("/api/user/other-profile", {
-		headers: {
-			"Content-Type": "application/json",
-		},
-		data: {
-			slug,
-		},
-	});
-	const data = response.data.data;
-	return {
-		props: {
-			data,
-		},
-	};
+	try {
+		const response = await api.get("/api/user/other-profile", {
+			headers: {
+				"Content-Type": "application/json",
+			},
+			data: {
+				slug,
+			},
+		});
+		const data = response.data.data;
+		return {
+			props: {
+				data,
+			},
+		};
+	} catch (error) {
+		return {
+			notFound: true,
+		};
+	}
 };

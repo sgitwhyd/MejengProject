@@ -2,10 +2,9 @@ import Head from "next/head";
 import ProjectCard from "@/components/cards/project-card";
 import LayoutHomeSection from "@/components/layouts/layout-home-section";
 import LayoutHomeSectionReverse from "@/components/layouts/layout-home-section-reverse";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { getInspirationProjects } from "@/store/projects/projects.action";
-import { selectProject } from "@/store/projects/projects.selector";
 
 export default function Home() {
 	const dispatch = useDispatch();

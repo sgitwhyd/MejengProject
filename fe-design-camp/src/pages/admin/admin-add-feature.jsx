@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { TiPlus } from "react-icons/ti";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { FiPlus } from "react-icons/fi";
 import { FiEdit3, FiTrash2 } from "react-icons/fi";
 import DeleteModal from "@/components/modal/delete-modal";
 import AdminCategoryModal from "@/components/modal/admin-category-modal";
@@ -7,6 +7,7 @@ import AdminToolModal from "@/components/modal/admin-tool-modal";
 import Image from "next/image";
 
 import { SuccessToast, ErrorToast } from "@/components/toast/alert-taost";
+import Table from "@/components/table";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -175,11 +176,141 @@ export default function AdminAddFeature() {
 		setIsToolDelete(false);
 	};
 
+	const TABLE_HEADER_CATEGORIES = useMemo(
+		() => [
+			{
+				Header: "No",
+				accessor: "no",
+			},
+			{
+				Header: "Name",
+				accessor: "name",
+			},
+			{
+				Header: "Short Desc",
+				accessor: "desc",
+			},
+			{
+				Header: "Action",
+				accessor: "action",
+			},
+		],
+		[]
+	);
+
+	const TABLE_HEADER_TOOLS = useMemo(
+		() => [
+			{
+				Header: "No",
+				accessor: "no",
+			},
+			{
+				Header: "Icon",
+				accessor: "icon",
+			},
+			{
+				Header: "Name",
+				accessor: "name",
+			},
+			{
+				Header: "Action",
+				accessor: "action",
+			},
+		],
+		[]
+	);
+
+	const TABLE_TOOLS_DATA = useMemo(
+		() => [
+			...tools.map((tool, index) => ({
+				no: index + 1,
+				icon: (
+					<img
+						src={
+							tool.icon.includes("uploads")
+								? `${BE_BASE_URL}/${tool.icon}`
+								: tool.icon
+						}
+						alt={tool.name}
+						className='w-auto'
+					/>
+				),
+				name: tool.name,
+				action: (
+					<div className='flex h-28 items-center gap-1'>
+						<button
+							title='Edit tool'
+							className='btn-info btn-sm btn-circle btn text-white'>
+							<FiEdit3
+								size={18}
+								onClick={() => {
+									setIsEditTool(true);
+									setTool(tool.name);
+									setLogoTool(tool.icon);
+									setId(tool.id);
+								}}
+							/>
+						</button>
+						<button
+							title='Delete tool'
+							className='btn-error btn-sm btn-circle btn text-white'
+							onClick={() => {
+								setIsToolDelete(true);
+								setModalData(tool.name);
+								setId(tool.id);
+							}}>
+							<FiTrash2 size={18} />
+						</button>
+					</div>
+				),
+			})),
+		],
+		[tools]
+	);
+
+	const TABLE_CATEGORIES_DATA = useMemo(
+		() => [
+			...categories.map((category, index) => ({
+				no: index + 1,
+				name: category.name,
+				desc: <div className='break-words'>{category.desc}</div>,
+				action: (
+					<div className='flex h-28 items-center justify-center gap-1'>
+						<button
+							title='Edit category'
+							className='btn-info btn-sm btn-circle btn text-white'
+							onClick={() => {
+								setIsEditCategory(true);
+								setCategory({
+									name: category.name,
+									desc: category.desc,
+								});
+								setId(category.id);
+							}}>
+							<FiEdit3 size={18} />
+						</button>
+						<button
+							title='Delete category'
+							className='btn-error btn-sm btn-circle btn text-white'
+							onClick={() => {
+								setIsCategoryDelete(true);
+								setModalData(category.name);
+								setId(category.id);
+							}}>
+							<FiTrash2 size={18} />
+						</button>
+					</div>
+				),
+			})),
+		],
+		[categories]
+	);
+
 	return (
 		<section className='relative h-full'>
 			<header className='text-xl font-bold'>Add Feature</header>
 			<section
-				className={`mt-5 grid max-h-screen grid-cols-2 justify-between gap-10 ${
+				className={`mt-5 grid max-h-screen grid-cols-2 gap-5 ${
 					(isAddCategory ||
 						isAddTool ||
 						isToolDelete ||
@@ -188,138 +319,37 @@ export default function AdminAddFeature() {
 					"blur-sm"
 				}`}>
 				{/* Table Categories */}
-				<div className=''>
-					<h1 className='font-bold'>Categories</h1>
-					<table className='mt-5 w-full'>
-						<thead className='h-12 bg-gray-200'>
-							<tr>
-								<th>No</th>
-								<th>Name</th>
-								<th>Short Desc</th>
-								<th>Action</th>
-							</tr>
-						</thead>
-						<tbody className='bg-white'>
-							{categories.map((category, index) => (
-								<tr
-									key={category.id}
-									className='h-28 border-b-[1px] text-center'>
-									<th>{index + 1}</th>
-									<td className='w-24'>{category.name}</td>
-
-									<td className='max-w-[100px] break-words text-start'>
-										{category.desc}
-									</td>
-
-									<td className='flex h-28 items-center justify-center gap-1'>
-										<button
-											title='Edit category'
-											className='btn-info btn-sm btn-circle btn text-white'
-											onClick={() => {
-												setIsEditCategory(true);
-												setCategory({
-													name: category.name,
-													desc: category.desc,
-												});
-												setId(category.id);
-											}}>
-											<FiEdit3 size={18} />
-										</button>
-										<button
-											title='Delete category'
-											className='btn-error btn-sm btn-circle btn text-white'
-											onClick={() => {
-												setIsCategoryDelete(true);
-												setModalData(category.name);
-												setId(category.id);
-											}}>
-											<FiTrash2 size={18} />
-										</button>
-									</td>
-								</tr>
-							))}
-							<tr className='active'>
-								<td colSpan={4} className='h-16 bg-gray-200 text-center'>
-									<button
-										className='flex w-full items-center justify-center gap-2 text-lg font-bold'
-										onClick={() => setIsAddCategory(true)}>
-										<TiPlus size={18} />
-										Add new category
-									</button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+				<div>
+					<div className='mb-5 flex items-center justify-between'>
+						<h1 className=' font-bold'>Categories</h1>
+						<button
+							onClick={() => setIsAddCategory(true)}
+							className='btn-primary no-animation btn flex justify-center'>
+							<FiPlus size={20} />
+						</button>
+					</div>
+					<Table
+						columns={TABLE_HEADER_CATEGORIES}
+						data={TABLE_CATEGORIES_DATA}
+						numberToShow={3}
+					/>
 				</div>
 
 				{/* Table Tools */}
-				<div className=' overflow-x-auto'>
-					<h1 className='font-bold'>Tools</h1>
-					<table className='mt-5 table max-h-28 w-full'>
-						<thead>
-							<tr>
-								<th>No</th>
-								<th>Icon</th>
-								<th>Name</th>
-								<th>Action</th>
-							</tr>
-						</thead>
-						<tbody className='max-h-52 overflow-y-scroll'>
-							{tools.map((tool, index) => (
-								<tr key={tool.id} className='h-28'>
-									<th>{index + 1}</th>
-									<td>
-										<Image
-											src={
-												tool.icon.includes("uploads")
-													? `${BE_BASE_URL}/${tool.icon}`
-													: tool.icon
-											}
-											alt={tool.name}
-											width={50}
-											height={50}
-										/>
-									</td>
-									<td>{tool.name}</td>
-									<td className='flex h-28 items-center gap-1'>
-										<button
-											title='Edit tool'
-											className='btn-info btn-sm btn-circle btn text-white'>
-											<FiEdit3
-												size={18}
-												onClick={() => {
-													setIsEditTool(true);
-													setTool(tool.name);
-													setLogoTool(tool.icon);
-													setId(tool.id);
-												}}
-											/>
-										</button>
-										<button
-											title='Delete tool'
-											className='btn-error btn-sm btn-circle btn text-white'
-											onClick={() => {
-												setIsToolDelete(true);
-												setModalData(tool.name);
-												setId(tool.id);
-											}}>
-											<FiTrash2 size={18} />
-										</button>
-									</td>
-								</tr>
-							))}
-							<tr className='active'>
-								<td colSpan={4} className='text-center'>
-									<button
-										className='flex w-full items-center justify-center gap-2 text-lg font-bold'
-										onClick={() => setIsAddTool(true)}>
-										<TiPlus size={18} />
-										Add new tool
-									</button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+				<div>
+					<div className='mb-5 flex items-center justify-between'>
+						<h1 className=' font-bold'>Tools</h1>
+						<button
+							onClick={() => setIsAddTool(!isAddTool)}
+							className='btn-primary no-animation btn flex justify-center'>
+							<FiPlus size={20} />
+						</button>
+					</div>
+					<Table
+						columns={TABLE_HEADER_TOOLS}
+						data={TABLE_TOOLS_DATA}
+						numberToShow={3}
+					/>
 				</div>
 			</section>
 
