@@ -803,7 +803,8 @@ module.exports = {
 		}
 	},
 	getProjectByCategory: async (req, res, next) => {
-		try {			
+		try {
+
 			await Categories.findAll({				
 				attributes: [
 					'name',
@@ -818,6 +819,7 @@ module.exports = {
 					// limit: 3,
 					order: [['createdAt', 'DESC']],
 					where: {
+						is_active: true,
 						id : { [Sequelize.Op.ne]: null } // memfilter categories yang memiliki project saja
 					},									
 					include: [						

@@ -3,6 +3,7 @@ const {
 	Project,
 	ProjectReport,
 	ReportCategories,
+	Categories
 } = require('../db/models');
 const { Sequelize } = require('sequelize');
 
@@ -23,7 +24,7 @@ module.exports = {
 			});
 			await User.findAll({
 				attributes: {
-					exclude: ['id', 'password', 'createdAt', 'updatedAt'],
+					exclude: ['password', 'createdAt', 'updatedAt'],
 				},
 
 				include: {
@@ -205,4 +206,34 @@ module.exports = {
 			}
 		}
 	},
+	getAllProjects: async(req, res ,next) => {
+		await Project.findAll({			
+			include: [
+				{
+					model: User,
+					as: 'user',
+					attributes: ['name', 'profile_image'],
+				},					
+				{
+					model: Categories,
+					as: 'categories',
+					attributes:  ['slug', 'name', 'desc'],
+				},
+			],			
+			order: [['total_views', 'DESC'], ['createdAt', 'DESC']]
+		}).then((filter) => {
+			if (filter.length == 0) {					
+				return res.status(404).json({
+					code: 404,
+					status: 'Project NOT FOUND'
+				})
+			}else{									
+				return res.status(201).json({
+					code: 201,
+					status: 'Succes Find Project',
+					filter
+				})
+			}
+		})
+	}
 };
