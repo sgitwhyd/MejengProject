@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectReportCategories } from "@/store/report/report.selector";
 import {
@@ -11,7 +11,8 @@ import { fetchReportCategory } from "@/store/report/report.action";
 import { ErrorToast, SuccessToast } from "@/components/toast/alert-taost";
 import ReportCategoryModal from "@/components/modal/report-category";
 import DeleteModal from "@/components/modal/delete-modal";
-import { formatedHours } from "@/utils/formated-date";
+import { formatedDate } from "@/utils/formated-date";
+import Table from "@/components/table";
 
 const ReportCategories = () => {
 	const dispatch = useDispatch();
@@ -84,6 +85,60 @@ const ReportCategories = () => {
 		});
 	};
 
+	const TABLE_HEADER = useMemo(
+		() => [
+			{
+				Header: "No",
+				accessor: "no",
+			},
+			{
+				Header: "Report Category Name",
+				accessor: "reportCategoryName",
+			},
+			{
+				Header: "Created At",
+				accessor: "createdAt",
+			},
+			{
+				Header: "Action",
+				accessor: "action",
+			},
+		],
+		[]
+	);
+
+	const TABLE_DATA = useMemo(
+		() => [
+			...reportCategories.map((reportCategory, index) => ({
+				no: index + 1,
+				reportCategoryName: reportCategory.name,
+				createdAt: formatedDate(reportCategory.createdAt),
+				action: (
+					<div className='flex gap-5'>
+						<button
+							onClick={() => {
+								setModalData(reportCategory);
+								setReportName(reportCategory.name);
+								setShowEditModal(!showEditModal);
+							}}
+							className='btn-warning no-animation btn w-fit capitalize text-white'>
+							Edit
+						</button>
+						<button
+							onClick={() => {
+								setModalData(reportCategory);
+								setShowDeleteModal(!showDeleteModal);
+							}}
+							className='btn-error no-animation btn w-fit capitalize text-white'>
+							Delete
+						</button>
+					</div>
+				),
+			})),
+		],
+		[reportCategories]
+	);
+
 	return (
 		<>
 			<button
@@ -91,49 +146,7 @@ const ReportCategories = () => {
 				className='btn-primary no-animation btn-sm btn  my-5 mr-2 w-fit'>
 				Add Report Category
 			</button>
-			<div className='overflow-x-auto'>
-				<table className='table w-full'>
-					{/* head */}
-					<thead>
-						<tr>
-							<th>No</th>
-							<th>Name</th>
-							<th>Created At</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody>
-						{reportCategories.map((item, index) => (
-							<tr key={item.id}>
-								<th>{index + 1}</th>
-								<td>{item.name}</td>
-								<td>{formatedHours(item.createdAt)}</td>
-								<td>
-									<div className='flex gap-5'>
-										<button
-											onClick={() => {
-												setModalData(item);
-												setReportName(item.name);
-												setShowEditModal(!showEditModal);
-											}}
-											className='btn-warning no-animation btn w-fit capitalize text-white'>
-											Edit
-										</button>
-										<button
-											onClick={() => {
-												setModalData(item);
-												setShowDeleteModal(!showDeleteModal);
-											}}
-											className='btn-error no-animation btn w-fit capitalize text-white'>
-											Delete
-										</button>
-									</div>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
+			<Table data={TABLE_DATA} columns={TABLE_HEADER} numberToShow={6} />
 			{/* modal */}
 			{showModal ? (
 				<ReportCategoryModal

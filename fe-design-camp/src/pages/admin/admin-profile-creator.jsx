@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { BsSearch } from "react-icons/bs";
 import { MdReportProblem } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
@@ -6,6 +6,7 @@ import { selectAdmin } from "@/store/admin/admin.selector";
 import { bannUser } from "@/store/admin/admin.action";
 import { fetchUsers } from "@/store/admin/admin.action";
 import { SuccessToast, ErrorToast } from "@/components/toast/alert-taost";
+import Table from "@/components/table";
 
 export default function AdminProfileCreator() {
 	const dispatch = useDispatch();
@@ -56,6 +57,82 @@ export default function AdminProfileCreator() {
 		user.name.toLowerCase().includes(searchText.toLowerCase())
 	);
 
+	const TABLE_HEADER = useMemo(
+		() => [
+			{
+				Header: "No",
+				accessor: "no",
+			},
+			{
+				Header: "Creator Name",
+				accessor: "name",
+			},
+			{
+				Header: "Region & Country",
+				accessor: "region",
+			},
+			{
+				Header: "Post Project",
+				accessor: "post_project",
+			},
+			{
+				Header: "Total View",
+				accessor: "total_view",
+			},
+			{
+				Header: "Total Like",
+				accessor: "total_like",
+			},
+			{
+				Header: "Status",
+				accessor: "status",
+			},
+			{
+				Header: "Total Report",
+				accessor: "total_report",
+			},
+			{
+				Header: "Action",
+				accessor: "action",
+			},
+		],
+		[]
+	);
+
+	const TABLE_DATA = useMemo(
+		() => [
+			...filteredData.map((user, index) => ({
+				no: index + 1,
+				name: user.name,
+				region: `${user.region} - ${user.country}`,
+				post_project: user.total_project,
+				total_view: user.total_views_project,
+				total_like: user.total_project_like,
+				status: user.is_active ? (
+					<button className='btn btn-success btn-xs capitalize text-white'>
+						Active
+					</button>
+				) : (
+					<button className='btn btn-error btn-xs capitalize text-white'>
+						Disable
+					</button>
+				),
+				total_report: user.total_project_report,
+				action: (
+					<button
+						className={`btn btn-error btn-sm gap-2 capitalize text-white ${
+							user.is_active ? "" : "btn-disabled"
+						}`}
+						onClick={() => handleModal(user)}>
+						<MdReportProblem />
+						Ban Creator
+					</button>
+				),
+			})),
+		],
+		[filteredData]
+	);
+
 	return (
 		<section className='relative h-full'>
 			<header className='text-xl font-bold'>Profile Creator</header>
@@ -80,70 +157,7 @@ export default function AdminProfileCreator() {
 				className={`relative overflow-x-auto shadow-md sm:rounded-lg ${
 					isModalOpen && "blur-sm"
 				}`}>
-				<table className='w-full text-left text-sm text-gray-500 '>
-					<thead className='bg-gray-50 text-xs uppercase text-gray-700 '>
-						<tr>
-							{tableHeader.map((header, index) => {
-								return (
-									<th
-										key={index}
-										scope='col'
-										className='whitespace-nowrap px-6 py-3'>
-										{header}
-									</th>
-								);
-							})}
-						</tr>
-					</thead>
-					<tbody>
-						{filteredData.map((user, index) => {
-							return (
-								<tr key={index} className='border-b bg-white'>
-									<th
-										scope='row'
-										className='whitespace-nowrap px-6 py-4 font-medium text-gray-900'>
-										{user.name}
-									</th>
-									<td className='px-6 py-4'>
-										{user.region} - {user.country}
-									</td>
-									<td className='px-6 py-4'>{user.total_project}</td>
-									<td className='px-6 py-4'>{user.total_views_project}</td>
-									<td className='px-6 py-4'>{user.total_project_like}</td>
-									<td className='px-6 py-4'>
-										{user.is_active ? (
-											<button className='btn-success btn-xs btn capitalize text-white'>
-												Active
-											</button>
-										) : (
-											<button className='btn-error btn-xs btn capitalize text-white'>
-												Disable
-											</button>
-										)}
-									</td>
-									<td className='px-6 py-4'>{user.total_project_report}</td>
-									<td className='px-6 py-4'>
-										<button
-											className={`btn-error btn-sm btn gap-2 capitalize text-white ${
-												user.is_active ? "" : "btn-disabled"
-											}`}
-											onClick={() => handleModal(user)}>
-											<MdReportProblem />
-											Ban Creator
-										</button>
-									</td>
-								</tr>
-							);
-						})}
-						{filteredData.length === 0 && (
-							<tr className='border-b bg-white'>
-								<td colSpan='5' className='px-6 py-4 text-center'>
-									No data found
-								</td>
-							</tr>
-						)}
-					</tbody>
-				</table>
+				<Table columns={TABLE_HEADER} data={TABLE_DATA} numberToShow={6} />
 			</div>
 			{isModalOpen && (
 				<div className='absolute inset-0 z-[99] mx-auto my-auto  h-fit w-[478px] rounded-2xl border  bg-white py-14 shadow-lg drop-shadow-xl'>
@@ -154,12 +168,12 @@ export default function AdminProfileCreator() {
 						<p>Creator Name : {modalData.name}</p>
 						<div className='mt-5 flex gap-4'>
 							<button
-								className='btn-error btn-sm btn text-white'
+								className='btn btn-error btn-sm text-white'
 								onClick={() => setIsModalOpen(false)}>
 								Cancel
 							</button>
 							<button
-								className={`btn-success btn-sm btn text-white ${
+								className={`btn btn-success btn-sm text-white ${
 									loading ? "loading" : ""
 								}`}
 								onClick={() => {
